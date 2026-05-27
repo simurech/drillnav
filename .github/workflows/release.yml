@@ -1,0 +1,38 @@
+name: Build & Release ZIP
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Create Plugin ZIP
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Clean ZIP
+        run: |
+          mkdir build
+          mkdir build/drillnav-drilldown-navigation
+          
+          rsync -av ./ build/drillnav-drilldown-navigation \
+            --exclude='.git*' \
+            --exclude='.github' \
+            --exclude='.DS_Store' \
+            --exclude='build' \
+            --exclude='*.zip' \
+            --exclude='node_modules'
+          cd build
+          zip -r ../drillnav-drilldown-navigation.zip drillnav-drilldown-navigation
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: drillnav-drilldown-navigation.zip
+          generate_release_notes: true
+          make_latest: true
