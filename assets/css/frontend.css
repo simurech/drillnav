@@ -1,0 +1,429 @@
+/*
+ * DrillNav – Frontend Navigation Styles
+ * Uses CSS Custom Properties so themes can override without !important hacks.
+ *
+ * @package DrillNav
+ */
+
+/* =========================================================================
+   Custom Properties (Design Tokens)
+   ========================================================================= */
+
+.drillnav {
+	--drillnav-font-size:        1rem;
+	--drillnav-line-height:      1.5;
+	--drillnav-border-radius:    4px;
+	--drillnav-transition-speed: 200ms;
+
+	/* Colours – neutral defaults that inherit from the active theme */
+	--drillnav-color-bg:          transparent;
+	--drillnav-color-text:        inherit;
+	--drillnav-color-link:        inherit;
+	--drillnav-color-link-hover:  currentColor;
+	--drillnav-color-current:     currentColor;
+	--drillnav-color-current-bg:  rgba(0, 0, 0, 0.06);
+	--drillnav-color-border:      rgba(0, 0, 0, 0.1);
+	--drillnav-color-btn-hover:   rgba(0, 0, 0, 0.08);
+	--drillnav-color-arrow:       rgba(0, 0, 0, 0.4);
+
+	/* Spacing */
+	--drillnav-item-padding-y: 0.5rem;
+	--drillnav-item-padding-x: 0.75rem;
+}
+
+/* =========================================================================
+   Colour Scheme Presets
+   ========================================================================= */
+
+.drillnav--scheme-light {
+	--drillnav-color-bg:         #ffffff;
+	--drillnav-color-text:       #1a1a1a;
+	--drillnav-color-link:       #1a1a1a;
+	--drillnav-color-current:    #1a1a1a;
+	--drillnav-color-current-bg: rgba(0, 0, 0, 0.07);
+	--drillnav-color-border:     rgba(0, 0, 0, 0.12);
+	--drillnav-color-btn-hover:  rgba(0, 0, 0, 0.06);
+	--drillnav-color-arrow:      rgba(0, 0, 0, 0.45);
+	border: 1px solid var(--drillnav-color-border);
+	border-radius: var(--drillnav-border-radius);
+	padding: 0.5rem;
+}
+
+.drillnav--scheme-dark {
+	--drillnav-color-bg:         #1e1e2e;
+	--drillnav-color-text:       #e0e0e0;
+	--drillnav-color-link:       #e0e0e0;
+	--drillnav-color-current:    #ffffff;
+	--drillnav-color-current-bg: rgba(255, 255, 255, 0.12);
+	--drillnav-color-border:     rgba(255, 255, 255, 0.15);
+	--drillnav-color-btn-hover:  rgba(255, 255, 255, 0.08);
+	--drillnav-color-arrow:      rgba(255, 255, 255, 0.5);
+	border-radius: var(--drillnav-border-radius);
+	padding: 0.5rem;
+}
+
+/* =========================================================================
+   Base Reset
+   ========================================================================= */
+
+.drillnav,
+.drillnav *,
+.drillnav *::before,
+.drillnav *::after {
+	box-sizing: border-box;
+}
+
+.drillnav {
+	background:  var(--drillnav-color-bg);
+	color:       var(--drillnav-color-text);
+	font-size:   var(--drillnav-font-size);
+	line-height: var(--drillnav-line-height);
+}
+
+/* Prevent themes from underlining nav links (breadcrumb hover underline is intentional below). */
+.drillnav a {
+	text-decoration: none;
+}
+
+/* =========================================================================
+   Breadcrumb
+   ========================================================================= */
+
+.drillnav__breadcrumb {
+	margin-bottom: 0.5rem;
+}
+
+.drillnav__breadcrumb-list {
+	list-style:  none;
+	margin:      0;
+	padding:     0;
+	display:     flex;
+	flex-wrap:   wrap;
+	align-items: center;
+	gap:         0.25rem;
+	font-size:   0.85em;
+	opacity:     0.75;
+}
+
+.drillnav__breadcrumb-item {
+	display:     flex;
+	align-items: center;
+	gap:         0.25rem;
+}
+
+.drillnav__breadcrumb-link {
+	color:           var(--drillnav-color-link);
+	text-decoration: none;
+}
+
+.drillnav__breadcrumb-link:hover {
+	text-decoration: underline;
+}
+
+.drillnav__breadcrumb-current {
+	font-weight: 600;
+}
+
+.drillnav__breadcrumb-sep {
+	opacity: 0.5;
+}
+
+/* =========================================================================
+   Back Button
+   ========================================================================= */
+
+.drillnav__back-wrap {
+	margin-bottom: 0.25rem;
+}
+
+.drillnav__back-btn {
+	display:         inline-flex;
+	align-items:     center;
+	gap:             0.375rem;
+	padding:         var(--drillnav-item-padding-y) var(--drillnav-item-padding-x);
+	background:      none;
+	border:          none;
+	border-radius:   var(--drillnav-border-radius);
+	color:           var(--drillnav-color-link);
+	cursor:          pointer;
+	font-size:       0.9em;
+	font-family:     inherit;
+	text-decoration: none;
+	transition:      background var(--drillnav-transition-speed);
+	width:           100%;
+	text-align:      left;
+}
+
+.drillnav__back-btn:hover {
+	background: var(--drillnav-color-btn-hover);
+}
+
+.drillnav__back-arrow {
+	opacity: 0.6;
+}
+
+/* =========================================================================
+   Navigation Panel & List
+   ========================================================================= */
+
+.drillnav__panel {
+	position: relative;
+	overflow: hidden; /* Clips slide animations at panel boundary. */
+}
+
+.drillnav__list {
+	list-style: none;
+	margin:     0;
+	padding:    0;
+}
+
+/* =========================================================================
+   Row (link + expand button)
+   ========================================================================= */
+
+.drillnav__row {
+	display:     flex;
+	align-items: stretch;
+}
+
+.drillnav__link {
+	flex:            1;
+	display:         flex;
+	align-items:     center;
+	padding:         var(--drillnav-item-padding-y) var(--drillnav-item-padding-x);
+	color:           var(--drillnav-color-link);
+	text-decoration: none;
+	border-radius:   var(--drillnav-border-radius);
+	transition:      background var(--drillnav-transition-speed);
+	overflow:        hidden;
+	text-overflow:   ellipsis;
+	white-space:     nowrap;
+	min-width:       0;
+}
+
+.drillnav__link:hover {
+	background:      var(--drillnav-color-btn-hover);
+	text-decoration: none;
+}
+
+/* Current page */
+.drillnav__item--current > .drillnav__row > .drillnav__link {
+	background:  var(--drillnav-color-current-bg);
+	color:       var(--drillnav-color-current);
+	font-weight: 600;
+}
+
+/* Expand (arrow) button */
+.drillnav__expand-btn {
+	display:         flex;
+	align-items:     center;
+	justify-content: center;
+	flex-shrink:     0;
+	width:           2.5rem;
+	background:      none;
+	border:          none;
+	border-radius:   var(--drillnav-border-radius);
+	color:           var(--drillnav-color-arrow);
+	cursor:          pointer;
+	font-size:       1.25em;
+	line-height:     1;
+	transition:      background var(--drillnav-transition-speed);
+	padding:         0;
+}
+
+.drillnav__expand-btn:hover {
+	background: var(--drillnav-color-btn-hover);
+	color:      var(--drillnav-color-text);
+}
+
+/* =========================================================================
+   Animations
+   ========================================================================= */
+
+@media (prefers-reduced-motion: no-preference) {
+
+	/* Slide: drill down (enters from right) */
+	.drillnav--anim-slide-in {
+		animation: drillnav-slide-in var(--drillnav-transition-speed) ease-out both;
+	}
+
+	@keyframes drillnav-slide-in {
+		from {
+			opacity:   0;
+			transform: translateX(1.5rem);
+		}
+		to {
+			opacity:   1;
+			transform: translateX(0);
+		}
+	}
+
+	/* Slide: go back (enters from left) */
+	.drillnav--anim-slide-back {
+		animation: drillnav-slide-back var(--drillnav-transition-speed) ease-out both;
+	}
+
+	@keyframes drillnav-slide-back {
+		from {
+			opacity:   0;
+			transform: translateX(-1.5rem);
+		}
+		to {
+			opacity:   1;
+			transform: translateX(0);
+		}
+	}
+
+	/* Fade: drill down */
+	.drillnav--anim-fade-in {
+		animation: drillnav-fade-in var(--drillnav-transition-speed) ease both;
+	}
+
+	/* Fade: go back (same visual effect) */
+	.drillnav--anim-fade-back {
+		animation: drillnav-fade-in var(--drillnav-transition-speed) ease both;
+	}
+
+	@keyframes drillnav-fade-in {
+		from { opacity: 0; }
+		to   { opacity: 1; }
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.drillnav--anim-slide-in,
+	.drillnav--anim-slide-back,
+	.drillnav--anim-fade-in,
+	.drillnav--anim-fade-back {
+		animation: none;
+	}
+}
+
+/* =========================================================================
+   Mobile Drawer – Toggle Button (Hamburger)
+   ========================================================================= */
+
+.drillnav-toggle-btn {
+	display:         inline-flex;
+	align-items:     center;
+	justify-content: center;
+	width:           2.5rem;
+	height:          2.5rem;
+	padding:         0;
+	background:      none;
+	border:          1px solid currentColor;
+	border-radius:   4px;
+	cursor:          pointer;
+	color:           inherit;
+	opacity:         0.75;
+	transition:      opacity 200ms ease;
+}
+
+.drillnav-toggle-btn:hover {
+	opacity: 1;
+}
+
+.drillnav-hamburger {
+	display:         flex;
+	flex-direction:  column;
+	justify-content: space-between;
+	width:           1.125rem;
+	height:          0.875rem;
+	pointer-events:  none;
+}
+
+.drillnav-hamburger span {
+	display:          block;
+	width:            100%;
+	height:           2px;
+	background:       currentColor;
+	border-radius:    1px;
+	transform-origin: center center;
+	transition:       transform 200ms ease, opacity 200ms ease;
+}
+
+/* Morph to × when open */
+.drillnav-drawer-wrap.is-open .drillnav-hamburger span:nth-child(1) {
+	transform: translateY(6px) rotate(45deg);
+}
+
+.drillnav-drawer-wrap.is-open .drillnav-hamburger span:nth-child(2) {
+	opacity:   0;
+	transform: scaleX(0);
+}
+
+.drillnav-drawer-wrap.is-open .drillnav-hamburger span:nth-child(3) {
+	transform: translateY(-6px) rotate(-45deg);
+}
+
+/* Hidden on desktop (≥769 px) */
+@media (min-width: 769px) {
+	.drillnav-toggle-btn {
+		display: none;
+	}
+}
+
+/* =========================================================================
+   Mobile Drawer – Backdrop & Nav Panel
+   ========================================================================= */
+
+/* Backdrop: hidden until drawer opens */
+.drillnav-backdrop {
+	display: none;
+}
+
+@media (max-width: 768px) {
+	.drillnav-backdrop {
+		display:        block;
+		position:       fixed;
+		inset:          0;
+		z-index:        99998;
+		background:     rgba(0, 0, 0, 0.45);
+		opacity:        0;
+		pointer-events: none;
+		transition:     opacity 300ms ease;
+	}
+
+	.drillnav-drawer-wrap.is-open .drillnav-backdrop {
+		opacity:        1;
+		pointer-events: auto;
+	}
+
+	/* Drawer nav: slides in from left */
+	.drillnav--drawer-nav {
+		position:         fixed;
+		top:              0;
+		left:             0;
+		bottom:           0;
+		width:            min(320px, 85vw);
+		z-index:          99999;
+		overflow-y:       auto;
+		padding:          1.25rem;
+		transform:        translateX(-100%);
+		transition:       transform 300ms ease;
+		box-shadow:       2px 0 16px rgba(0, 0, 0, 0.15);
+		/* Ensure a solid background – default scheme is transparent */
+		background-color: #fff;
+	}
+
+	/* Restore scheme backgrounds when a preset is applied */
+	.drillnav--drawer-nav.drillnav--scheme-light {
+		background-color: #ffffff;
+	}
+
+	.drillnav--drawer-nav.drillnav--scheme-dark {
+		background-color: #1e1e2e;
+	}
+
+	.drillnav-drawer-wrap.is-open .drillnav--drawer-nav {
+		transform: translateX(0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.drillnav-hamburger span,
+	.drillnav-backdrop,
+	.drillnav--drawer-nav {
+		transition: none;
+	}
+}

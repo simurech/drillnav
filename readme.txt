@@ -1,0 +1,193 @@
+=== DrillNav – Smart Contextual Navigation for Deeply Nested Sites ===
+Contributors:      simon61
+Tags:              navigation, contextual navigation, drilldown, page hierarchy, menu
+Requires at least: 6.3
+Tested up to:      7.0
+Requires PHP:      8.0
+Stable tag:        1.0.0
+License:           GPL-2.0-or-later
+License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+
+Smart drill-down navigation that adapts to the current page – perfect for deeply nested WordPress sites with many hierarchy levels.
+
+== Description ==
+
+**Visitors get lost in deep page hierarchies.** Standard WordPress navigation shows every page at once – overwhelming on sites with hundreds of nested pages. DrillNav solves this with a contextual, drill-down navigation that shows only what's relevant **right now**.
+
+On any page, DrillNav automatically displays:
+
+* The **ancestor path** (where you came from)
+* The **current level** (siblings of the active page)
+* An expandable **drill-down** into child pages
+
+No configuration required. Place the block, add the shortcode, or drop in the widget – DrillNav does the rest.
+
+= Key Features =
+
+* **Zero configuration** – works out of the box, adapts to any page hierarchy
+* **Gutenberg block** with live editor preview
+* **Shortcode** `[drillnav]` and **sidebar widget** for classic themes
+* **Unlimited depth** – works with any number of hierarchy levels
+* **Mobile hamburger toggle** – optional side-drawer mode for themes without an off-canvas menu
+* **Colour scheme presets** – Default (inherits theme), Light, and Dark, all customisable via CSS custom properties
+* **WCAG 2.1 AA accessible** – full keyboard navigation, correct ARIA attributes, automatic focus management after drill-down
+* **Blazing fast** – assets load only on pages where the navigation is used; 7-day intelligent caching with automatic cache invalidation
+* **No jQuery** – pure vanilla JavaScript, no bloat
+* **Developer-friendly** – filter hooks, REST API endpoint, CSS custom properties for easy theming
+* **Translation ready** – fully internationalised
+
+= Perfect For =
+
+* Corporate websites with deep service or department hierarchies
+* Knowledge bases and documentation sites
+* Government and institutional sites
+* Large school or university websites
+* Any site with more than 3 levels of pages
+
+= Pro Version – WooCommerce Support =
+
+[DrillNav Pro](https://drillnav.com/#pro) extends the plugin with full WooCommerce product category navigation:
+
+* Drill-down through product categories (unlimited depth)
+* Live product count per category
+* Smart empty-category filtering (checks actual stock availability, not just post count)
+* Exclude specific categories from the navigation
+* Context-aware: auto-detects category pages, product pages, and the shop page
+* Priority support
+
+= Accessibility =
+
+DrillNav is built accessibility-first:
+
+* `<nav>` landmark with descriptive `aria-label`
+* `aria-expanded` on expandable items, updated in real time
+* `aria-current="page"` on the active item
+* Keyboard focus automatically placed on the back button after each drill-down
+* Escape key closes the current drill-down level
+* Full `Tab`/`Shift+Tab` navigation without traps
+* Visible `:focus-visible` styles (WCAG 1.4.11 compliant contrast)
+* Respects `prefers-reduced-motion`
+
+= Developer Hooks =
+
+```php
+// Filter the navigation items before rendering
+add_filter( 'drillnav_nav_items', function( $data, $args ) {
+    // Modify $data['current_level'], $data['ancestors'], etc.
+    return $data;
+}, 10, 2 );
+
+// Filter the resolved page context
+add_filter( 'drillnav_current_context', function( $context ) {
+    return $context;
+} );
+
+// Adjust cache duration (default: 7 days)
+add_filter( 'drillnav_cache_duration', function( $seconds ) {
+    return WEEK_IN_SECONDS * 2;
+} );
+```
+
+REST API: `GET /wp-json/drillnav/v1/children?post_id=123&post_type=page`
+
+= Privacy =
+
+DrillNav does not collect or transmit any personal data. No external connections are made. Fully GDPR-compliant.
+
+== Installation ==
+
+1. Upload the `drillnav-drilldown-navigation` folder to `/wp-content/plugins/`.
+2. Activate the plugin in **Plugins > Installed Plugins**.
+3. You'll see a brief notice with the three ways to use DrillNav:
+
+**Option A – Gutenberg Block (recommended)**
+Open any page in the block editor, search for **DrillNav**, and insert the block. A live preview appears immediately.
+
+**Option B – Shortcode**
+Add `[drillnav]` anywhere in a page, post, or widget area.
+
+Available attributes:
+`[drillnav depth="3" show_home="yes" home_label="Start" mobile_toggle="yes"]`
+
+**Option C – Sidebar Widget**
+Go to **Appearance > Widgets**, find **DrillNav – Contextual Navigation**, and drag it to any sidebar.
+
+That's it. DrillNav automatically detects the page hierarchy and renders the correct navigation.
+
+== Frequently Asked Questions ==
+
+= Does this work with WooCommerce product categories? =
+
+WooCommerce product category navigation is available in [DrillNav Pro](https://drillnav.com/#pro). The free version supports all hierarchical WordPress post types (Pages, and any custom post type with `hierarchical => true`).
+
+= Does it work with my theme? =
+
+Yes. DrillNav uses semantic HTML and CSS custom properties (`--drillnav-color-*`, `--drillnav-font-*`, etc.), making it easy to match any theme's design. You can also disable the plugin's CSS entirely in **Settings > DrillNav** and supply your own styles.
+
+= My pages are flat (no hierarchy). Will this work? =
+
+DrillNav is designed for hierarchical page structures. On pages without a parent/child relationship, it will show all top-level pages. For best results, make sure your pages have parent pages set in WordPress.
+
+= How do I control which page types are used? =
+
+In **Settings > DrillNav**, under **Post types**, select all hierarchical post types you want the navigation to respond to (e.g. Pages, a custom `services` post type, etc.).
+
+= How do I customise the appearance? =
+
+Override any CSS custom property in your theme's stylesheet:
+
+```css
+.drillnav {
+    --drillnav-color-current-bg: #e8f4ff;
+    --drillnav-color-link: #0073aa;
+    --drillnav-transition-speed: 150ms;
+}
+```
+
+= Is the navigation accessible for keyboard and screen reader users? =
+
+Yes. DrillNav was built with WCAG 2.1 AA compliance from the start. All interactive elements are reachable by keyboard, ARIA states are updated dynamically, and focus is managed correctly during drill-down interactions.
+
+= Does the plugin add any database tables? =
+
+No. DrillNav uses standard WordPress options and transients – no custom database tables.
+
+= Will it slow down my site? =
+
+No. Assets are loaded only on pages where DrillNav is placed. Navigation data is cached for 7 days and automatically invalidated when pages change. The JavaScript is pure vanilla (no jQuery), weighing in at under 5 KB minified.
+
+= Can I use multiple instances on one page? =
+
+Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
+
+== Screenshots ==
+
+1. DrillNav block in the Gutenberg editor with inspector controls
+2. Frontend navigation on a page with multiple hierarchy levels
+3. Drill-down into sub-pages with animated transition
+4. Breadcrumb and back-button navigation
+5. Settings page in WordPress admin
+
+== Changelog ==
+
+= 1.0.0 =
+* Initial release
+* Gutenberg block with live ServerSideRender preview in the editor
+* Shortcode `[drillnav]` with depth, show_home, home_label, post_type, mobile_toggle attributes
+* Sidebar widget
+* Blog / Posts integration: category hierarchy, single post context, tag archives
+* Mobile hamburger toggle: optional side-drawer mode (shortcode/block attribute)
+* Colour scheme presets: Default, Light, Dark – fully customisable via CSS custom properties
+* Block/shortcode settings override global plugin settings per instance
+* WCAG 2.1 AA accessible: ARIA attributes, keyboard focus management, Escape key support
+* 7-day transient caching with automatic invalidation on post save/delete
+* REST API endpoint `GET /wp-json/drillnav/v1/children`
+* Freemius integration for Pro licence management
+* WooCommerce Pro integration (inactive without valid licence)
+* Translation-ready with .pot file
+* WordPress Coding Standards compliant
+
+== Upgrade Notice ==
+
+= 1.0.0 =
+Initial release. No upgrade steps required.

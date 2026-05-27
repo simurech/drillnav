@@ -1,0 +1,73 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "drillnav/contextual-nav",
+	"version": "1.0.0",
+	"title": "DrillNav – Contextual Navigation",
+	"category": "widgets",
+	"icon": "list-view",
+	"description": "Displays a contextual drill-down navigation based on the current page hierarchy.",
+	"keywords": ["navigation", "drilldown", "hierarchy", "pages", "contextual"],
+	"textdomain": "drillnav-drilldown-navigation",
+	"supports": {
+		"html": false,
+		"align": ["wide", "full"],
+		"multiple": true,
+		"reusable": true,
+		"color": {
+			"background": true,
+			"text": true,
+			"link": true
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"blockGap": false
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true
+		}
+	},
+	"attributes": {
+		"depth": {
+			"type": "integer",
+			"default": 0
+		},
+		"showHome": {
+			"type": "boolean",
+			"default": true
+		},
+		"homeLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"showBreadcrumb": {
+			"type": "boolean",
+			"default": true
+		},
+		"showBackButton": {
+			"type": "boolean",
+			"default": true
+		},
+		"animation": {
+			"type": "string",
+			"default": "slide",
+			"enum": ["slide", "fade", "none"]
+		},
+		"postType": {
+			"type": "string",
+			"default": "page"
+		},
+		"colorScheme": {
+			"type": "string",
+			"default": "default",
+			"enum": ["default", "light", "dark"]
+		},
+		"mobileToggle": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"example": {}
+}

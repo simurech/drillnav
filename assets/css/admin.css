@@ -1,0 +1,147 @@
+/*
+ * DrillNav – Admin Styles
+ * @package DrillNav
+ */
+
+.drillnav-settings-wrap h1 {
+	display:     flex;
+	align-items: center;
+	gap:         0.5rem;
+}
+
+.drillnav-version {
+	font-size:   0.55em;
+	font-weight: 400;
+	color:       #757575;
+	vertical-align: middle;
+}
+
+/* Two-column layout */
+.drillnav-settings-layout {
+	display:  flex;
+	gap:      2rem;
+	margin-top: 1rem;
+}
+
+.drillnav-settings-main {
+	flex: 1;
+	min-width: 0;
+	max-width: 680px;
+}
+
+.drillnav-settings-sidebar {
+	width: 280px;
+	flex-shrink: 0;
+}
+
+/* Cards */
+.drillnav-card {
+	background:    #fff;
+	border:        1px solid #c3c4c7;
+	border-radius: 4px;
+	padding:       1.25rem 1.5rem;
+	margin-bottom: 1rem;
+}
+
+.drillnav-card h3 {
+	margin-top:    0;
+	display:       flex;
+	align-items:   center;
+	gap:           0.4rem;
+}
+
+.drillnav-card ul {
+	margin: 0.5rem 0;
+	padding-left: 0;
+	list-style: none;
+}
+
+.drillnav-card ul li {
+	margin-bottom: 0.3rem;
+}
+
+.drillnav-card--pro {
+	border-color: #f0b429;
+	background:   #fffbf0;
+}
+
+.drillnav-pro-badge,
+.drillnav-pro-badge-inline {
+	display:        inline-block;
+	padding:        0.15em 0.45em;
+	background:     #f0b429;
+	color:          #000;
+	border-radius:  3px;
+	font-size:      0.65em;
+	font-weight:    700;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	vertical-align: middle;
+}
+
+/* WooCommerce attribute filter rules table */
+.drillnav-filter-table {
+	margin-bottom: .5rem;
+	table-layout:  fixed;
+}
+
+.drillnav-filter-table th,
+.drillnav-filter-table td {
+	padding: .4rem .6rem;
+	vertical-align: middle;
+}
+
+.drillnav-filter-table th:last-child,
+.drillnav-filter-table td:last-child {
+	width:      2.5rem;
+	text-align: center;
+}
+
+.drillnav-filter-taxonomy,
+.drillnav-filter-action {
+	max-width: 100%;
+}
+
+.drillnav-filter-term {
+	max-width: 100%;
+}
+
+.drillnav-remove-rule {
+	font-size: 1.2em;
+	color:     #b32d2e;
+	line-height: 1;
+	padding:   0 .25rem;
+}
+
+.drillnav-remove-rule:hover {
+	color: #8a0000;
+}
+
+/* Cache notice */
+.drillnav-notice {
+	display:       inline-block;
+	padding:       0.4rem 0.75rem;
+	border-radius: 3px;
+	font-size:     0.9em;
+}
+
+.drillnav-notice--success {
+	background: #d4edda;
+	color:      #155724;
+}
+
+.drillnav-notice--error {
+	background: #f8d7da;
+	color:      #721c24;
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+	.drillnav-settings-layout {
+		flex-direction: column;
+	}
+
+	.drillnav-settings-sidebar {
+		width: 100%;
+	}
+}
