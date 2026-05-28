@@ -58,6 +58,7 @@ class Navigator {
 				'custom_color_arrow'      => (string) ( $this->settings->get( 'custom_color_arrow' ) ?? '' ),
 				'search_filter'           => (bool) ( $this->settings->get( 'search_filter' ) ?? false ),
 				'accordion_lazy'          => (bool) ( $this->settings->get( 'accordion_lazy' ) ?? false ),
+				'menu_id'                 => (int) ( $this->settings->get( 'menu_id' ) ?? 0 ),
 			)
 		);
 
@@ -122,7 +123,7 @@ class Navigator {
 		 */
 		$data = (array) apply_filters( 'drillnav_nav_items', $data, $args );
 
-		if ( 'accordion' === $args['layout'] ) {
+		if ( 'accordion' === $args['layout'] && ! isset( $data['tree'] ) ) {
 			$data['tree'] = $this->get_subtree( 0, $args );
 		}
 

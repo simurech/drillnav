@@ -132,6 +132,7 @@ class Shortcode {
 				'style_preset'          => '',
 				'search_filter'         => '',
 				'accordion_lazy'        => '',
+				'menu_id'               => '',
 			),
 			$atts,
 			'drillnav'
@@ -185,6 +186,9 @@ class Shortcode {
 		}
 		if ( '' !== $atts['accordion_lazy'] ) {
 			$args['accordion_lazy'] = in_array( strtolower( $atts['accordion_lazy'] ), array( 'yes', '1', 'true' ), true );
+		}
+		if ( '' !== $atts['menu_id'] ) {
+			$args['menu_id'] = absint( $atts['menu_id'] );
 		}
 
 		return $args;

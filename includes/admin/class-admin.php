@@ -237,6 +237,18 @@ class Admin {
 			)
 		);
 
+		add_settings_field(
+			'menu_id',
+			__( 'Navigation menu source', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			array( $this, 'field_menu_select' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_general',
+			array(
+				'key'  => 'menu_id',
+				'help' => __( 'Use a WordPress navigation menu instead of the page hierarchy. Pairs with WooCommerce for hybrid menus (product categories added automatically as sub-items). Can be overridden per block or shortcode.', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
 		// --- Appearance section ---
 		add_settings_section(
 			'drillnav_appearance',
@@ -1006,6 +1018,39 @@ class Admin {
 		);
 		if ( ! empty( $args['description'] ) ) {
 			printf( '<p class="description">%s</p>', esc_html( $args['description'] ) );
+		}
+	}
+
+	/** @param array<string,mixed> $args */
+	public function field_menu_select( array $args ): void {
+		if ( ! $this->is_pro_active() ) {
+			echo '<select disabled><option>' . esc_html__( '— Page hierarchy (default) —', 'drillnav-drilldown-navigation' ) . '</option></select>';
+			echo '<p class="description">' . esc_html__( 'Available in DrillNav Pro.', 'drillnav-drilldown-navigation' ) . '</p>';
+			return;
+		}
+
+		$saved   = (int) $this->settings->get( 'menu_id' );
+		$all     = wp_get_nav_menus();
+		$id      = 'drillnav_menu_id';
+		printf( '<select id="%s" name="drillnav_settings[menu_id]">', esc_attr( $id ) );
+		printf(
+			'<option value="0"%s>%s</option>',
+			selected( $saved, 0, false ),
+			esc_html__( '— Page hierarchy (default) —', 'drillnav-drilldown-navigation' )
+		);
+		if ( is_array( $all ) ) {
+			foreach ( $all as $menu ) {
+				printf(
+					'<option value="%d"%s>%s</option>',
+					(int) $menu->term_id,
+					selected( $saved, (int) $menu->term_id, false ),
+					esc_html( $menu->name )
+				);
+			}
+		}
+		echo '</select>';
+		if ( ! empty( $args['help'] ) ) {
+			printf( '<p class="description">%s</p>', esc_html( $args['help'] ) );
 		}
 	}
 

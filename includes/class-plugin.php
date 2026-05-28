@@ -104,6 +104,10 @@ final class Plugin {
 			// General hierarchical taxonomy navigation.
 			$taxonomy = new Integrations\Taxonomy( $this->navigator, $this->cache, $this->settings );
 			$taxonomy->register( $this->loader );
+
+			// WP nav-menu as navigation source (+ Hybrid WooCommerce mode).
+			$menu = new Integrations\Menu( $this->cache, $this->settings );
+			$menu->register( $this->loader );
 		}
 
 		// WooCommerce Pro integration.

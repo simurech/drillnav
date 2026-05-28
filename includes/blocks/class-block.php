@@ -199,7 +199,7 @@ class Block {
 		if ( isset( $attributes['animation'] ) && in_array( $attributes['animation'], array( 'slide', 'fade', 'none' ), true ) ) {
 			$args['animation'] = $attributes['animation'];
 		}
-		if ( isset( $attributes['colorScheme'] ) && in_array( $attributes['colorScheme'], array( 'default', 'light', 'dark' ), true ) ) {
+		if ( isset( $attributes['colorScheme'] ) && in_array( $attributes['colorScheme'], array( 'default', 'auto', 'light', 'dark' ), true ) ) {
 			$args['color_scheme'] = $attributes['colorScheme'];
 		}
 		if ( isset( $attributes['mobileToggle'] ) ) {
@@ -240,6 +240,9 @@ class Block {
 		}
 		if ( isset( $attributes['accordionLazy'] ) ) {
 			$args['accordion_lazy'] = (bool) $attributes['accordionLazy'];
+		}
+		if ( isset( $attributes['menuId'] ) && (int) $attributes['menuId'] > 0 ) {
+			$args['menu_id'] = (int) $attributes['menuId'];
 		}
 
 		return $args;

@@ -88,6 +88,9 @@ class Settings {
 			'tracking_event_accordion'      => true,
 			'tracking_event_accordion_name' => 'drillnav_accordion',
 
+			// WP Menu as navigation source (Pro). 0 = use page hierarchy.
+			'menu_id'               => 0,
+
 			// WooCommerce Pro – product attribute filters.
 			// Each entry: ['taxonomy' => 'pa_brand', 'term_id' => 15, 'action' => 'exclude']
 			'woo_attribute_filters' => array(),
@@ -218,6 +221,8 @@ class Settings {
 		$clean['tracking_event_back_name']      = sanitize_key( $raw['tracking_event_back_name'] ?? '' ) ?: 'drillnav_back';
 		$clean['tracking_event_accordion']      = ! empty( $raw['tracking_event_accordion'] );
 		$clean['tracking_event_accordion_name'] = sanitize_key( $raw['tracking_event_accordion_name'] ?? '' ) ?: 'drillnav_accordion';
+
+		$clean['menu_id'] = absint( $raw['menu_id'] ?? 0 );
 
 		// WooCommerce Pro – attribute filter rules.
 		$raw_filters = is_array( $raw['woo_attribute_filters'] ?? null ) ? $raw['woo_attribute_filters'] : array();

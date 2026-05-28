@@ -12,7 +12,7 @@
 	'use strict';
 
 	const { registerBlockType }                = wp.blocks;
-	const { createElement: el, Fragment }      = wp.element;
+	const { createElement: el, Fragment, useState, useEffect } = wp.element;
 	const { InspectorControls, useBlockProps } = wp.blockEditor;
 	const ServerSideRender                     = wp.serverSideRender;
 	const {
@@ -85,7 +85,17 @@
 				customColorArrow,
 				searchFilter,
 				accordionLazy,
+				menuId,
 			} = attributes;
+
+			// Fetch WP nav menus for the Navigation Source selector (Pro).
+			const [ menus, setMenus ] = useState( [] );
+			useEffect( () => {
+				if ( ! isPro ) { return; }
+				wp.apiFetch( { path: '/wp/v2/menus?per_page=100' } )
+					.then( ( data ) => { if ( Array.isArray( data ) ) { setMenus( data ); } } )
+					.catch( () => {} );
+			}, [] );
 
 			const isPro = typeof drillnavBlock !== 'undefined' && drillnavBlock.isPro;
 
@@ -390,6 +400,48 @@
 							},
 							el( 'span', null,
 								__( 'Granular styling options are available in ', 'drillnav-drilldown-navigation' ),
+								el( 'strong', null, __( 'DrillNav Pro', 'drillnav-drilldown-navigation' ) ),
+								'. ',
+								el( 'a',
+									{
+										href:   ( typeof drillnavBlock !== 'undefined' && drillnavBlock.upgradeUrl ) ? drillnavBlock.upgradeUrl : '#',
+										target: '_blank',
+									},
+									__( 'Learn more →', 'drillnav-drilldown-navigation' )
+								)
+							)
+						  )
+				),
+
+				/* --- Navigation Source (Pro) --- */
+				el( PanelBody,
+					{
+						title: el( Fragment, null,
+							__( 'Navigation Source', 'drillnav-drilldown-navigation' ),
+							el( ProBadge )
+						),
+						initialOpen: false,
+					},
+					isPro
+						? el( PanelRow, null,
+							el( SelectControl, {
+								label:    __( 'Use WP menu as source', 'drillnav-drilldown-navigation' ),
+								help:     __( 'Replace the page hierarchy with a WordPress nav menu. Hybrid: WooCommerce product-category items gain sub-categories automatically.', 'drillnav-drilldown-navigation' ),
+								value:    String( menuId || 0 ),
+								options:  [
+									{ label: __( '— Page hierarchy (default) —', 'drillnav-drilldown-navigation' ), value: '0' },
+									...menus.map( ( m ) => ( { label: m.name, value: String( m.id ) } ) ),
+								],
+								onChange: ( val ) => setAttributes( { menuId: parseInt( val, 10 ) || 0 } ),
+							} )
+						)
+						: el( Notice,
+							{
+								status:        'info',
+								isDismissible: false,
+							},
+							el( 'span', null,
+								__( 'Using a WP navigation menu as the data source requires ', 'drillnav-drilldown-navigation' ),
 								el( 'strong', null, __( 'DrillNav Pro', 'drillnav-drilldown-navigation' ) ),
 								'. ',
 								el( 'a',

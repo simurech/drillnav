@@ -123,6 +123,10 @@
 		"accordionLazy": {
 			"type": "boolean",
 			"default": false
+		},
+		"menuId": {
+			"type": "integer",
+			"default": 0
 		}
 	},
 	"example": {}
