@@ -100,6 +100,10 @@ final class Plugin {
 			// Per-page icon & badge meta box.
 			$item_meta = new Admin\ItemMeta();
 			$item_meta->register( $this->loader );
+
+			// General hierarchical taxonomy navigation.
+			$taxonomy = new Integrations\Taxonomy( $this->navigator, $this->cache, $this->settings );
+			$taxonomy->register( $this->loader );
 		}
 
 		// WooCommerce Pro integration.
