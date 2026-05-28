@@ -41,6 +41,8 @@ class Settings {
 			// Accessibility.
 			'nav_label'          => '', // Empty = default translated string.
 
+			'style_preset'       => 'default', // 'default' | 'compact' | 'comfortable' | 'cards' (Pro).
+
 			// Advanced.
 			'post_types'         => array( 'page' ), // Which post types to navigate.
 			'load_css'           => true,
@@ -132,6 +134,9 @@ class Settings {
 		$clean['load_a11y_css'] = ! empty( $raw['load_a11y_css'] );
 		$clean['color_scheme']  = in_array( $raw['color_scheme'] ?? '', array( 'default', 'light', 'dark' ), true )
 			? $raw['color_scheme']
+			: 'default';
+		$clean['style_preset']  = in_array( $raw['style_preset'] ?? '', array( 'default', 'compact', 'comfortable', 'cards' ), true )
+			? $raw['style_preset']
 			: 'default';
 
 		// Blog settings.

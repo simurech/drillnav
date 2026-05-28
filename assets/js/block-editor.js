@@ -72,6 +72,16 @@
 				postType,
 				maxWidth,
 				multipleBackButtons,
+				stylePreset,
+				customFontSize,
+				customPaddingY,
+				customPaddingX,
+				customBorderRadius,
+				customTransitionSpeed,
+				customColorLink,
+				customColorCurrentBg,
+				customColorHover,
+				customColorArrow,
 			} = attributes;
 
 			const isPro = typeof drillnavBlock !== 'undefined' && drillnavBlock.isPro;
@@ -115,6 +125,45 @@
 							onChange: ( val ) => setAttributes( { depth: val } ),
 						} )
 					),
+				),
+
+				/* --- Style preset --- */
+				el( PanelBody,
+					{
+						title:       __( 'Style preset', 'drillnav-drilldown-navigation' ),
+						initialOpen: false,
+					},
+					el( PanelRow, null,
+						el( SelectControl, {
+							label:    __( 'Preset', 'drillnav-drilldown-navigation' ),
+							value:    stylePreset,
+							options:  [
+								{ label: __( 'Default', 'drillnav-drilldown-navigation' ),       value: 'default'     },
+								{ label: __( 'Compact', 'drillnav-drilldown-navigation' ),       value: 'compact'     },
+								{ label: __( 'Comfortable', 'drillnav-drilldown-navigation' ),   value: 'comfortable' },
+								{ label: __( 'Cards (Pro)', 'drillnav-drilldown-navigation' ),   value: 'cards'       },
+							],
+							onChange: ( val ) => setAttributes( { stylePreset: val } ),
+						} )
+					),
+					stylePreset === 'cards' && ! isPro && el( Notice,
+						{
+							status:        'warning',
+							isDismissible: false,
+						},
+						el( 'span', null,
+							__( 'The Cards preset requires ', 'drillnav-drilldown-navigation' ),
+							el( 'strong', null, __( 'DrillNav Pro', 'drillnav-drilldown-navigation' ) ),
+							'. ',
+							el( 'a',
+								{
+									href:   ( typeof drillnavBlock !== 'undefined' && drillnavBlock.upgradeUrl ) ? drillnavBlock.upgradeUrl : '#',
+									target: '_blank',
+								},
+								__( 'Upgrade →', 'drillnav-drilldown-navigation' )
+							)
+						)
+					)
 				),
 
 				/* --- Display --- */
@@ -187,6 +236,110 @@
 							onChange: ( val ) => setAttributes( { mobileToggle: val } ),
 						} )
 					),
+				),
+
+				/* --- Customize (Pro) --- */
+				el( PanelBody,
+					{
+						title: el( Fragment, null,
+							__( 'Customize', 'drillnav-drilldown-navigation' ),
+							el( ProBadge )
+						),
+						initialOpen: false,
+					},
+					isPro
+						? el( Fragment, null,
+							el( PanelRow, null,
+								el( TextControl, {
+									label:       __( 'Font size', 'drillnav-drilldown-navigation' ),
+									value:       customFontSize,
+									onChange:    ( val ) => setAttributes( { customFontSize: val } ),
+									placeholder: '1rem',
+								} )
+							),
+							el( PanelRow, null,
+								el( TextControl, {
+									label:       __( 'Padding top/bottom', 'drillnav-drilldown-navigation' ),
+									value:       customPaddingY,
+									onChange:    ( val ) => setAttributes( { customPaddingY: val } ),
+									placeholder: '0.5rem',
+								} )
+							),
+							el( PanelRow, null,
+								el( TextControl, {
+									label:       __( 'Padding left/right', 'drillnav-drilldown-navigation' ),
+									value:       customPaddingX,
+									onChange:    ( val ) => setAttributes( { customPaddingX: val } ),
+									placeholder: '0.75rem',
+								} )
+							),
+							el( PanelRow, null,
+								el( TextControl, {
+									label:       __( 'Border radius', 'drillnav-drilldown-navigation' ),
+									value:       customBorderRadius,
+									onChange:    ( val ) => setAttributes( { customBorderRadius: val } ),
+									placeholder: '4px',
+								} )
+							),
+							el( PanelRow, null,
+								el( TextControl, {
+									label:       __( 'Transition speed', 'drillnav-drilldown-navigation' ),
+									value:       customTransitionSpeed,
+									onChange:    ( val ) => setAttributes( { customTransitionSpeed: val } ),
+									placeholder: '200ms',
+								} )
+							),
+							el( PanelRow, null,
+								el( TextControl, {
+									label:       __( 'Link colour', 'drillnav-drilldown-navigation' ),
+									value:       customColorLink,
+									onChange:    ( val ) => setAttributes( { customColorLink: val } ),
+									placeholder: 'inherit',
+								} )
+							),
+							el( PanelRow, null,
+								el( TextControl, {
+									label:       __( 'Current item background', 'drillnav-drilldown-navigation' ),
+									value:       customColorCurrentBg,
+									onChange:    ( val ) => setAttributes( { customColorCurrentBg: val } ),
+									placeholder: 'rgba(0,0,0,0.06)',
+								} )
+							),
+							el( PanelRow, null,
+								el( TextControl, {
+									label:       __( 'Hover background', 'drillnav-drilldown-navigation' ),
+									value:       customColorHover,
+									onChange:    ( val ) => setAttributes( { customColorHover: val } ),
+									placeholder: 'rgba(0,0,0,0.08)',
+								} )
+							),
+							el( PanelRow, null,
+								el( TextControl, {
+									label:       __( 'Arrow colour', 'drillnav-drilldown-navigation' ),
+									value:       customColorArrow,
+									onChange:    ( val ) => setAttributes( { customColorArrow: val } ),
+									placeholder: 'rgba(0,0,0,0.4)',
+								} )
+							)
+						  )
+						: el( Notice,
+							{
+								status:        'info',
+								isDismissible: false,
+							},
+							el( 'span', null,
+								__( 'Granular styling options are available in ', 'drillnav-drilldown-navigation' ),
+								el( 'strong', null, __( 'DrillNav Pro', 'drillnav-drilldown-navigation' ) ),
+								'. ',
+								el( 'a',
+									{
+										href:   ( typeof drillnavBlock !== 'undefined' && drillnavBlock.upgradeUrl ) ? drillnavBlock.upgradeUrl : '#',
+										target: '_blank',
+									},
+									__( 'Learn more →', 'drillnav-drilldown-navigation' )
+								)
+							)
+						  )
 				),
 
 				/* --- WooCommerce (Pro) --- */

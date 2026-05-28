@@ -211,6 +211,26 @@ class Block {
 		if ( isset( $attributes['multipleBackButtons'] ) ) {
 			$args['multiple_back_buttons'] = (bool) $attributes['multipleBackButtons'];
 		}
+		if ( isset( $attributes['stylePreset'] ) && in_array( $attributes['stylePreset'], array( 'default', 'compact', 'comfortable', 'cards' ), true ) ) {
+			$args['style_preset'] = sanitize_key( (string) $attributes['stylePreset'] );
+		}
+
+		$granular_map = array(
+			'customFontSize'        => 'custom_font_size',
+			'customPaddingY'        => 'custom_padding_y',
+			'customPaddingX'        => 'custom_padding_x',
+			'customBorderRadius'    => 'custom_border_radius',
+			'customTransitionSpeed' => 'custom_transition_speed',
+			'customColorLink'       => 'custom_color_link',
+			'customColorCurrentBg'  => 'custom_color_current_bg',
+			'customColorHover'      => 'custom_color_hover',
+			'customColorArrow'      => 'custom_color_arrow',
+		);
+		foreach ( $granular_map as $camel => $snake ) {
+			if ( isset( $attributes[ $camel ] ) && '' !== $attributes[ $camel ] ) {
+				$args[ $snake ] = sanitize_text_field( (string) $attributes[ $camel ] );
+			}
+		}
 
 		return $args;
 	}

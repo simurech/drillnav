@@ -294,6 +294,24 @@ class Admin {
 			)
 		);
 
+		add_settings_field(
+			'style_preset',
+			__( 'Style preset', 'drillnav-drilldown-navigation' ),
+			array( $this, 'field_select' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_appearance',
+			array(
+				'key'     => 'style_preset',
+				'options' => array(
+					'default'     => __( 'Default', 'drillnav-drilldown-navigation' ),
+					'compact'     => __( 'Compact', 'drillnav-drilldown-navigation' ),
+					'comfortable' => __( 'Comfortable', 'drillnav-drilldown-navigation' ),
+					'cards'       => __( 'Cards (Pro)', 'drillnav-drilldown-navigation' ),
+				),
+				'help'    => __( 'Controls spacing and visual density. "Cards" requires DrillNav Pro.', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
 		// --- Accessibility section ---
 		add_settings_section(
 			'drillnav_accessibility',

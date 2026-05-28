@@ -66,6 +66,45 @@
 }
 
 /* =========================================================================
+   Style Presets
+   ========================================================================= */
+
+.drillnav--preset-compact {
+	--drillnav-font-size:        0.875rem;
+	--drillnav-item-padding-y:   0.3rem;
+	--drillnav-item-padding-x:   0.5rem;
+	--drillnav-border-radius:    2px;
+}
+
+.drillnav--preset-comfortable {
+	--drillnav-item-padding-y:   0.75rem;
+	--drillnav-item-padding-x:   1rem;
+	--drillnav-border-radius:    6px;
+}
+
+/* Pro preset */
+.drillnav--preset-cards {
+	--drillnav-border-radius:    8px;
+	--drillnav-item-padding-y:   0.625rem;
+	--drillnav-item-padding-x:   0.875rem;
+}
+
+.drillnav.drillnav--preset-cards .drillnav__item + .drillnav__item {
+	margin-top: 0.375rem;
+}
+
+.drillnav.drillnav--preset-cards .drillnav__row {
+	border:        1px solid var(--drillnav-color-border);
+	border-radius: var(--drillnav-border-radius);
+	overflow:      hidden;
+}
+
+.drillnav.drillnav--preset-cards .drillnav__link,
+.drillnav.drillnav--preset-cards .drillnav__expand-btn {
+	background: var(--drillnav-color-current-bg);
+}
+
+/* =========================================================================
    Base Reset
    ========================================================================= */
 

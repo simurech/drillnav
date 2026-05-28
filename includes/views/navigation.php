@@ -21,7 +21,6 @@ $settings        = $nav_data['settings'] ?? array();
 $show_back       = ! empty( $settings['show_back'] );
 $animation       = (string) ( $settings['animation'] ?? 'slide' );
 $color_scheme    = (string) ( $settings['color_scheme'] ?? 'default' );
-$max_width       = (string) ( $settings['max_width'] ?? '' );
 $ancestors       = $nav_data['ancestors'] ?? array();
 $current_level   = $nav_data['current_level'] ?? array();
 $current_post_id = (int) ( $nav_data['post_id'] ?? 0 );
@@ -34,14 +33,47 @@ $nav_label = ! empty( $settings['nav_label'] )
 	/* translators: ARIA label for the contextual page navigation landmark. */
 	: __( 'Page navigation', 'drillnav-drilldown-navigation' );
 
+// Style preset – Cards requires Pro; fall back to default silently.
+$style_preset  = (string) ( $settings['style_preset'] ?? 'default' );
+$pro_presets   = array( 'cards' );
+$is_pro_active = function_exists( 'drillnav_fs' ) && drillnav_fs()->can_use_premium_code__premium_only();
+if ( in_array( $style_preset, $pro_presets, true ) && ! $is_pro_active ) {
+	$style_preset = 'default';
+}
+
 // Build nav element CSS classes.
 $nav_classes = array( 'drillnav' );
 if ( 'default' !== $color_scheme ) {
 	$nav_classes[] = 'drillnav--scheme-' . $color_scheme;
 }
+if ( 'default' !== $style_preset ) {
+	$nav_classes[] = 'drillnav--preset-' . esc_attr( $style_preset );
+}
 if ( $mobile_toggle ) {
 	$nav_classes[] = 'drillnav--drawer-nav';
 }
+
+// Build inline style from CSS custom properties.
+$css_prop_map = array(
+	'max_width'              => '--drillnav-max-width',
+	'custom_font_size'       => '--drillnav-font-size',
+	'custom_padding_y'       => '--drillnav-item-padding-y',
+	'custom_padding_x'       => '--drillnav-item-padding-x',
+	'custom_border_radius'   => '--drillnav-border-radius',
+	'custom_transition_speed' => '--drillnav-transition-speed',
+	'custom_color_link'      => '--drillnav-color-link',
+	'custom_color_current_bg' => '--drillnav-color-current-bg',
+	'custom_color_hover'     => '--drillnav-color-btn-hover',
+	'custom_color_arrow'     => '--drillnav-color-arrow',
+);
+$style_parts = array();
+foreach ( $css_prop_map as $setting_key => $css_var ) {
+	$val = (string) ( $settings[ $setting_key ] ?? '' );
+	if ( '' !== $val ) {
+		$style_parts[] = $css_var . ': ' . esc_attr( $val );
+	}
+}
+$nav_style_attr = $style_parts ? ' style="' . implode( '; ', $style_parts ) . '"' : '';
 
 // Embed the full nav data as JSON for the JS layer.
 $json_data = wp_json_encode(
@@ -77,9 +109,7 @@ $json_data = wp_json_encode(
 	aria-label="<?php echo esc_attr( $nav_label ); ?>"
 	data-drillnav-instance="<?php echo esc_attr( $instance ); ?>"
 	data-drillnav-animation="<?php echo esc_attr( $animation ); ?>"
-	<?php if ( $max_width ) : ?>
-	style="--drillnav-max-width: <?php echo esc_attr( $max_width ); ?>"
-	<?php endif; ?>
+	<?php echo $nav_style_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above via esc_attr. ?>
 >
 	<?php // Hidden JSON data payload – read by frontend.js. ?>
 	<script type="application/json" id="<?php echo esc_attr( $instance ); ?>-data">

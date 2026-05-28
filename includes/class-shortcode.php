@@ -103,6 +103,7 @@ class Shortcode {
 				'mobile_toggle' => '',
 				'max_width'             => '',
 				'multiple_back_buttons' => '',
+				'style_preset'          => '',
 			),
 			$atts,
 			'drillnav'
@@ -144,6 +145,9 @@ class Shortcode {
 		}
 		if ( '' !== $atts['multiple_back_buttons'] ) {
 			$args['multiple_back_buttons'] = in_array( strtolower( $atts['multiple_back_buttons'] ), array( 'yes', '1', 'true' ), true );
+		}
+		if ( '' !== $atts['style_preset'] ) {
+			$args['style_preset'] = sanitize_key( $atts['style_preset'] );
 		}
 
 		return $args;
