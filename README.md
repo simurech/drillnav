@@ -238,9 +238,9 @@ No JavaScript changes required — RTL is handled entirely in CSS.
 
 ## Roadmap
 
-| Feature | Version | Tier |
-|---|---|---|
-| WooCommerce attribute-based filtering improvements | v1.6.0 | Pro |
+| Feature | Tier |
+|---|---|
+| WooCommerce attribute-based filtering improvements | Pro |
 
 ---
 
