@@ -58,7 +58,7 @@
 		"colorScheme": {
 			"type": "string",
 			"default": "default",
-			"enum": ["default", "light", "dark"]
+			"enum": ["default", "auto", "light", "dark"]
 		},
 		"mobileToggle": {
 			"type": "boolean",

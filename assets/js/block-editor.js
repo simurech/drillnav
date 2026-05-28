@@ -256,6 +256,7 @@
 							value:    colorScheme,
 							options:  [
 								{ label: __( 'Default (inherits from theme)', 'drillnav-drilldown-navigation' ), value: 'default' },
+								{ label: __( 'Auto (follows OS preference)', 'drillnav-drilldown-navigation' ),  value: 'auto'    },
 								{ label: __( 'Light', 'drillnav-drilldown-navigation' ),                        value: 'light'   },
 								{ label: __( 'Dark', 'drillnav-drilldown-navigation' ),                        value: 'dark'    },
 							],

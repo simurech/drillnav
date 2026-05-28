@@ -153,7 +153,7 @@ class Settings {
 
 		$clean['load_css']      = ! empty( $raw['load_css'] );
 		$clean['load_a11y_css'] = ! empty( $raw['load_a11y_css'] );
-		$clean['color_scheme']  = in_array( $raw['color_scheme'] ?? '', array( 'default', 'light', 'dark' ), true )
+		$clean['color_scheme']  = in_array( $raw['color_scheme'] ?? '', array( 'default', 'light', 'dark', 'auto' ), true )
 			? $raw['color_scheme']
 			: 'default';
 		$clean['layout']        = in_array( $raw['layout'] ?? '', array( 'list', 'horizontal', 'accordion', 'mega' ), true )

@@ -65,6 +65,35 @@
 	padding: 0.5rem;
 }
 
+/* Auto: mirrors light/dark scheme based on OS preference. */
+.drillnav--scheme-auto {
+	--drillnav-color-bg:         #ffffff;
+	--drillnav-color-text:       #1a1a1a;
+	--drillnav-color-link:       #1a1a1a;
+	--drillnav-color-current:    #1a1a1a;
+	--drillnav-color-current-bg: rgba(0, 0, 0, 0.07);
+	--drillnav-color-border:     rgba(0, 0, 0, 0.12);
+	--drillnav-color-btn-hover:  rgba(0, 0, 0, 0.06);
+	--drillnav-color-arrow:      rgba(0, 0, 0, 0.45);
+	border: 1px solid var(--drillnav-color-border);
+	border-radius: var(--drillnav-border-radius);
+	padding: 0.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+	.drillnav--scheme-auto {
+		--drillnav-color-bg:         #1e1e2e;
+		--drillnav-color-text:       #e0e0e0;
+		--drillnav-color-link:       #e0e0e0;
+		--drillnav-color-current:    #ffffff;
+		--drillnav-color-current-bg: rgba(255, 255, 255, 0.12);
+		--drillnav-color-border:     rgba(255, 255, 255, 0.15);
+		--drillnav-color-btn-hover:  rgba(255, 255, 255, 0.08);
+		--drillnav-color-arrow:      rgba(255, 255, 255, 0.5);
+		border-color: var(--drillnav-color-border);
+	}
+}
+
 /* =========================================================================
    Style Presets
    ========================================================================= */

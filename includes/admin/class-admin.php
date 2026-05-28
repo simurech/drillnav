@@ -268,6 +268,7 @@ class Admin {
 				'key'     => 'color_scheme',
 				'options' => array(
 					'default' => __( 'Default (inherits theme)', 'drillnav-drilldown-navigation' ),
+					'auto'    => __( 'Auto (follows OS light/dark preference)', 'drillnav-drilldown-navigation' ),
 					'light'   => __( 'Light (white background)', 'drillnav-drilldown-navigation' ),
 					'dark'    => __( 'Dark (dark background)', 'drillnav-drilldown-navigation' ),
 				),
