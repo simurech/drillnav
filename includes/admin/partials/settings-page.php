@@ -36,6 +36,95 @@ $is_pro_active = function_exists( 'drillnav_fs' ) && drillnav_fs()->can_use_prem
 				?>
 			</form>
 
+			<?php
+			$preview_opts = get_option( 'drillnav_settings', \DrillNav\Settings::defaults() );
+			if ( ! is_array( $preview_opts ) ) {
+				$preview_opts = \DrillNav\Settings::defaults();
+			}
+			$pv_scheme    = sanitize_key( (string) ( $preview_opts['color_scheme'] ?? 'default' ) );
+			$pv_layout    = sanitize_key( (string) ( $preview_opts['layout'] ?? 'list' ) );
+			$pv_preset    = sanitize_key( (string) ( $preview_opts['style_preset'] ?? 'default' ) );
+			$pv_show_back = ! empty( $preview_opts['show_back_button'] );
+			$pv_classes   = array( 'drillnav' );
+			if ( 'default' !== $pv_scheme ) {
+				$pv_classes[] = 'drillnav--scheme-' . $pv_scheme;
+			}
+			if ( 'default' !== $pv_preset ) {
+				$pv_classes[] = 'drillnav--preset-' . $pv_preset;
+			}
+			if ( 'list' !== $pv_layout ) {
+				$pv_classes[] = 'drillnav--layout-' . $pv_layout;
+			}
+			$pv_css_map = array(
+				'max_width'               => '--drillnav-max-width',
+				'custom_font_size'        => '--drillnav-font-size',
+				'custom_padding_y'        => '--drillnav-item-padding-y',
+				'custom_padding_x'        => '--drillnav-item-padding-x',
+				'custom_border_radius'    => '--drillnav-border-radius',
+				'custom_transition_speed' => '--drillnav-transition-speed',
+				'custom_color_link'       => '--drillnav-color-link',
+				'custom_color_current_bg' => '--drillnav-color-current-bg',
+				'custom_color_hover'      => '--drillnav-color-btn-hover',
+				'custom_color_arrow'      => '--drillnav-color-arrow',
+			);
+			$pv_style_parts = array();
+			foreach ( $pv_css_map as $setting_key => $css_var ) {
+				$val = sanitize_text_field( (string) ( $preview_opts[ $setting_key ] ?? '' ) );
+				if ( '' !== $val ) {
+					$pv_style_parts[] = esc_attr( $css_var ) . ':' . esc_attr( $val );
+				}
+			}
+			$pv_style_attr = $pv_style_parts ? ' style="' . implode( ';', $pv_style_parts ) . '"' : '';
+			?>
+
+			<hr>
+
+			<h2><?php esc_html_e( 'Live preview', 'drillnav-drilldown-navigation' ); ?></h2>
+			<p class="description"><?php esc_html_e( 'Changes to colour scheme, layout, style preset, max width, and custom CSS properties are reflected here instantly – no save required.', 'drillnav-drilldown-navigation' ); ?></p>
+
+			<div class="drillnav-preview-stage">
+				<nav
+					class="<?php echo esc_attr( implode( ' ', $pv_classes ) ); ?>"
+					id="drillnav-settings-preview"
+					aria-hidden="true"
+					aria-label="preview"
+					<?php echo $pv_style_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above. ?>
+				>
+					<div class="drillnav__back-wrap"<?php echo $pv_show_back ? '' : ' hidden'; ?>>
+						<a href="#" class="drillnav__back-btn" tabindex="-1">
+							<span class="drillnav__back-arrow" aria-hidden="true">←</span>
+							<span class="drillnav__back-label"><?php esc_html_e( 'Parent page', 'drillnav-drilldown-navigation' ); ?></span>
+						</a>
+					</div>
+					<div class="drillnav__panel">
+						<ul class="drillnav__list" role="list">
+							<li class="drillnav__item drillnav__item--has-children" role="listitem">
+								<div class="drillnav__row">
+									<a href="#" class="drillnav__link" tabindex="-1"><?php esc_html_e( 'Services', 'drillnav-drilldown-navigation' ); ?></a>
+									<button type="button" class="drillnav__expand-btn" tabindex="-1" aria-label="<?php esc_attr_e( 'Show sub-pages of Services', 'drillnav-drilldown-navigation' ); ?>"><span class="drillnav__arrow" aria-hidden="true">›</span></button>
+								</div>
+							</li>
+							<li class="drillnav__item drillnav__item--current drillnav__item--has-children" role="listitem">
+								<div class="drillnav__row">
+									<a href="#" class="drillnav__link" aria-current="page" tabindex="-1"><?php esc_html_e( 'About Us', 'drillnav-drilldown-navigation' ); ?></a>
+									<button type="button" class="drillnav__expand-btn" tabindex="-1"><span class="drillnav__arrow" aria-hidden="true">›</span></button>
+								</div>
+							</li>
+							<li class="drillnav__item" role="listitem">
+								<div class="drillnav__row">
+									<a href="#" class="drillnav__link" tabindex="-1"><?php esc_html_e( 'Portfolio', 'drillnav-drilldown-navigation' ); ?></a>
+								</div>
+							</li>
+							<li class="drillnav__item" role="listitem">
+								<div class="drillnav__row">
+									<a href="#" class="drillnav__link" tabindex="-1"><?php esc_html_e( 'Contact', 'drillnav-drilldown-navigation' ); ?></a>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</nav>
+			</div>
+
 			<hr>
 
 			<h2><?php esc_html_e( 'Cache', 'drillnav-drilldown-navigation' ); ?></h2>
@@ -113,6 +202,8 @@ $is_pro_active = function_exists( 'drillnav_fs' ) && drillnav_fs()->can_use_prem
 					<tr><td><code>drillnav_children_items</code></td><td><?php esc_html_e( 'Filters the list of child items for a given parent post.', 'drillnav-drilldown-navigation' ); ?></td></tr>
 					<tr><td><code>drillnav_current_context</code></td><td><?php esc_html_e( 'Filters the resolved page context (post ID, ancestors, post type).', 'drillnav-drilldown-navigation' ); ?></td></tr>
 					<tr><td><code>drillnav_cache_duration</code></td><td><?php esc_html_e( 'Filters the transient cache TTL in seconds (default: 604800 = 7 days).', 'drillnav-drilldown-navigation' ); ?></td></tr>
+					<tr><td><code>drillnav_item_classes</code></td><td><?php esc_html_e( 'Filters the CSS class array on each navigation item\'s &lt;li&gt; element. Arguments: $classes (string[]), $item (array), $layout (string).', 'drillnav-drilldown-navigation' ); ?></td></tr>
+					<tr><td><code>drillnav_item_attrs</code></td><td><?php esc_html_e( 'Adds custom HTML attributes to the item\'s &lt;a&gt; element. Return an associative array of attribute name → value. Arguments: $attrs (array), $item (array), $layout (string).', 'drillnav-drilldown-navigation' ); ?></td></tr>
 				</tbody>
 			</table>
 

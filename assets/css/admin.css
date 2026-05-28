@@ -135,6 +135,20 @@
 	color:      #721c24;
 }
 
+/* Live preview stage */
+.drillnav-preview-stage {
+	margin-top:    0.75rem;
+	padding:       1.5rem;
+	background:    #f6f7f7;
+	border:        1px solid #c3c4c7;
+	border-radius: 4px;
+	max-width:     420px;
+}
+
+.drillnav-preview-stage .drillnav--layout-accordion .drillnav__sublist {
+	max-height: 300px !important;
+}
+
 /* Responsive */
 @media (max-width: 960px) {
 	.drillnav-settings-layout {

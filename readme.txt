@@ -4,7 +4,7 @@ Tags:              navigation, contextual navigation, drilldown, page hierarchy,
 Requires at least: 6.3
 Tested up to:      7.0
 Requires PHP:      8.0
-Stable tag:        1.3.0
+Stable tag:        1.4.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,13 +25,17 @@ No configuration required. Place the block, add the shortcode, or drop in the wi
 = Key Features =
 
 * **Zero configuration** – works out of the box, adapts to any page hierarchy
-* **Gutenberg block** with live editor preview
+* **Gutenberg block** with live editor preview and five ready-made block variations in the inserter
 * **Shortcode** `[drillnav]` and **sidebar widget** for classic themes
 * **Unlimited depth** – works with any number of hierarchy levels
+* **Four layouts** – List (default), Horizontal, Accordion (Pro), Mega Grid (Pro)
+* **Style presets** – Default, Compact, Comfortable, Cards (Pro)
 * **Mobile hamburger toggle** – optional side-drawer mode for themes without an off-canvas menu
 * **Colour scheme presets** – Default (inherits theme), Light, and Dark, all customisable via CSS custom properties
+* **RTL support** – full right-to-left layout with mirrored animations and logical CSS properties
+* **Live settings preview** – see colour scheme, layout, and style changes instantly on the Settings page
 * **WCAG 2.1 AA accessible** – full keyboard navigation, correct ARIA attributes, automatic focus management after drill-down
-* **Blazing fast** – assets load only on pages where the navigation is used; 7-day intelligent caching with automatic cache invalidation
+* **Blazing fast** – assets load only on pages where the navigation is used; hover-preloading makes drill-down feel instant; 7-day intelligent caching with automatic cache invalidation
 * **No jQuery** – pure vanilla JavaScript, no bloat
 * **Developer-friendly** – filter hooks, REST API endpoint, CSS custom properties for easy theming
 * **Translation ready** – fully internationalised
@@ -85,7 +89,6 @@ DrillNav is built accessibility-first:
 ```php
 // Filter the navigation items before rendering
 add_filter( 'drillnav_nav_items', function( $data, $args ) {
-    // Modify $data['current_level'], $data['ancestors'], etc.
     return $data;
 }, 10, 2 );
 
@@ -93,6 +96,20 @@ add_filter( 'drillnav_nav_items', function( $data, $args ) {
 add_filter( 'drillnav_current_context', function( $context ) {
     return $context;
 } );
+
+// Add CSS classes to a navigation item's <li>
+add_filter( 'drillnav_item_classes', function( $classes, $item, $layout ) {
+    if ( $item['is_current'] ) {
+        $classes[] = 'my-active-item';
+    }
+    return $classes;
+}, 10, 3 );
+
+// Add HTML attributes to a navigation item's <a>
+add_filter( 'drillnav_item_attrs', function( $attrs, $item, $layout ) {
+    $attrs['data-post-id'] = $item['id'];
+    return $attrs;
+}, 10, 3 );
 
 // Adjust cache duration (default: 7 days)
 add_filter( 'drillnav_cache_duration', function( $seconds ) {
@@ -186,6 +203,24 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 
 == Changelog ==
 
+= 1.4.0 =
+* New: RTL support – logical CSS properties and mirrored slide animations for right-to-left layouts
+* New: Block variations – five ready-made variations in the block inserter (Horizontal, Compact, Dark, Accordion Pro, Mega Pro)
+* New: Item filter hooks – `drillnav_item_classes` and `drillnav_item_attrs` for per-item customisation
+* New: Hover-preloading – children fetched on hover so drill-down clicks feel instant
+* New: Live preview on the Settings page – colour scheme, layout, style preset, and custom CSS changes appear instantly
+* New: Global settings for mobile toggle and all nine Pro CSS custom properties (previously only settable per block instance)
+* Fix: Theme CSS compatibility – navigation links no longer inherit `text-decoration` from themes like Astra
+
+= 1.3.0 =
+* New: Layout option – Horizontal (Free), Accordion (Pro), Mega/CSS-Grid (Pro)
+* New: Accordion layout server-side renders the full page tree with JS-powered expand/collapse
+* New: Keyboard navigation – Escape closes the active accordion level
+
+= 1.2.0 =
+* New: Style presets – Compact, Comfortable, Cards (Pro)
+* New: Nine granular Pro styling options via CSS custom properties (font size, padding, colours, border radius, transition speed)
+
 = 1.1.0 =
 * New: WPML compatibility – navigation, cache keys, and blog page detection are now language-aware
 * New: Polylang compatibility – same language-aware behaviour via Polylang API
@@ -218,6 +253,9 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 * WordPress Coding Standards compliant
 
 == Upgrade Notice ==
+
+= 1.4.0 =
+No upgrade steps required. Global settings for `mobile_toggle` and custom CSS properties are now available in Settings > DrillNav.
 
 = 1.1.0 =
 No upgrade steps required. Cache is automatically cleared on upgrade.

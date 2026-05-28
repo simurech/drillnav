@@ -448,4 +448,61 @@
 		},
 	} );
 
+	/* ------------------------------------------------------------------
+	 * Block Variations
+	 * ----------------------------------------------------------------- */
+	const { registerBlockVariation } = wp.blocks;
+
+	const variations = [
+		{
+			name:        'drillnav-horizontal',
+			title:       __( 'Horizontal Navigation', 'drillnav-drilldown-navigation' ),
+			description: __( 'Navigation items arranged in a horizontal row.', 'drillnav-drilldown-navigation' ),
+			icon:        'align-wide',
+			attributes:  { layout: 'horizontal' },
+			scope:       [ 'inserter', 'transform' ],
+			isDefault:   false,
+		},
+		{
+			name:        'drillnav-compact',
+			title:       __( 'Compact List', 'drillnav-drilldown-navigation' ),
+			description: __( 'Smaller font and reduced padding for tight sidebar use.', 'drillnav-drilldown-navigation' ),
+			icon:        'list-view',
+			attributes:  { stylePreset: 'compact' },
+			scope:       [ 'inserter', 'transform' ],
+			isDefault:   false,
+		},
+		{
+			name:        'drillnav-dark',
+			title:       __( 'Dark Navigation', 'drillnav-drilldown-navigation' ),
+			description: __( 'Dark colour scheme – works on any background.', 'drillnav-drilldown-navigation' ),
+			icon:        'admin-appearance',
+			attributes:  { colorScheme: 'dark' },
+			scope:       [ 'inserter', 'transform' ],
+			isDefault:   false,
+		},
+		{
+			name:        'drillnav-accordion',
+			title:       __( 'Accordion (Pro)', 'drillnav-drilldown-navigation' ),
+			description: __( 'Full page tree with expandable levels. Requires DrillNav Pro.', 'drillnav-drilldown-navigation' ),
+			icon:        'menu-alt',
+			attributes:  { layout: 'accordion' },
+			scope:       [ 'inserter', 'transform' ],
+			isDefault:   false,
+		},
+		{
+			name:        'drillnav-mega',
+			title:       __( 'Mega Navigation (Pro)', 'drillnav-drilldown-navigation' ),
+			description: __( 'CSS-Grid multi-column layout. Requires DrillNav Pro.', 'drillnav-drilldown-navigation' ),
+			icon:        'grid-view',
+			attributes:  { layout: 'mega' },
+			scope:       [ 'inserter', 'transform' ],
+			isDefault:   false,
+		},
+	];
+
+	variations.forEach( function ( v ) {
+		registerBlockVariation( 'drillnav/contextual-nav', v );
+	} );
+
 } )();

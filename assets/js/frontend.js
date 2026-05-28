@@ -112,6 +112,7 @@
 
 			this.multipleBackButtons = !! ( this.data && this.data.settings && this.data.settings.multiple_back_buttons );
 			this.layout              = root.dataset.drillnavLayout || 'list';
+			this.preloadCache        = new Map();
 
 			this.panel = document.getElementById( this.instanceId + '-panel' );
 			if ( ! this.panel ) {
@@ -181,6 +182,27 @@
 					this._goBack();
 				}
 			} );
+
+			// Hover preloading: kick off a children fetch when user hovers an expand button.
+			this.root.addEventListener( 'mouseover', ( e ) => {
+				if ( this.layout === 'accordion' ) {
+					return;
+				}
+				const btn = e.target.closest( '[data-drillnav-item-id]' );
+				if ( ! btn || ! this.root.contains( btn ) ) {
+					return;
+				}
+				const key = btn.dataset.drillnavItemId + ':' + ( btn.dataset.drillnavItemType || 'page' );
+				if ( ! this.preloadCache.has( key ) ) {
+					this.preloadCache.set(
+						key,
+						fetchChildren(
+							parseInt( btn.dataset.drillnavItemId, 10 ),
+							btn.dataset.drillnavItemType || 'page'
+						).catch( () => null )
+					);
+				}
+			} );
 		}
 
 		/** @param {HTMLButtonElement} btn */
@@ -198,9 +220,18 @@
 			this.loading = true;
 			btn.disabled = true;
 
+			const cacheKey = postId + ':' + postType;
 			let children;
 			try {
-				children = await fetchChildren( postId, postType );
+				const preloaded = this.preloadCache.get( cacheKey );
+				if ( preloaded !== undefined ) {
+					children = await preloaded;
+					if ( children === null ) {
+						children = await fetchChildren( postId, postType );
+					}
+				} else {
+					children = await fetchChildren( postId, postType );
+				}
 			} catch ( err ) {
 				// eslint-disable-next-line no-console
 				console.warn( 'DrillNav: failed to load children', err );

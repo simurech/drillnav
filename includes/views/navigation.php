@@ -128,11 +128,21 @@ $json_data = wp_json_encode(
 		<?php echo $json_data; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_json_encode output is safe. ?>
 	</script>
 
+	<?php
+	$render_extra_attrs = static function( array $attrs ): void {
+		foreach ( $attrs as $attr_name => $attr_value ) {
+			if ( is_string( $attr_name ) && preg_match( '/^[a-z][a-z0-9\-_:]*$/i', $attr_name ) ) {
+				echo ' ' . esc_attr( $attr_name ) . '="' . esc_attr( (string) $attr_value ) . '"';
+			}
+		}
+	};
+	?>
+
 	<?php if ( 'accordion' === $layout ) : ?>
 	<?php
 	$tree         = $nav_data['tree'] ?? array();
 	$render_items = null;
-	$render_items = function( array $items ) use ( &$render_items, $current_post_id ): void {
+	$render_items = function( array $items ) use ( &$render_items, $current_post_id, $layout, $render_extra_attrs ): void {
 		foreach ( $items as $item ) {
 			$item_id      = (int) $item['id'];
 			$item_title   = (string) $item['title'];
@@ -147,12 +157,15 @@ $json_data = wp_json_encode(
 			if ( $has_children ) {
 				$li_classes[] = 'drillnav__item--has-children';
 			}
+			$li_classes  = (array) apply_filters( 'drillnav_item_classes', $li_classes, $item, $layout );
+			$extra_attrs = (array) apply_filters( 'drillnav_item_attrs', array(), $item, $layout );
 			?>
 			<li class="<?php echo esc_attr( implode( ' ', $li_classes ) ); ?>" role="listitem">
 				<div class="drillnav__row">
 					<a
 						href="<?php echo esc_url( $item_url ); ?>"
 						class="drillnav__link"
+						<?php $render_extra_attrs( $extra_attrs ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside helper. ?>
 						<?php if ( $is_current ) : ?>
 						aria-current="page"
 						<?php endif; ?>
@@ -231,12 +244,15 @@ $json_data = wp_json_encode(
 			if ( $has_children ) {
 				$li_classes[] = 'drillnav__item--has-children';
 			}
+			$li_classes  = (array) apply_filters( 'drillnav_item_classes', $li_classes, $item, $layout );
+			$extra_attrs = (array) apply_filters( 'drillnav_item_attrs', array(), $item, $layout );
 			?>
 			<li class="<?php echo esc_attr( implode( ' ', $li_classes ) ); ?>" role="listitem">
 				<div class="drillnav__row">
 					<a
 						href="<?php echo esc_url( $item_url ); ?>"
 						class="drillnav__link"
+						<?php $render_extra_attrs( $extra_attrs ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside helper. ?>
 						<?php if ( $is_current ) : ?>
 						aria-current="page"
 						<?php endif; ?>

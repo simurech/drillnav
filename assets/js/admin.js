@@ -55,6 +55,79 @@
 	}
 
 	/* ---------------------------------------------------------------
+	 * Live preview
+	 * ------------------------------------------------------------- */
+
+	const preview = document.getElementById( 'drillnav-settings-preview' );
+	if ( preview ) {
+		const SCHEME_PREFIX = 'drillnav--scheme-';
+		const LAYOUT_PREFIX = 'drillnav--layout-';
+		const PRESET_PREFIX = 'drillnav--preset-';
+
+		function applyClass( prefix, value ) {
+			preview.classList.forEach( function ( cls ) {
+				if ( cls.startsWith( prefix ) ) {
+					preview.classList.remove( cls );
+				}
+			} );
+			if ( value && value !== 'default' && value !== 'list' ) {
+				preview.classList.add( prefix + value );
+			}
+		}
+
+		function applyProp( prop, value ) {
+			if ( value ) {
+				preview.style.setProperty( prop, value );
+			} else {
+				preview.style.removeProperty( prop );
+			}
+		}
+
+		const schemeSelect  = document.getElementById( 'drillnav_color_scheme' );
+		const layoutSelect  = document.getElementById( 'drillnav_layout' );
+		const presetSelect  = document.getElementById( 'drillnav_style_preset' );
+		const maxWidthInput = document.getElementById( 'drillnav_max_width' );
+		const showBackCheck = document.getElementById( 'drillnav_show_back_button' );
+		const backWrap      = preview.querySelector( '.drillnav__back-wrap' );
+
+		if ( schemeSelect ) {
+			schemeSelect.addEventListener( 'change', function () { applyClass( SCHEME_PREFIX, schemeSelect.value ); } );
+		}
+		if ( layoutSelect ) {
+			layoutSelect.addEventListener( 'change', function () { applyClass( LAYOUT_PREFIX, layoutSelect.value ); } );
+		}
+		if ( presetSelect ) {
+			presetSelect.addEventListener( 'change', function () { applyClass( PRESET_PREFIX, presetSelect.value ); } );
+		}
+		if ( maxWidthInput ) {
+			maxWidthInput.addEventListener( 'input', function () { applyProp( '--drillnav-max-width', maxWidthInput.value.trim() ); } );
+		}
+		if ( showBackCheck && backWrap ) {
+			showBackCheck.addEventListener( 'change', function () { backWrap.hidden = ! showBackCheck.checked; } );
+		}
+
+		var customPropsMap = {
+			drillnav_custom_font_size:        '--drillnav-font-size',
+			drillnav_custom_padding_y:        '--drillnav-item-padding-y',
+			drillnav_custom_padding_x:        '--drillnav-item-padding-x',
+			drillnav_custom_border_radius:    '--drillnav-border-radius',
+			drillnav_custom_transition_speed: '--drillnav-transition-speed',
+			drillnav_custom_color_link:       '--drillnav-color-link',
+			drillnav_custom_color_current_bg: '--drillnav-color-current-bg',
+			drillnav_custom_color_hover:      '--drillnav-color-btn-hover',
+			drillnav_custom_color_arrow:      '--drillnav-color-arrow',
+		};
+		Object.keys( customPropsMap ).forEach( function ( fieldId ) {
+			var input = document.getElementById( fieldId );
+			if ( input ) {
+				input.addEventListener( 'input', function () {
+					applyProp( customPropsMap[ fieldId ], input.value.trim() );
+				} );
+			}
+		} );
+	}
+
+	/* ---------------------------------------------------------------
 	 * WooCommerce attribute filter rules
 	 * ------------------------------------------------------------- */
 
