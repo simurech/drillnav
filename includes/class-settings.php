@@ -44,6 +44,9 @@ class Settings {
 			'layout'             => 'list',    // 'list' | 'horizontal' | 'accordion' (Pro) | 'mega' (Pro).
 			'style_preset'       => 'default', // 'default' | 'compact' | 'comfortable' | 'cards' (Pro).
 
+			// Mobile.
+			'mobile_toggle'      => false,
+
 			// Advanced.
 			'post_types'         => array( 'page' ), // Which post types to navigate.
 			'load_css'           => true,
@@ -55,6 +58,17 @@ class Settings {
 			'blog_posts_per_page' => 10,    // 0 = no limit. Applied per category/tag.
 			'blog_hide_empty'    => true,   // Hide categories with no published posts.
 			'blog_label'         => '',     // Empty = auto-detect from posts page title.
+
+			// Customize (Pro) – granular CSS overrides.
+			'custom_font_size'        => '',
+			'custom_padding_y'        => '',
+			'custom_padding_x'        => '',
+			'custom_border_radius'    => '',
+			'custom_transition_speed' => '',
+			'custom_color_link'       => '',
+			'custom_color_current_bg' => '',
+			'custom_color_hover'      => '',
+			'custom_color_arrow'      => '',
 
 			// WooCommerce Pro – product attribute filters.
 			// Each entry: ['taxonomy' => 'pa_brand', 'term_id' => 15, 'action' => 'exclude']
@@ -131,6 +145,8 @@ class Settings {
 			$clean['post_types'] = array( 'page' );
 		}
 
+		$clean['mobile_toggle'] = ! empty( $raw['mobile_toggle'] );
+
 		$clean['load_css']      = ! empty( $raw['load_css'] );
 		$clean['load_a11y_css'] = ! empty( $raw['load_a11y_css'] );
 		$clean['color_scheme']  = in_array( $raw['color_scheme'] ?? '', array( 'default', 'light', 'dark' ), true )
@@ -148,6 +164,21 @@ class Settings {
 		$clean['blog_posts_per_page'] = absint( $raw['blog_posts_per_page'] ?? 10 );
 		$clean['blog_hide_empty']     = ! empty( $raw['blog_hide_empty'] );
 		$clean['blog_label']          = sanitize_text_field( $raw['blog_label'] ?? '' );
+
+		// Customize (Pro) – granular CSS overrides.
+		foreach ( array(
+			'custom_font_size',
+			'custom_padding_y',
+			'custom_padding_x',
+			'custom_border_radius',
+			'custom_transition_speed',
+			'custom_color_link',
+			'custom_color_current_bg',
+			'custom_color_hover',
+			'custom_color_arrow',
+		) as $custom_key ) {
+			$clean[ $custom_key ] = sanitize_text_field( $raw[ $custom_key ] ?? '' );
+		}
 
 		// WooCommerce Pro – attribute filter rules.
 		$raw_filters = is_array( $raw['woo_attribute_filters'] ?? null ) ? $raw['woo_attribute_filters'] : array();

@@ -137,10 +137,10 @@
 
 /* Accordion (Pro) */
 .drillnav--layout-accordion .drillnav__sublist {
-	overflow:   hidden;
-	max-height: 0;
-	padding-left: calc(var(--drillnav-item-padding-x) + 0.5rem);
-	transition: max-height var(--drillnav-transition-speed) ease;
+	overflow:            hidden;
+	max-height:          0;
+	padding-inline-start: calc(var(--drillnav-item-padding-x) + 0.5rem);
+	transition:          max-height var(--drillnav-transition-speed) ease;
 }
 
 .drillnav--layout-accordion .drillnav__expand-btn {
@@ -170,8 +170,13 @@
 	max-width:   var(--drillnav-max-width, none);
 }
 
-/* Prevent themes from underlining nav links. */
-.drillnav a {
+/* Prevent themes from underlining nav links.
+ * Higher-specificity selectors (0,2,0)–(0,2,1) beat common theme rules like
+ * .entry-content a (0,1,1) regardless of stylesheet order. */
+.drillnav .drillnav__link,
+.drillnav .drillnav__link:hover,
+.drillnav .drillnav__link:visited,
+.drillnav .drillnav__link:focus {
 	text-decoration: none;
 }
 
@@ -198,7 +203,7 @@
 	text-decoration: none;
 	transition:      background var(--drillnav-transition-speed);
 	width:           100%;
-	text-align:      left;
+	text-align:      start;
 }
 
 .drillnav .drillnav__back-btn:hover {
@@ -321,6 +326,20 @@
 		}
 	}
 
+	/* RTL: mirror slide directions */
+	[dir="rtl"] .drillnav .drillnav--anim-slide-in  { animation-name: drillnav-slide-in-rtl; }
+	[dir="rtl"] .drillnav .drillnav--anim-slide-back { animation-name: drillnav-slide-back-rtl; }
+
+	@keyframes drillnav-slide-in-rtl {
+		from { opacity: 0; transform: translateX(-1.5rem); }
+		to   { opacity: 1; transform: translateX(0); }
+	}
+
+	@keyframes drillnav-slide-back-rtl {
+		from { opacity: 0; transform: translateX(1.5rem); }
+		to   { opacity: 1; transform: translateX(0); }
+	}
+
 	/* Fade: drill down */
 	.drillnav .drillnav--anim-fade-in {
 		animation: drillnav-fade-in var(--drillnav-transition-speed) ease both;
@@ -436,21 +455,29 @@
 		pointer-events: auto;
 	}
 
-	/* Drawer nav: slides in from left */
+	/* Drawer nav: slides in from the inline-start edge */
 	.drillnav--drawer-nav {
-		position:         fixed;
-		top:              0;
-		left:             0;
-		bottom:           0;
-		width:            min(320px, 85vw);
-		z-index:          99999;
-		overflow-y:       auto;
-		padding:          1.25rem;
-		transform:        translateX(-100%);
-		transition:       transform 300ms ease;
-		box-shadow:       2px 0 16px rgba(0, 0, 0, 0.15);
+		position:           fixed;
+		inset-block:        0;
+		inset-inline-start: 0;
+		width:              min(320px, 85vw);
+		z-index:            99999;
+		overflow-y:         auto;
+		padding:            1.25rem;
+		transform:          translateX(-100%);
+		transition:         transform 300ms ease;
+		box-shadow:         2px 0 16px rgba(0, 0, 0, 0.15);
 		/* Ensure a solid background – default scheme is transparent */
-		background-color: #fff;
+		background-color:   #fff;
+	}
+
+	/* RTL: drawer slides in from the right */
+	[dir="rtl"] .drillnav--drawer-nav {
+		transform: translateX(100%);
+	}
+
+	[dir="rtl"] .drillnav-drawer-wrap.is-open .drillnav--drawer-nav {
+		transform: translateX(0);
 	}
 
 	/* Restore scheme backgrounds when a preset is applied */

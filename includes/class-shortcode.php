@@ -164,7 +164,9 @@ class Shortcode {
 	 * @return string
 	 */
 	public function render_navigation( array $args = array() ): string {
-		$mobile_toggle = ! empty( $args['mobile_toggle'] );
+		$mobile_toggle = array_key_exists( 'mobile_toggle', $args )
+			? ! empty( $args['mobile_toggle'] )
+			: (bool) $this->settings->get( 'mobile_toggle' );
 		unset( $args['mobile_toggle'] );
 
 		$nav_data = $this->navigator->get_nav_data( $args );

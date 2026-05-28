@@ -131,6 +131,8 @@ class Admin {
 					'<tr><td><code>drillnav_language</code></td><td><code>$lang</code></td><td>' . esc_html__( 'Return the active language code for cache key scoping (used by the WPML/Polylang integration).', 'drillnav-drilldown-navigation' ) . '</td></tr>' .
 					'<tr><td><code>drillnav_translate_post_id</code></td><td><code>$post_id, $post_type</code></td><td>' . esc_html__( 'Translate a post ID to its equivalent in the current language (used by the WPML/Polylang integration).', 'drillnav-drilldown-navigation' ) . '</td></tr>' .
 					'<tr><td><code>drillnav_translate_string</code></td><td><code>$value, $key</code></td><td>' . esc_html__( 'Translate a user-defined label string (home_label, nav_label, blog_label) to the current language (used by the WPML/Polylang integration).', 'drillnav-drilldown-navigation' ) . '</td></tr>' .
+					'<tr><td><code>drillnav_item_classes</code></td><td><code>$classes, $item, $layout</code></td><td>' . esc_html__( 'Filter the CSS class array on each navigation item\'s &lt;li&gt; element. $item contains id, title, url, is_current, has_children.', 'drillnav-drilldown-navigation' ) . '</td></tr>' .
+					'<tr><td><code>drillnav_item_attrs</code></td><td><code>$attrs, $item, $layout</code></td><td>' . esc_html__( 'Add or modify HTML attributes on the item\'s &lt;a&gt; element. Return an associative array of attribute name → value pairs.', 'drillnav-drilldown-navigation' ) . '</td></tr>' .
 					'</tbody></table>' .
 
 					'<h3>' . esc_html__( 'REST API', 'drillnav-drilldown-navigation' ) . '</h3>' .
@@ -259,6 +261,18 @@ class Admin {
 			'drillnav-drilldown-navigation',
 			'drillnav_appearance',
 			array( 'key' => 'multiple_back_buttons', 'label' => __( 'Show one back button per drilled level (oldest first). Click any to jump directly to that level.', 'drillnav-drilldown-navigation' ) )
+		);
+
+		add_settings_field(
+			'mobile_toggle',
+			__( 'Mobile hamburger toggle', 'drillnav-drilldown-navigation' ),
+			array( $this, 'field_checkbox' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_appearance',
+			array(
+				'key'   => 'mobile_toggle',
+				'label' => __( 'On mobile (≤768 px) hide the navigation behind a hamburger icon that opens a side drawer.', 'drillnav-drilldown-navigation' ),
+			)
 		);
 
 		add_settings_field(
@@ -465,6 +479,79 @@ class Admin {
 			'drillnav_woo_filters',
 			array( 'key' => 'woo_attribute_filters' )
 		);
+
+		// --- Customize (Pro) section ---
+		add_settings_section(
+			'drillnav_customize',
+			__( 'Customize', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			function () {
+				if ( $this->is_pro_active() ) {
+					echo '<p class="description">' . esc_html__( 'Override individual CSS custom properties globally. Values set here apply to all navigation instances unless overridden per block.', 'drillnav-drilldown-navigation' ) . '</p>';
+				} else {
+					echo '<p class="description">';
+					printf(
+						/* translators: %s: link to Pro upgrade page */
+						esc_html__( 'Granular styling options are available in %s.', 'drillnav-drilldown-navigation' ),
+						'<a href="' . esc_url( $this->upgrade_url() ) . '">' . esc_html__( 'DrillNav Pro', 'drillnav-drilldown-navigation' ) . '</a>'
+					);
+					echo '</p>';
+				}
+			},
+			'drillnav-drilldown-navigation'
+		);
+
+		$customize_fields = array(
+			'custom_font_size'        => array(
+				'label'       => __( 'Font size', 'drillnav-drilldown-navigation' ),
+				'placeholder' => '1rem',
+			),
+			'custom_padding_y'        => array(
+				'label'       => __( 'Padding top/bottom', 'drillnav-drilldown-navigation' ),
+				'placeholder' => '0.5rem',
+			),
+			'custom_padding_x'        => array(
+				'label'       => __( 'Padding left/right', 'drillnav-drilldown-navigation' ),
+				'placeholder' => '0.75rem',
+			),
+			'custom_border_radius'    => array(
+				'label'       => __( 'Border radius', 'drillnav-drilldown-navigation' ),
+				'placeholder' => '4px',
+			),
+			'custom_transition_speed' => array(
+				'label'       => __( 'Transition speed', 'drillnav-drilldown-navigation' ),
+				'placeholder' => '200ms',
+			),
+			'custom_color_link'       => array(
+				'label'       => __( 'Link colour', 'drillnav-drilldown-navigation' ),
+				'placeholder' => 'inherit',
+			),
+			'custom_color_current_bg' => array(
+				'label'       => __( 'Current item background', 'drillnav-drilldown-navigation' ),
+				'placeholder' => 'rgba(0,0,0,0.06)',
+			),
+			'custom_color_hover'      => array(
+				'label'       => __( 'Hover background', 'drillnav-drilldown-navigation' ),
+				'placeholder' => 'rgba(0,0,0,0.08)',
+			),
+			'custom_color_arrow'      => array(
+				'label'       => __( 'Arrow colour', 'drillnav-drilldown-navigation' ),
+				'placeholder' => 'rgba(0,0,0,0.4)',
+			),
+		);
+
+		foreach ( $customize_fields as $field_key => $field_cfg ) {
+			add_settings_field(
+				$field_key,
+				esc_html( $field_cfg['label'] ),
+				array( $this, 'field_text_pro' ),
+				'drillnav-drilldown-navigation',
+				'drillnav_customize',
+				array(
+					'key'         => $field_key,
+					'placeholder' => $field_cfg['placeholder'],
+				)
+			);
+		}
 	}
 
 	/**
@@ -493,6 +580,14 @@ class Admin {
 		wp_enqueue_style(
 			'drillnav-admin',
 			DRILLNAV_PLUGIN_URL . 'assets/css/admin.css',
+			array(),
+			DRILLNAV_VERSION
+		);
+
+		// Load frontend CSS so the live preview renders correctly.
+		wp_enqueue_style(
+			'drillnav-frontend-preview',
+			DRILLNAV_PLUGIN_URL . 'assets/css/frontend.css',
 			array(),
 			DRILLNAV_VERSION
 		);
@@ -685,6 +780,26 @@ class Admin {
 			}
 		}
 		return '#';
+	}
+
+	/** @param array<string,mixed> $args */
+	public function field_text_pro( array $args ): void {
+		if ( ! $this->is_pro_active() ) {
+			printf(
+				'<input type="text" class="regular-text" disabled placeholder="%s">',
+				esc_attr( $args['placeholder'] ?? '' )
+			);
+			return;
+		}
+		$value = (string) $this->settings->get( $args['key'] );
+		$id    = 'drillnav_' . $args['key'];
+		printf(
+			'<input type="text" id="%s" name="drillnav_settings[%s]" value="%s" placeholder="%s" class="regular-text">',
+			esc_attr( $id ),
+			esc_attr( $args['key'] ),
+			esc_attr( $value ),
+			esc_attr( $args['placeholder'] ?? '' )
+		);
 	}
 
 	/** @param array<string,mixed> $args */
