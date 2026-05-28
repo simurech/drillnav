@@ -196,7 +196,8 @@ class Blog {
 	 */
 	public function get_categories( int $parent_id, array $blog_settings ): array {
 		$hide_empty = ! empty( $blog_settings['hide_empty'] );
-		$cache_key  = 'blog_cats_' . $parent_id . '_' . (int) $hide_empty;
+		$lang       = (string) apply_filters( 'drillnav_language', '' );
+		$cache_key  = 'blog_cats_' . $parent_id . '_' . (int) $hide_empty . '_' . $lang;
 
 		$cached = $this->cache->get( $cache_key );
 		if ( false !== $cached ) {
@@ -253,7 +254,8 @@ class Blog {
 	 */
 	public function get_posts_for_category( int $cat_id, array $blog_settings ): array {
 		$limit     = (int) ( $blog_settings['posts_per_page'] ?? 10 );
-		$cache_key = 'blog_posts_cat_' . $cat_id . '_' . $limit;
+		$lang      = (string) apply_filters( 'drillnav_language', '' );
+		$cache_key = 'blog_posts_cat_' . $cat_id . '_' . $limit . '_' . $lang;
 
 		$cached = $this->cache->get( $cache_key );
 		if ( false !== $cached ) {
@@ -306,7 +308,8 @@ class Blog {
 	 */
 	public function get_posts_for_tag( int $tag_id, array $blog_settings ): array {
 		$limit     = (int) ( $blog_settings['posts_per_page'] ?? 10 );
-		$cache_key = 'blog_posts_tag_' . $tag_id . '_' . $limit;
+		$lang      = (string) apply_filters( 'drillnav_language', '' );
+		$cache_key = 'blog_posts_tag_' . $tag_id . '_' . $limit . '_' . $lang;
 
 		$cached = $this->cache->get( $cache_key );
 		if ( false !== $cached ) {
@@ -355,7 +358,8 @@ class Blog {
 	 * @return bool
 	 */
 	public function category_has_children( int $cat_id ): bool {
-		$cache_key = 'blog_has_children_' . $cat_id;
+		$lang      = (string) apply_filters( 'drillnav_language', '' );
+		$cache_key = 'blog_has_children_' . $cat_id . '_' . $lang;
 		$cached    = $this->cache->get( $cache_key );
 		if ( false !== $cached ) {
 			return (bool) $cached;
@@ -417,11 +421,11 @@ class Blog {
 
 		// Root: blog index / posts page.
 		if ( 'blog_index' !== $blog_type ) {
-			$blog_page_id = (int) get_option( 'page_for_posts' );
+			$blog_page_id = (int) apply_filters( 'drillnav_translate_post_id', (int) get_option( 'page_for_posts' ), 'page' );
 			$blog_url     = $blog_page_id > 0 ? get_permalink( $blog_page_id ) : get_home_url();
 			$blog_label   = $blog_page_id > 0
 				? get_the_title( $blog_page_id )
-				: ( $blog_settings['blog_label'] ?: __( 'Blog', 'drillnav-drilldown-navigation' ) );
+				: ( (string) apply_filters( 'drillnav_translate_string', $blog_settings['blog_label'], 'blog_label' ) ?: __( 'Blog', 'drillnav-drilldown-navigation' ) );
 
 			$items[] = array(
 				'id'           => $blog_page_id ?: 0,

@@ -91,6 +91,10 @@ final class Plugin {
 		$blog = new Integrations\Blog( $this->navigator, $this->cache, $this->settings );
 		$blog->register( $this->loader );
 
+		// Multilingual integration – WPML / Polylang compatibility.
+		$multilingual = new Integrations\Multilingual();
+		$multilingual->register( $this->loader );
+
 		// WooCommerce Pro integration. The entire block is auto-stripped from the
 		// free version by Freemius because of can_use_premium_code__premium_only().
 		if ( drillnav_fs()->can_use_premium_code__premium_only() && $this->is_woocommerce_active() ) {

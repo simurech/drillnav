@@ -49,7 +49,8 @@ class Navigator {
 
 		$ctx      = $this->context->get();
 		$post_id  = (int) $ctx['post_id'];
-		$cache_key = 'nav_' . md5( wp_json_encode( $args ) . '_' . $post_id );
+		$lang     = (string) apply_filters( 'drillnav_language', '' );
+		$cache_key = 'nav_' . md5( wp_json_encode( $args ) . '_' . $post_id . '_' . $lang );
 
 		$cached = $this->cache->get( $cache_key );
 		if ( false !== $cached ) {
@@ -69,8 +70,8 @@ class Navigator {
 				'show_back'       => $args['show_back'],
 				'animation'       => $args['animation'],
 				'color_scheme'    => $args['color_scheme'],
-				'home_label'      => $args['home_label'] ?: get_bloginfo( 'name' ),
-				'nav_label'       => $args['nav_label'],
+				'home_label'      => (string) apply_filters( 'drillnav_translate_string', $args['home_label'], 'home_label' ) ?: get_bloginfo( 'name' ),
+				'nav_label'       => (string) apply_filters( 'drillnav_translate_string', $args['nav_label'], 'nav_label' ),
 			),
 		);
 
@@ -156,20 +157,22 @@ class Navigator {
 			)
 		);
 
-		$cache_key = 'children_' . $args['post_type'] . '_' . $parent_id;
+		$lang      = (string) apply_filters( 'drillnav_language', '' );
+		$cache_key = 'children_' . $args['post_type'] . '_' . $parent_id . '_' . $lang;
 		$cached    = $this->cache->get( $cache_key );
 		if ( false !== $cached ) {
 			return $cached;
 		}
 
 		$query_args = array(
-			'post_type'      => sanitize_key( $args['post_type'] ),
-			'post_parent'    => $parent_id,
-			'post_status'    => 'publish',
-			'posts_per_page' => -1,
-			'orderby'        => 'menu_order title',
-			'order'          => 'ASC',
-			'no_found_rows'  => true,
+			'post_type'        => sanitize_key( $args['post_type'] ),
+			'post_parent'      => $parent_id,
+			'post_status'      => 'publish',
+			'posts_per_page'   => -1,
+			'orderby'          => 'menu_order title',
+			'order'            => 'ASC',
+			'no_found_rows'    => true,
+			'suppress_filters' => false,
 		);
 
 		$posts = get_posts( $query_args );
@@ -202,7 +205,8 @@ class Navigator {
 	 * @return bool
 	 */
 	public function has_children( int $post_id, string $post_type = 'page' ): bool {
-		$cache_key = 'has_children_' . $post_type . '_' . $post_id;
+		$lang      = (string) apply_filters( 'drillnav_language', '' );
+		$cache_key = 'has_children_' . $post_type . '_' . $post_id . '_' . $lang;
 		$cached    = $this->cache->get( $cache_key );
 		if ( false !== $cached ) {
 			return (bool) $cached;
@@ -210,12 +214,13 @@ class Navigator {
 
 		$children = get_posts(
 			array(
-				'post_type'      => sanitize_key( $post_type ),
-				'post_parent'    => $post_id,
-				'post_status'    => 'publish',
-				'posts_per_page' => 1,
-				'no_found_rows'  => true,
-				'fields'         => 'ids',
+				'post_type'        => sanitize_key( $post_type ),
+				'post_parent'      => $post_id,
+				'post_status'      => 'publish',
+				'posts_per_page'   => 1,
+				'no_found_rows'    => true,
+				'fields'           => 'ids',
+				'suppress_filters' => false,
 			)
 		);
 
@@ -255,7 +260,7 @@ class Navigator {
 	private function make_home_item( string $label ): array {
 		return array(
 			'id'           => 0,
-			'title'        => $label ?: get_bloginfo( 'name' ),
+			'title'        => (string) apply_filters( 'drillnav_translate_string', $label, 'home_label' ) ?: get_bloginfo( 'name' ),
 			'url'          => home_url( '/' ),
 			'parent_id'    => -1,
 			'post_type'    => '',

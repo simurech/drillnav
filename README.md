@@ -15,6 +15,7 @@ A WordPress plugin that renders a contextual, drill-down navigation based on the
 - **WCAG 2.1 AA accessible** — ARIA attributes, keyboard focus management, Escape key
 - **Fast** — assets load only where the navigation is placed; 7-day transient cache with automatic invalidation
 - **No jQuery** — pure vanilla JavaScript
+- **WPML & Polylang compatible** — language-aware navigation, cache, and label translation
 - **WooCommerce category navigation** — available in DrillNav Pro
 
 ## Requirements
@@ -40,6 +41,33 @@ A WordPress plugin that renders a contextual, drill-down navigation based on the
 | `mobile_toggle` | `no` | Hamburger icon + side drawer on mobile (yes / no) |
 
 **Widget** — Appearance → Widgets → DrillNav – Contextual Navigation.
+
+## Multilingual Support
+
+DrillNav 1.1.0+ is fully compatible with **WPML** and **Polylang**. Once either plugin is active, DrillNav automatically:
+
+- Resolves pages, categories, and the blog page to their **current-language equivalents**
+- Uses **language-aware cache keys** — each language gets its own cached navigation
+- Registers custom labels (Home, Nav, Blog) with the multilingual plugin's **string translation interface**
+
+Three filter hooks are available for custom integrations:
+
+```php
+// Return the active language code (used in cache keys)
+add_filter( 'drillnav_language', function( $lang ) {
+    return 'de'; // or your custom language code
+} );
+
+// Translate a post ID to the current language version
+add_filter( 'drillnav_translate_post_id', function( $post_id, $post_type ) {
+    return $post_id; // return translated ID
+}, 10, 2 );
+
+// Translate a custom label string
+add_filter( 'drillnav_translate_string', function( $value, $key ) {
+    return $value; // return translated string
+}, 10, 2 );
+```
 
 ## Developer Hooks
 

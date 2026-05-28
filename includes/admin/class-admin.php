@@ -128,6 +128,9 @@ class Admin {
 					'<tr><td><code>drillnav_current_context</code></td><td><code>$context</code></td><td>' . esc_html__( 'Filter the resolved page context (post_id, ancestors, blog_type, etc.).', 'drillnav-drilldown-navigation' ) . '</td></tr>' .
 					'<tr><td><code>drillnav_children_items</code></td><td><code>$items, $parent_id, $args</code></td><td>' . esc_html__( 'Filter the child items before they are cached and returned.', 'drillnav-drilldown-navigation' ) . '</td></tr>' .
 					'<tr><td><code>drillnav_cache_duration</code></td><td><code>$seconds</code></td><td>' . esc_html__( 'Adjust the transient TTL (default: WEEK_IN_SECONDS = 604 800).', 'drillnav-drilldown-navigation' ) . '</td></tr>' .
+					'<tr><td><code>drillnav_language</code></td><td><code>$lang</code></td><td>' . esc_html__( 'Return the active language code for cache key scoping (used by the WPML/Polylang integration).', 'drillnav-drilldown-navigation' ) . '</td></tr>' .
+					'<tr><td><code>drillnav_translate_post_id</code></td><td><code>$post_id, $post_type</code></td><td>' . esc_html__( 'Translate a post ID to its equivalent in the current language (used by the WPML/Polylang integration).', 'drillnav-drilldown-navigation' ) . '</td></tr>' .
+					'<tr><td><code>drillnav_translate_string</code></td><td><code>$value, $key</code></td><td>' . esc_html__( 'Translate a user-defined label string (home_label, nav_label, blog_label) to the current language (used by the WPML/Polylang integration).', 'drillnav-drilldown-navigation' ) . '</td></tr>' .
 					'</tbody></table>' .
 
 					'<h3>' . esc_html__( 'REST API', 'drillnav-drilldown-navigation' ) . '</h3>' .

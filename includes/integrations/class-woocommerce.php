@@ -143,9 +143,10 @@ class Woocommerce {
 	 * @return array<int,array<string,mixed>>
 	 */
 	public function get_woo_categories( int $parent_id, array $settings ): array {
-		$excluded  = $settings['excluded_categories'] ?? array();
+		$excluded   = $settings['excluded_categories'] ?? array();
 		$hide_empty = ! empty( $settings['hide_empty'] );
-		$cache_key = 'woo_cats_' . $parent_id . '_' . (int) $hide_empty;
+		$lang       = (string) apply_filters( 'drillnav_language', '' );
+		$cache_key  = 'woo_cats_' . $parent_id . '_' . (int) $hide_empty . '_' . $lang;
 
 		$cached = $this->cache->get( $cache_key );
 		if ( false !== $cached ) {
@@ -231,7 +232,8 @@ class Woocommerce {
 
 		// Build a cache key that includes the active filter rules.
 		$filter_hash = empty( $attribute_filters ) ? 'none' : md5( wp_json_encode( $attribute_filters ) );
-		$cache_key   = 'woo_has_visible_' . $cat_id . '_' . $filter_hash;
+		$lang        = (string) apply_filters( 'drillnav_language', '' );
+		$cache_key   = 'woo_has_visible_' . $cat_id . '_' . $filter_hash . '_' . $lang;
 		$cached      = $this->cache->get( $cache_key );
 		if ( false !== $cached ) {
 			return (bool) $cached;
@@ -348,7 +350,8 @@ class Woocommerce {
 	 * @return int[]
 	 */
 	public function get_descendant_category_ids( int $cat_id ): array {
-		$cache_key = 'woo_descendants_' . $cat_id;
+		$lang      = (string) apply_filters( 'drillnav_language', '' );
+		$cache_key = 'woo_descendants_' . $cat_id . '_' . $lang;
 		$cached    = $this->cache->get( $cache_key );
 		if ( false !== $cached ) {
 			return (array) $cached;
@@ -386,7 +389,8 @@ class Woocommerce {
 	 * @return bool
 	 */
 	public function category_has_children( int $cat_id ): bool {
-		$cache_key = 'woo_has_children_' . $cat_id;
+		$lang      = (string) apply_filters( 'drillnav_language', '' );
+		$cache_key = 'woo_has_children_' . $cat_id . '_' . $lang;
 		$cached    = $this->cache->get( $cache_key );
 		if ( false !== $cached ) {
 			return (bool) $cached;

@@ -1,10 +1,10 @@
 === DrillNav – Smart Contextual Navigation for Deeply Nested Sites ===
 Contributors:      simon61
-Tags:              navigation, contextual navigation, drilldown, page hierarchy, menu
+Tags:              navigation, contextual navigation, drilldown, page hierarchy, multilingual
 Requires at least: 6.3
 Tested up to:      7.0
 Requires PHP:      8.0
-Stable tag:        1.0.1
+Stable tag:        1.1.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,6 +35,7 @@ No configuration required. Place the block, add the shortcode, or drop in the wi
 * **No jQuery** – pure vanilla JavaScript, no bloat
 * **Developer-friendly** – filter hooks, REST API endpoint, CSS custom properties for easy theming
 * **Translation ready** – fully internationalised
+* **WPML & Polylang compatible** – navigation, cache, and label strings are fully language-aware
 
 = Perfect For =
 
@@ -54,6 +55,17 @@ No configuration required. Place the block, add the shortcode, or drop in the wi
 * Exclude specific categories from the navigation
 * Context-aware: auto-detects category pages, product pages, and the shop page
 * Priority support
+
+= Multilingual Support =
+
+DrillNav works out of the box on multilingual sites built with **WPML** or **Polylang**:
+
+* Navigation tree always reflects the **active language** — pages, categories, and the blog page are automatically resolved to their translated equivalents
+* Cache keys are **language-aware**, so each language gets its own cached navigation without interference
+* Custom labels configured in **Settings > DrillNav** (Home label, Nav label, Blog label) can be translated via the respective plugin's string translation interface (WPML String Translation / Polylang)
+* `get_posts()` queries pass `suppress_filters => false` so multilingual plugins can rewrite queries correctly
+
+No additional configuration is required — just activate WPML or Polylang and DrillNav adapts automatically.
 
 = Accessibility =
 
@@ -116,6 +128,10 @@ That's it. DrillNav automatically detects the page hierarchy and renders the cor
 
 == Frequently Asked Questions ==
 
+= Does it work with WPML or Polylang? =
+
+Yes. DrillNav 1.1.0+ includes built-in WPML and Polylang compatibility. The navigation tree, cache keys, and blog page detection are all language-aware. Custom label strings (Home, Nav, Blog) registered in **Settings > DrillNav** can be translated via WPML String Translation or Polylang's string translation interface. No extra configuration is needed — just activate your multilingual plugin and DrillNav adapts automatically.
+
 = Does this work with WooCommerce product categories? =
 
 WooCommerce product category navigation is available in [DrillNav Pro](https://drillnav.com/#pro). The free version supports all hierarchical WordPress post types (Pages, and any custom post type with `hierarchical => true`).
@@ -170,6 +186,15 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 
 == Changelog ==
 
+= 1.1.0 =
+* New: WPML compatibility – navigation, cache keys, and blog page detection are now language-aware
+* New: Polylang compatibility – same language-aware behaviour via Polylang API
+* New: Filter hook `drillnav_language` – return the active language code for custom integrations
+* New: Filter hook `drillnav_translate_post_id` – translate a post ID to the current language
+* New: Filter hook `drillnav_translate_string` – translate custom label strings (home_label, nav_label, blog_label)
+* New: Custom labels registered with WPML String Translation and Polylang string translation
+* Fix: `get_posts()` calls now pass `suppress_filters => false` so multilingual plugins can filter results correctly
+
 = 1.0.1 =
 * Fix: Escaped integer output in admin number field to satisfy WordPress coding standards
 * Update: Freemius premium slug updated to `drillnav-drilldown-navigation-pro`
@@ -193,6 +218,9 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 * WordPress Coding Standards compliant
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+No upgrade steps required. Cache is automatically cleared on upgrade.
 
 = 1.0.1 =
 No upgrade steps required.
