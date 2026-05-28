@@ -70,6 +70,10 @@ class Settings {
 			'custom_color_hover'      => '',
 			'custom_color_arrow'      => '',
 
+			// Pro search/lazy features.
+			'search_filter'           => false,
+			'accordion_lazy'          => false,
+
 			// WooCommerce Pro – product attribute filters.
 			// Each entry: ['taxonomy' => 'pa_brand', 'term_id' => 15, 'action' => 'exclude']
 			'woo_attribute_filters' => array(),
@@ -179,6 +183,9 @@ class Settings {
 		) as $custom_key ) {
 			$clean[ $custom_key ] = sanitize_text_field( $raw[ $custom_key ] ?? '' );
 		}
+
+		$clean['search_filter']  = ! empty( $raw['search_filter'] );
+		$clean['accordion_lazy'] = ! empty( $raw['accordion_lazy'] );
 
 		// WooCommerce Pro – attribute filter rules.
 		$raw_filters = is_array( $raw['woo_attribute_filters'] ?? null ) ? $raw['woo_attribute_filters'] : array();

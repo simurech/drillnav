@@ -83,6 +83,8 @@
 				customColorCurrentBg,
 				customColorHover,
 				customColorArrow,
+				searchFilter,
+				accordionLazy,
 			} = attributes;
 
 			const isPro = typeof drillnavBlock !== 'undefined' && drillnavBlock.isPro;
@@ -164,6 +166,15 @@
 								__( 'Upgrade →', 'drillnav-drilldown-navigation' )
 							)
 						)
+					),
+					layout === 'accordion' && el( PanelRow, null,
+						el( ToggleControl, {
+							label:    el( Fragment, null, __( 'Lazy-load levels', 'drillnav-drilldown-navigation' ), el( ProBadge ) ),
+							help:     __( 'Load child levels on demand instead of server-side rendering the full tree.', 'drillnav-drilldown-navigation' ),
+							checked:  !! ( accordionLazy && isPro ),
+							onChange: ( val ) => setAttributes( { accordionLazy: val } ),
+							disabled: ! isPro,
+						} )
 					)
 				),
 
@@ -274,6 +285,15 @@
 							help:     __( 'On mobile (≤768 px) the navigation is hidden behind a hamburger icon and slides in as a side drawer.', 'drillnav-drilldown-navigation' ),
 							checked:  mobileToggle,
 							onChange: ( val ) => setAttributes( { mobileToggle: val } ),
+						} )
+					),
+					el( PanelRow, null,
+						el( ToggleControl, {
+							label:    el( Fragment, null, __( 'Search / Filter', 'drillnav-drilldown-navigation' ), el( ProBadge ) ),
+							help:     __( 'Show a live text filter above the navigation items (List and Horizontal layouts only).', 'drillnav-drilldown-navigation' ),
+							checked:  !! ( searchFilter && isPro ),
+							onChange: ( val ) => setAttributes( { searchFilter: val } ),
+							disabled: ! isPro,
 						} )
 					),
 				),

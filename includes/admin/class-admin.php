@@ -326,6 +326,19 @@ class Admin {
 		);
 
 		add_settings_field(
+			'accordion_lazy',
+			__( 'Lazy-load Accordion', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			array( $this, 'field_checkbox_pro' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_appearance',
+			array(
+				'key'         => 'accordion_lazy',
+				'label'       => __( 'Load accordion child levels on demand via REST API.', 'drillnav-drilldown-navigation' ),
+				'description' => __( 'Only applies when Layout is Accordion. Reduces initial page weight on large trees.', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
+		add_settings_field(
 			'style_preset',
 			__( 'Style preset', 'drillnav-drilldown-navigation' ),
 			array( $this, 'field_select' ),
@@ -340,6 +353,19 @@ class Admin {
 					'cards'       => __( 'Cards (Pro)', 'drillnav-drilldown-navigation' ),
 				),
 				'help'    => __( 'Controls spacing and visual density. "Cards" requires DrillNav Pro.', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
+		add_settings_field(
+			'search_filter',
+			__( 'Search / Filter', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			array( $this, 'field_checkbox_pro' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_appearance',
+			array(
+				'key'         => 'search_filter',
+				'label'       => __( 'Show a live text filter above navigation items.', 'drillnav-drilldown-navigation' ),
+				'description' => __( 'Available for List and Horizontal layouts only.', 'drillnav-drilldown-navigation' ),
 			)
 		);
 
@@ -800,6 +826,35 @@ class Admin {
 			esc_attr( $value ),
 			esc_attr( $args['placeholder'] ?? '' )
 		);
+	}
+
+	/** @param array<string,mixed> $args */
+	public function field_checkbox_pro( array $args ): void {
+		$key   = $args['key'];
+		$label = $args['label'] ?? '';
+		if ( ! $this->is_pro_active() ) {
+			printf(
+				'<label><input type="checkbox" disabled> %s</label>',
+				esc_html( $label )
+			);
+			printf(
+				'<p class="description">%s</p>',
+				wp_kses_post( $args['pro_hint'] ?? __( 'Available in DrillNav Pro.', 'drillnav-drilldown-navigation' ) )
+			);
+			return;
+		}
+		$value = (bool) $this->settings->get( $key );
+		$id    = 'drillnav_' . $key;
+		printf(
+			'<label><input type="checkbox" id="%s" name="drillnav_settings[%s]" value="1" %s> %s</label>',
+			esc_attr( $id ),
+			esc_attr( $key ),
+			checked( $value, true, false ),
+			esc_html( $label )
+		);
+		if ( ! empty( $args['description'] ) ) {
+			printf( '<p class="description">%s</p>', esc_html( $args['description'] ) );
+		}
 	}
 
 	/** @param array<string,mixed> $args */

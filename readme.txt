@@ -4,7 +4,7 @@ Tags:              navigation, contextual navigation, drilldown, page hierarchy,
 Requires at least: 6.3
 Tested up to:      7.0
 Requires PHP:      8.0
-Stable tag:        1.4.0
+Stable tag:        1.5.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -203,6 +203,10 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 
 == Changelog ==
 
+= 1.5.0 =
+* New: Search/Filter (Pro) – live text filter above navigation items; debounced input hides non-matching items instantly; resets automatically on drill-down and back
+* New: Lazy-loading Accordion (Pro) – accordion renders only the first level server-side; deeper levels are fetched via REST on expand; hover-preloading reduces perceived latency
+
 = 1.4.0 =
 * New: RTL support – logical CSS properties and mirrored slide animations for right-to-left layouts
 * New: Block variations – five ready-made variations in the block inserter (Horizontal, Compact, Dark, Accordion Pro, Mega Pro)
@@ -253,6 +257,9 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 * WordPress Coding Standards compliant
 
 == Upgrade Notice ==
+
+= 1.5.0 =
+No upgrade steps required. New Pro features (Search/Filter, Lazy Accordion) are disabled by default.
 
 = 1.4.0 =
 No upgrade steps required. Global settings for `mobile_toggle` and custom CSS properties are now available in Settings > DrillNav.

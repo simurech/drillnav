@@ -4,7 +4,7 @@
 
 # DrillNav – Smart Contextual Navigation for Deeply Nested Sites
 
-[![Stable Tag](https://img.shields.io/badge/stable-1.4.0-blue.svg)](https://github.com/simurech/drillnav/releases)
+[![Stable Tag](https://img.shields.io/badge/stable-1.5.0-blue.svg)](https://github.com/simurech/drillnav/releases)
 [![WordPress](https://img.shields.io/badge/WordPress-6.3%2B-21759b.svg)](https://wordpress.org/)
 [![PHP](https://img.shields.io/badge/PHP-8.0%2B-8892be.svg)](https://php.net/)
 [![License](https://img.shields.io/badge/License-GPL--2.0--or--later-green.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
@@ -240,8 +240,7 @@ No JavaScript changes required — RTL is handled entirely in CSS.
 
 | Feature | Version | Tier |
 |---|---|---|
-| Search / filter within navigation | v1.5.0 | Pro |
-| Lazy-loading accordion levels via REST | v1.5.0 | Pro |
+| WooCommerce attribute-based filtering improvements | v1.6.0 | Pro |
 
 ---
 

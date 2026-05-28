@@ -235,6 +235,13 @@ class Block {
 			}
 		}
 
+		if ( isset( $attributes['searchFilter'] ) ) {
+			$args['search_filter'] = (bool) $attributes['searchFilter'];
+		}
+		if ( isset( $attributes['accordionLazy'] ) ) {
+			$args['accordion_lazy'] = (bool) $attributes['accordionLazy'];
+		}
+
 		return $args;
 	}
 }

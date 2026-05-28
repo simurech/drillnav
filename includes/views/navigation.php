@@ -142,13 +142,14 @@ $json_data = wp_json_encode(
 	<?php
 	$tree         = $nav_data['tree'] ?? array();
 	$render_items = null;
-	$render_items = function( array $items ) use ( &$render_items, $current_post_id, $layout, $render_extra_attrs ): void {
+	$accordion_lazy = ! empty( $settings['accordion_lazy'] );
+	$render_items = function( array $items ) use ( &$render_items, $current_post_id, $layout, $render_extra_attrs, $accordion_lazy ): void {
 		foreach ( $items as $item ) {
 			$item_id      = (int) $item['id'];
 			$item_title   = (string) $item['title'];
 			$item_url     = (string) $item['url'];
 			$is_current   = (bool) $item['is_current'];
-			$has_children = ! empty( $item['children'] );
+			$has_children = ! empty( $item['has_children'] );
 
 			$li_classes = array( 'drillnav__item' );
 			if ( $is_current ) {
@@ -182,6 +183,8 @@ $json_data = wp_json_encode(
 						?>"
 						aria-expanded="false"
 						data-drillnav-item-id="<?php echo esc_attr( (string) $item_id ); ?>"
+						data-drillnav-item-type="<?php echo esc_attr( (string) ( $item['post_type'] ?? 'page' ) ); ?>"
+						<?php if ( $accordion_lazy ) : ?>data-drillnav-lazy="1"<?php endif; ?>
 					>
 						<span class="drillnav__arrow" aria-hidden="true">&#8250;</span>
 					</button>
@@ -203,6 +206,19 @@ $json_data = wp_json_encode(
 		</ul>
 	</div>
 	<?php else : ?>
+
+	<?php if ( ! empty( $settings['search_filter'] ) && in_array( $layout, array( 'list', 'horizontal' ), true ) ) : ?>
+	<div class="drillnav__search">
+		<input
+			type="search"
+			class="drillnav__search-input"
+			placeholder="<?php esc_attr_e( 'Filter…', 'drillnav-drilldown-navigation' ); ?>"
+			aria-label="<?php esc_attr_e( 'Filter navigation items', 'drillnav-drilldown-navigation' ); ?>"
+			autocomplete="off"
+		>
+		<button type="button" class="drillnav__search-clear" hidden aria-label="<?php esc_attr_e( 'Clear filter', 'drillnav-drilldown-navigation' ); ?>">&#215;</button>
+	</div>
+	<?php endif; ?>
 
 	<?php if ( $show_back && $back_item ) : ?>
 	<div class="drillnav__back-wrap">

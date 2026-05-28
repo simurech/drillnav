@@ -105,6 +105,8 @@ class Shortcode {
 				'multiple_back_buttons' => '',
 				'layout'                => '',
 				'style_preset'          => '',
+				'search_filter'         => '',
+				'accordion_lazy'        => '',
 			),
 			$atts,
 			'drillnav'
@@ -152,6 +154,12 @@ class Shortcode {
 		}
 		if ( '' !== $atts['style_preset'] ) {
 			$args['style_preset'] = sanitize_key( $atts['style_preset'] );
+		}
+		if ( '' !== $atts['search_filter'] ) {
+			$args['search_filter'] = in_array( strtolower( $atts['search_filter'] ), array( 'yes', '1', 'true' ), true );
+		}
+		if ( '' !== $atts['accordion_lazy'] ) {
+			$args['accordion_lazy'] = in_array( strtolower( $atts['accordion_lazy'] ), array( 'yes', '1', 'true' ), true );
 		}
 
 		return $args;

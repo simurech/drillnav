@@ -56,6 +56,8 @@ class Navigator {
 				'custom_color_current_bg' => (string) ( $this->settings->get( 'custom_color_current_bg' ) ?? '' ),
 				'custom_color_hover'      => (string) ( $this->settings->get( 'custom_color_hover' ) ?? '' ),
 				'custom_color_arrow'      => (string) ( $this->settings->get( 'custom_color_arrow' ) ?? '' ),
+				'search_filter'           => (bool) ( $this->settings->get( 'search_filter' ) ?? false ),
+				'accordion_lazy'          => (bool) ( $this->settings->get( 'accordion_lazy' ) ?? false ),
 			)
 		);
 
@@ -67,6 +69,15 @@ class Navigator {
 		$cached = $this->cache->get( $cache_key );
 		if ( false !== $cached ) {
 			return $cached;
+		}
+
+		// Pro feature guards – reset flags for non-Pro users.
+		$is_pro = function_exists( 'drillnav_fs' ) && drillnav_fs()->can_use_premium_code__premium_only();
+		if ( ! empty( $args['search_filter'] ) && ! $is_pro ) {
+			$args['search_filter'] = false;
+		}
+		if ( ! empty( $args['accordion_lazy'] ) && ! $is_pro ) {
+			$args['accordion_lazy'] = false;
 		}
 
 		$data = array(
@@ -96,6 +107,8 @@ class Navigator {
 				'custom_color_current_bg' => $args['custom_color_current_bg'],
 				'custom_color_hover'      => $args['custom_color_hover'],
 				'custom_color_arrow'      => $args['custom_color_arrow'],
+				'search_filter'           => $args['search_filter'],
+				'accordion_lazy'          => $args['accordion_lazy'],
 			),
 		);
 
@@ -309,10 +322,14 @@ class Navigator {
 	private function get_subtree( int $parent_id, array $args, int $level = 0 ): array {
 		$items     = $this->get_children( $parent_id, $args );
 		$max_depth = (int) ( $args['depth'] ?? 0 );
+		$lazy      = ! empty( $args['accordion_lazy'] );
 
 		foreach ( $items as &$item ) {
 			if ( $item['has_children'] && ( $max_depth === 0 || $level < $max_depth - 1 ) ) {
-				$item['children'] = $this->get_subtree( (int) $item['id'], $args, $level + 1 );
+				// Lazy mode: omit children – JS loads them on demand via REST.
+				$item['children'] = $lazy
+					? array()
+					: $this->get_subtree( (int) $item['id'], $args, $level + 1 );
 			} else {
 				$item['children'] = array();
 			}

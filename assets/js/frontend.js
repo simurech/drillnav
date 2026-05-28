@@ -113,6 +113,7 @@
 			this.multipleBackButtons = !! ( this.data && this.data.settings && this.data.settings.multiple_back_buttons );
 			this.layout              = root.dataset.drillnavLayout || 'list';
 			this.preloadCache        = new Map();
+			this.accordionLazy       = !! ( this.data && this.data.settings && this.data.settings.accordion_lazy );
 
 			this.panel = document.getElementById( this.instanceId + '-panel' );
 			if ( ! this.panel ) {
@@ -143,6 +144,10 @@
 
 			// Drawer support (mobile hamburger toggle).
 			this.drawerWrap = root.closest( '[data-drillnav-drawer-wrap]' );
+
+			this.searchInput  = root.querySelector( '.drillnav__search-input' );
+			this.searchClear  = root.querySelector( '.drillnav__search-clear' );
+			this._searchQuery = '';
 
 			this._bindEvents();
 			if ( this.drawerWrap ) {
@@ -185,11 +190,14 @@
 
 			// Hover preloading: kick off a children fetch when user hovers an expand button.
 			this.root.addEventListener( 'mouseover', ( e ) => {
-				if ( this.layout === 'accordion' ) {
+				if ( this.layout === 'accordion' && ! this.accordionLazy ) {
 					return;
 				}
 				const btn = e.target.closest( '[data-drillnav-item-id]' );
 				if ( ! btn || ! this.root.contains( btn ) ) {
+					return;
+				}
+				if ( this.layout === 'accordion' && ! btn.dataset.drillnavLazy ) {
 					return;
 				}
 				const key = btn.dataset.drillnavItemId + ':' + ( btn.dataset.drillnavItemType || 'page' );
@@ -203,6 +211,22 @@
 					);
 				}
 			} );
+
+			// Search/filter input.
+			if ( this.searchInput ) {
+				let searchDebounce;
+				this.searchInput.addEventListener( 'input', () => {
+					clearTimeout( searchDebounce );
+					searchDebounce = setTimeout( () => this._filterItems( this.searchInput.value.trim() ), 200 );
+				} );
+				if ( this.searchClear ) {
+					this.searchClear.addEventListener( 'click', () => {
+						this.searchInput.value = '';
+						this._filterItems( '' );
+						this.searchInput.focus();
+					} );
+				}
+			}
 		}
 
 		/** @param {HTMLButtonElement} btn */
@@ -265,6 +289,11 @@
 			this.list.innerHTML = '';
 			this.list.appendChild( frag );
 
+			if ( this.searchInput ) {
+				this.searchInput.value = '';
+				this._filterItems( '' );
+			}
+
 			// Update back button(s).
 			if ( this.multipleBackButtons ) {
 				this._renderMultipleBackButtons();
@@ -305,6 +334,11 @@
 			this.levelStack = this.levelStack.slice( 0, targetIndex );
 
 			this.list.innerHTML = state.listHTML;
+
+			if ( this.searchInput ) {
+				this.searchInput.value = '';
+				this._filterItems( '' );
+			}
 
 			if ( this.multipleBackButtons ) {
 				this._renderMultipleBackButtons();
@@ -372,6 +406,24 @@
 			return btn;
 		}
 
+		/** @param {string} query */
+		_filterItems( query ) {
+			this._searchQuery = query;
+			const lower = query.toLowerCase();
+			const panel = this.root.querySelector( '.drillnav__panel' );
+			if ( ! panel ) {
+				return;
+			}
+			panel.querySelectorAll( '.drillnav__item' ).forEach( ( item ) => {
+				const link  = item.querySelector( '.drillnav__link' );
+				const label = link ? link.textContent.toLowerCase() : '';
+				item.classList.toggle( 'is-hidden', query !== '' && ! label.includes( lower ) );
+			} );
+			if ( this.searchClear ) {
+				this.searchClear.hidden = query === '';
+			}
+		}
+
 		/**
 		 * @param {HTMLElement} ul
 		 * @param {'in'|'back'} direction  'in' = from right, 'back' = from left.
@@ -394,7 +446,7 @@
 				const btn = e.target.closest( '[data-drillnav-item-id]' );
 				if ( btn && this.root.contains( btn ) ) {
 					e.preventDefault();
-					this._toggleAccordionItem( btn );
+					this._toggleAccordionItem( btn ); // returns Promise; fire-and-forget is intentional
 				}
 			} );
 
@@ -414,13 +466,25 @@
 		}
 
 		/** @param {HTMLButtonElement} btn */
-		_toggleAccordionItem( btn ) {
+		async _toggleAccordionItem( btn ) {
 			const li      = btn.closest( '.drillnav__item' );
 			const sublist = li ? li.querySelector( '[data-drillnav-sub]' ) : null;
 			if ( ! li || ! sublist ) {
 				return;
 			}
 			const isOpen = li.classList.contains( 'is-open' );
+
+			// Lazy-load children before opening if not yet loaded.
+			if ( ! isOpen && this.accordionLazy && btn.dataset.drillnavLazy && ! sublist.children.length ) {
+				btn.setAttribute( 'aria-busy', 'true' );
+				const children = await this._lazyLoadAccordionChildren( btn );
+				btn.removeAttribute( 'aria-busy' );
+				if ( children && children.length ) {
+					children.forEach( ( item ) => sublist.appendChild( this._buildAccordionItem( item ) ) );
+				}
+				delete btn.dataset.drillnavLazy;
+			}
+
 			if ( isOpen ) {
 				sublist.style.maxHeight = '0';
 				li.classList.remove( 'is-open' );
@@ -433,6 +497,84 @@
 				sublist.setAttribute( 'aria-hidden', 'false' );
 				this._recalcParentHeights( sublist );
 			}
+		}
+
+		/** @param {HTMLButtonElement} btn */
+		async _lazyLoadAccordionChildren( btn ) {
+			const postId   = parseInt( btn.dataset.drillnavItemId, 10 );
+			const postType = btn.dataset.drillnavItemType || 'page';
+			const cacheKey = postId + ':' + postType;
+			try {
+				const preloaded = this.preloadCache.get( cacheKey );
+				const children  = preloaded !== undefined
+					? await preloaded
+					: await fetchChildren( postId, postType );
+				return children;
+			} catch {
+				return null;
+			}
+		}
+
+		/** @param {object} item */
+		_buildAccordionItem( item ) {
+			const li  = document.createElement( 'li' );
+			const row = document.createElement( 'div' );
+			li.setAttribute( 'role', 'listitem' );
+			li.className  = 'drillnav__item';
+			row.className = 'drillnav__row';
+
+			if ( item.is_current ) {
+				li.classList.add( 'drillnav__item--current' );
+			}
+			if ( item.has_children ) {
+				li.classList.add( 'drillnav__item--has-children' );
+			}
+
+			const a       = document.createElement( 'a' );
+			a.className   = 'drillnav__link';
+			a.href        = item.url;
+			a.textContent = item.title;
+			if ( item.is_current ) {
+				a.setAttribute( 'aria-current', 'page' );
+			}
+			row.appendChild( a );
+
+			if ( item.has_children ) {
+				const btn = document.createElement( 'button' );
+				btn.type  = 'button';
+				btn.className = 'drillnav__expand-btn';
+				btn.setAttribute( 'aria-expanded', 'false' );
+				btn.setAttribute(
+					'aria-label',
+					( window.drillnavL10n
+						? window.drillnavL10n.showSubPages.replace( '%s', item.title )
+						: 'Show sub-pages of ' + item.title )
+				);
+				btn.setAttribute( 'data-drillnav-item-id',   String( item.id ) );
+				btn.setAttribute( 'data-drillnav-item-type', item.post_type || 'page' );
+				if ( this.accordionLazy ) {
+					btn.setAttribute( 'data-drillnav-lazy', '1' );
+				}
+
+				const arrow     = document.createElement( 'span' );
+				arrow.className = 'drillnav__arrow';
+				arrow.setAttribute( 'aria-hidden', 'true' );
+				arrow.textContent = '›';
+				btn.appendChild( arrow );
+				row.appendChild( btn );
+
+				const sublist = document.createElement( 'ul' );
+				sublist.className = 'drillnav__sublist';
+				sublist.setAttribute( 'role', 'list' );
+				sublist.setAttribute( 'data-drillnav-sub', '' );
+				sublist.setAttribute( 'aria-hidden', 'true' );
+				li.appendChild( row );
+				li.appendChild( sublist );
+				return li;
+			}
+
+			li.appendChild( row );
+			return li;
 		}
 
 		/** Recalculates max-height on all open ancestor sublists after a nested open. */

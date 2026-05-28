@@ -2,7 +2,7 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "drillnav/contextual-nav",
-	"version": "1.4.0",
+	"version": "1.5.0",
 	"title": "DrillNav – Contextual Navigation",
 	"category": "widgets",
 	"icon": "list-view",
@@ -115,6 +115,14 @@
 		"customColorArrow": {
 			"type": "string",
 			"default": ""
+		},
+		"searchFilter": {
+			"type": "boolean",
+			"default": false
+		},
+		"accordionLazy": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"example": {}
