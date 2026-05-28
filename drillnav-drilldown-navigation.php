@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       DrillNav – Smart Contextual Navigation for Deeply Nested Sites
- * Plugin URI:        https://github.com/simurech
+ * Plugin URI:        https://github.com/simurech/drillnav
  * Description:       Contextual drill-down navigation that adapts to the current page. Perfect for deeply nested WordPress site hierarchies. WooCommerce category navigation available in DrillNav Pro.
  * Version:           1.1.0
  * Requires at least: 6.3

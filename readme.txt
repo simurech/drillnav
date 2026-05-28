@@ -47,7 +47,7 @@ No configuration required. Place the block, add the shortcode, or drop in the wi
 
 = Pro Version – WooCommerce Support =
 
-[DrillNav Pro](https://drillnav.com/#pro) extends the plugin with full WooCommerce product category navigation:
+[DrillNav Pro](https://github.com/simurech/drillnav) extends the plugin with full WooCommerce product category navigation:
 
 * Drill-down through product categories (unlimited depth)
 * Live product count per category
@@ -134,7 +134,7 @@ Yes. DrillNav 1.1.0+ includes built-in WPML and Polylang compatibility. The navi
 
 = Does this work with WooCommerce product categories? =
 
-WooCommerce product category navigation is available in [DrillNav Pro](https://drillnav.com/#pro). The free version supports all hierarchical WordPress post types (Pages, and any custom post type with `hierarchical => true`).
+WooCommerce product category navigation is available in [DrillNav Pro](https://github.com/simurech/drillnav). The free version supports all hierarchical WordPress post types (Pages, and any custom post type with `hierarchical => true`).
 
 = Does it work with my theme? =
 
