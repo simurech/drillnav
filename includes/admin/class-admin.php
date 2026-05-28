@@ -579,6 +579,93 @@ class Admin {
 				)
 			);
 		}
+
+		// --- Tracking section (Pro) ---
+		add_settings_section(
+			'drillnav_tracking',
+			__( 'Analytics & Event Tracking', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			'__return_false',
+			'drillnav-drilldown-navigation'
+		);
+
+		add_settings_field(
+			'tracking_enabled',
+			__( 'Enable tracking', 'drillnav-drilldown-navigation' ),
+			array( $this, 'field_checkbox_pro' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_tracking',
+			array(
+				'key'   => 'tracking_enabled',
+				'label' => __( 'Push navigation events to window.dataLayer (Google Tag Manager).', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
+		foreach ( array(
+			'drilldown' => array(
+				'label'       => __( 'Drill-down event', 'drillnav-drilldown-navigation' ),
+				'name_key'    => 'tracking_event_drilldown_name',
+				'enabled_key' => 'tracking_event_drilldown',
+				'placeholder' => 'drillnav_drilldown',
+			),
+			'back'      => array(
+				'label'       => __( 'Back event', 'drillnav-drilldown-navigation' ),
+				'name_key'    => 'tracking_event_back_name',
+				'enabled_key' => 'tracking_event_back',
+				'placeholder' => 'drillnav_back',
+			),
+			'accordion' => array(
+				'label'       => __( 'Accordion expand event', 'drillnav-drilldown-navigation' ),
+				'name_key'    => 'tracking_event_accordion_name',
+				'enabled_key' => 'tracking_event_accordion',
+				'placeholder' => 'drillnav_accordion',
+			),
+		) as $ev_type => $ev_cfg ) {
+			add_settings_field(
+				$ev_cfg['enabled_key'],
+				esc_html( $ev_cfg['label'] ),
+				array( $this, 'field_tracking_event' ),
+				'drillnav-drilldown-navigation',
+				'drillnav_tracking',
+				array(
+					'enabled_key' => $ev_cfg['enabled_key'],
+					'name_key'    => $ev_cfg['name_key'],
+					'placeholder' => $ev_cfg['placeholder'],
+				)
+			);
+		}
+	}
+
+	/** @param array<string,mixed> $args */
+	public function field_tracking_event( array $args ): void {
+		$enabled_key = $args['enabled_key'];
+		$name_key    = $args['name_key'];
+		$placeholder = $args['placeholder'] ?? '';
+
+		if ( ! $this->is_pro_active() ) {
+			printf(
+				'<label><input type="checkbox" disabled> %s</label>
+				 <input type="text" class="regular-text" disabled placeholder="%s" style="margin-left:.5rem;">',
+				esc_html__( 'Enabled', 'drillnav-drilldown-navigation' ),
+				esc_attr( $placeholder )
+			);
+			echo '<p class="description">' . esc_html__( 'Available in DrillNav Pro.', 'drillnav-drilldown-navigation' ) . '</p>';
+			return;
+		}
+
+		$enabled = (bool) $this->settings->get( $enabled_key );
+		$name    = (string) $this->settings->get( $name_key );
+		printf(
+			'<label><input type="checkbox" name="drillnav_settings[%s]" value="1" %s> %s</label>
+			 <input type="text" name="drillnav_settings[%s]" value="%s" placeholder="%s" class="regular-text" style="margin-left:.5rem;">
+			 <p class="description">%s</p>',
+			esc_attr( $enabled_key ),
+			checked( $enabled, true, false ),
+			esc_html__( 'Enabled', 'drillnav-drilldown-navigation' ),
+			esc_attr( $name_key ),
+			esc_attr( $name ),
+			esc_attr( $placeholder ),
+			esc_html__( 'GTM event name pushed to window.dataLayer.', 'drillnav-drilldown-navigation' )
+		);
 	}
 
 	/**

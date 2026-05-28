@@ -74,6 +74,15 @@ class Settings {
 			'search_filter'           => false,
 			'accordion_lazy'          => false,
 
+			// Analytics & Event Tracking (Pro).
+			'tracking_enabled'              => false,
+			'tracking_event_drilldown'      => true,
+			'tracking_event_drilldown_name' => 'drillnav_drilldown',
+			'tracking_event_back'           => true,
+			'tracking_event_back_name'      => 'drillnav_back',
+			'tracking_event_accordion'      => true,
+			'tracking_event_accordion_name' => 'drillnav_accordion',
+
 			// WooCommerce Pro – product attribute filters.
 			// Each entry: ['taxonomy' => 'pa_brand', 'term_id' => 15, 'action' => 'exclude']
 			'woo_attribute_filters' => array(),
@@ -186,6 +195,15 @@ class Settings {
 
 		$clean['search_filter']  = ! empty( $raw['search_filter'] );
 		$clean['accordion_lazy'] = ! empty( $raw['accordion_lazy'] );
+
+		// Analytics & Event Tracking (Pro).
+		$clean['tracking_enabled']              = ! empty( $raw['tracking_enabled'] );
+		$clean['tracking_event_drilldown']      = ! empty( $raw['tracking_event_drilldown'] );
+		$clean['tracking_event_drilldown_name'] = sanitize_key( $raw['tracking_event_drilldown_name'] ?? '' ) ?: 'drillnav_drilldown';
+		$clean['tracking_event_back']           = ! empty( $raw['tracking_event_back'] );
+		$clean['tracking_event_back_name']      = sanitize_key( $raw['tracking_event_back_name'] ?? '' ) ?: 'drillnav_back';
+		$clean['tracking_event_accordion']      = ! empty( $raw['tracking_event_accordion'] );
+		$clean['tracking_event_accordion_name'] = sanitize_key( $raw['tracking_event_accordion_name'] ?? '' ) ?: 'drillnav_accordion';
 
 		// WooCommerce Pro – attribute filter rules.
 		$raw_filters = is_array( $raw['woo_attribute_filters'] ?? null ) ? $raw['woo_attribute_filters'] : array();

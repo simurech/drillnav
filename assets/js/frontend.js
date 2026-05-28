@@ -313,6 +313,13 @@
 					first.focus( { preventScroll: true } );
 				}
 			} );
+
+			this._pushEvent( 'drilldown', {
+				drillnav_item_id:    postId,
+				drillnav_item_title: parentTitle,
+				drillnav_item_url:   btn.previousElementSibling?.href ?? '',
+				drillnav_depth:      this.levelStack.length,
+			} );
 		}
 
 		_goBack() {
@@ -359,6 +366,10 @@
 					btn.focus( { preventScroll: true } );
 				}
 			} );
+
+			this._pushEvent( 'back', {
+				drillnav_target_depth: targetIndex,
+			} );
 		}
 
 		/**
@@ -404,6 +415,25 @@
 			btn.appendChild( arrow );
 			btn.appendChild( lbl );
 			return btn;
+		}
+
+		/**
+		 * Pushes a navigation event to window.dataLayer when tracking is configured.
+		 *
+		 * @param {'drilldown'|'back'|'accordion'} type
+		 * @param {Object} data  Extra key/value pairs merged into the dataLayer object.
+		 */
+		_pushEvent( type, data ) {
+			const cfg = window.drillnavL10n && window.drillnavL10n.tracking;
+			if ( ! cfg ) {
+				return;
+			}
+			const ev = cfg[ type ];
+			if ( ! ev || ! ev.enabled ) {
+				return;
+			}
+			window.dataLayer = window.dataLayer || [];
+			window.dataLayer.push( Object.assign( { event: ev.name }, data ) );
 		}
 
 		/** @param {string} query */
@@ -485,6 +515,9 @@
 				delete btn.dataset.drillnavLazy;
 			}
 
+			const itemTitle = li.querySelector( '.drillnav__link' )?.textContent?.trim() ?? '';
+			const itemId    = parseInt( btn.dataset.drillnavItemId, 10 ) || 0;
+
 			if ( isOpen ) {
 				sublist.style.maxHeight = '0';
 				li.classList.remove( 'is-open' );
@@ -497,6 +530,12 @@
 				sublist.setAttribute( 'aria-hidden', 'false' );
 				this._recalcParentHeights( sublist );
 			}
+
+			this._pushEvent( 'accordion', {
+				drillnav_item_id:    itemId,
+				drillnav_item_title: itemTitle,
+				drillnav_action:     isOpen ? 'collapse' : 'expand',
+			} );
 		}
 
 		/** @param {HTMLButtonElement} btn */

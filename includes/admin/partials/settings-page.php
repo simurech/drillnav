@@ -318,24 +318,43 @@ if ( ! is_string( $upgrade_url ) || '' === $upgrade_url ) {
 
 				<?php /* ── Tab: Tracking ── */ ?>
 				<div id="tab-tracking" class="drillnav-tab-panel" hidden>
-					<div class="drillnav-coming-soon-card">
-						<h3>
-							<?php esc_html_e( 'Analytics & Event Tracking', 'drillnav-drilldown-navigation' ); ?>
-							<span class="drillnav-pro-badge">PRO</span>
-						</h3>
-						<p><?php esc_html_e( 'Push navigation events to the dataLayer for Google Tag Manager. Configure individual event names and enable or disable each event type independently.', 'drillnav-drilldown-navigation' ); ?></p>
-						<ul>
-							<li><?php esc_html_e( '✓ DataLayer push on drill-down, back, and accordion expand', 'drillnav-drilldown-navigation' ); ?></li>
-							<li><?php esc_html_e( '✓ Custom event names per event type', 'drillnav-drilldown-navigation' ); ?></li>
-							<li><?php esc_html_e( '✓ Enable / disable individual events', 'drillnav-drilldown-navigation' ); ?></li>
-						</ul>
-						<p class="drillnav-coming-soon-label"><?php esc_html_e( 'Coming in a future release.', 'drillnav-drilldown-navigation' ); ?></p>
-						<?php if ( ! $is_pro_active ) : ?>
+
+					<?php if ( ! $is_pro_active ) : ?>
+					<p class="description">
+						<?php
+						printf(
+							/* translators: %s: link to Pro upgrade page */
+							esc_html__( 'Analytics & Event Tracking is available in %s. Push navigation events to window.dataLayer for Google Tag Manager with per-event control.', 'drillnav-drilldown-navigation' ),
+							'<a href="' . esc_url( $upgrade_url ) . '">' . esc_html__( 'DrillNav Pro', 'drillnav-drilldown-navigation' ) . '</a>'
+						);
+						?>
+					</p>
+					<?php endif; ?>
+
+					<table class="form-table" role="presentation">
+						<?php do_settings_fields( 'drillnav-drilldown-navigation', 'drillnav_tracking' ); ?>
+					</table>
+
+					<?php if ( $is_pro_active ) : ?>
+						<?php submit_button( __( 'Save settings', 'drillnav-drilldown-navigation' ) ); ?>
+						<hr>
+						<h3><?php esc_html_e( 'DataLayer event structure', 'drillnav-drilldown-navigation' ); ?></h3>
+						<p class="description"><?php esc_html_e( 'Example of the object pushed on each navigation event:', 'drillnav-drilldown-navigation' ); ?></p>
+						<pre style="background:#f0f0f1;padding:1rem;border-radius:4px;font-size:12px;max-width:540px;overflow:auto;">window.dataLayer.push({
+  event:                'drillnav_drilldown',
+  drillnav_item_id:     42,
+  drillnav_item_title:  'Services',
+  drillnav_item_url:    '/services/',
+  drillnav_depth:       1
+});</pre>
+					<?php else : ?>
+						<p style="margin-top:1.5rem;">
 							<a href="<?php echo esc_url( $upgrade_url ); ?>" class="button button-primary">
 								<?php esc_html_e( 'Upgrade to Pro →', 'drillnav-drilldown-navigation' ); ?>
 							</a>
-						<?php endif; ?>
-					</div>
+						</p>
+					<?php endif; ?>
+
 				</div>
 
 			</form>

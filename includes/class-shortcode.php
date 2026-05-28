@@ -71,6 +71,25 @@ class Shortcode {
 		);
 
 		// Localised strings for JS (translated, safe for JS).
+		$is_pro      = function_exists( 'drillnav_fs' ) && drillnav_fs()->can_use_premium_code__premium_only();
+		$tracking    = null;
+		if ( $is_pro && $this->settings->get( 'tracking_enabled' ) ) {
+			$tracking = array(
+				'drilldown' => array(
+					'enabled' => (bool) $this->settings->get( 'tracking_event_drilldown' ),
+					'name'    => (string) $this->settings->get( 'tracking_event_drilldown_name' ),
+				),
+				'back'      => array(
+					'enabled' => (bool) $this->settings->get( 'tracking_event_back' ),
+					'name'    => (string) $this->settings->get( 'tracking_event_back_name' ),
+				),
+				'accordion' => array(
+					'enabled' => (bool) $this->settings->get( 'tracking_event_accordion' ),
+					'name'    => (string) $this->settings->get( 'tracking_event_accordion_name' ),
+				),
+			);
+		}
+
 		wp_localize_script(
 			'drillnav-frontend',
 			'drillnavL10n',
@@ -82,6 +101,7 @@ class Shortcode {
 				'showSubPages' => __( 'Show sub-pages of %s', 'drillnav-drilldown-navigation' ),
 				'restUrl'      => esc_url_raw( rest_url( 'drillnav/v1/' ) ),
 				'nonce'        => wp_create_nonce( 'wp_rest' ),
+				'tracking'     => $tracking,
 			)
 		);
 	}
