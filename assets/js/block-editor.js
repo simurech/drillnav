@@ -86,6 +86,8 @@
 				searchFilter,
 				accordionLazy,
 				menuId,
+				ajaxContent,
+				contentSelector,
 			} = attributes;
 
 			// Fetch WP nav menus for the Navigation Source selector (Pro).
@@ -423,17 +425,36 @@
 						initialOpen: false,
 					},
 					isPro
-						? el( PanelRow, null,
-							el( SelectControl, {
-								label:    __( 'Use WP menu as source', 'drillnav-drilldown-navigation' ),
-								help:     __( 'Replace the page hierarchy with a WordPress nav menu. Hybrid: WooCommerce product-category items gain sub-categories automatically.', 'drillnav-drilldown-navigation' ),
-								value:    String( menuId || 0 ),
-								options:  [
-									{ label: __( '— Page hierarchy (default) —', 'drillnav-drilldown-navigation' ), value: '0' },
-									...menus.map( ( m ) => ( { label: m.name, value: String( m.id ) } ) ),
-								],
-								onChange: ( val ) => setAttributes( { menuId: parseInt( val, 10 ) || 0 } ),
-							} )
+						? el( Fragment, null,
+							el( PanelRow, null,
+								el( SelectControl, {
+									label:    __( 'Use WP menu as source', 'drillnav-drilldown-navigation' ),
+									help:     __( 'Replace the page hierarchy with a WordPress nav menu. Hybrid: WooCommerce product-category items gain sub-categories automatically.', 'drillnav-drilldown-navigation' ),
+									value:    String( menuId || 0 ),
+									options:  [
+										{ label: __( '— Page hierarchy (default) —', 'drillnav-drilldown-navigation' ), value: '0' },
+										...menus.map( ( m ) => ( { label: m.name, value: String( m.id ) } ) ),
+									],
+									onChange: ( val ) => setAttributes( { menuId: parseInt( val, 10 ) || 0 } ),
+								} )
+							),
+							el( PanelRow, null,
+								el( ToggleControl, {
+									label:    el( Fragment, null, __( 'AJAX content loading', 'drillnav-drilldown-navigation' ), el( ProBadge ) ),
+									help:     __( 'Replace page content on link click without a full page reload (SPA-style).', 'drillnav-drilldown-navigation' ),
+									checked:  !! ajaxContent,
+									onChange: ( val ) => setAttributes( { ajaxContent: val } ),
+								} )
+							),
+							ajaxContent && el( PanelRow, null,
+								el( TextControl, {
+									label:       __( 'Content selector', 'drillnav-drilldown-navigation' ),
+									help:        __( 'CSS selector for the element to replace (e.g. main, #content, .entry-content).', 'drillnav-drilldown-navigation' ),
+									value:       contentSelector || 'main',
+									onChange:    ( val ) => setAttributes( { contentSelector: val } ),
+									placeholder: 'main',
+								} )
+							)
 						)
 						: el( Notice,
 							{

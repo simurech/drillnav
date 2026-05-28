@@ -126,6 +126,23 @@ class Block {
 	public function register_rest_routes(): void {
 		register_rest_route(
 			'drillnav/v1',
+			'/content',
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'rest_content' ),
+				'permission_callback' => '__return_true',
+				'args'                => array(
+					'url' => array(
+						'type'              => 'string',
+						'required'          => true,
+						'sanitize_callback' => 'esc_url_raw',
+					),
+				),
+			)
+		);
+
+		register_rest_route(
+			'drillnav/v1',
 			'/children',
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
@@ -143,6 +160,45 @@ class Block {
 						'sanitize_callback' => 'sanitize_key',
 					),
 				),
+			)
+		);
+	}
+
+	/**
+	 * REST handler: returns rendered page content for AJAX content loading.
+	 *
+	 * @param \WP_REST_Request $request
+	 * @return \WP_REST_Response|\WP_Error
+	 */
+	public function rest_content( \WP_REST_Request $request ) {
+		$url     = (string) $request->get_param( 'url' );
+		$post_id = url_to_postid( $url );
+
+		if ( ! $post_id ) {
+			return rest_ensure_response( null );
+		}
+
+		$post = get_post( $post_id );
+		if ( ! $post || 'publish' !== $post->post_status ) {
+			return rest_ensure_response( null );
+		}
+
+		$pto = get_post_type_object( $post->post_type );
+		if ( ! $pto || ! $pto->public ) {
+			return rest_ensure_response( null );
+		}
+
+		$GLOBALS['post'] = $post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		setup_postdata( $post );
+		$content = apply_filters( 'the_content', get_the_content( null, false, $post ) );
+		wp_reset_postdata();
+
+		return rest_ensure_response(
+			array(
+				'post_id'   => $post_id,
+				'title'     => get_the_title( $post ),
+				'content'   => $content,
+				'permalink' => get_permalink( $post ),
 			)
 		);
 	}
@@ -243,6 +299,12 @@ class Block {
 		}
 		if ( isset( $attributes['menuId'] ) && (int) $attributes['menuId'] > 0 ) {
 			$args['menu_id'] = (int) $attributes['menuId'];
+		}
+		if ( isset( $attributes['ajaxContent'] ) ) {
+			$args['ajax_content'] = (bool) $attributes['ajaxContent'];
+		}
+		if ( isset( $attributes['contentSelector'] ) && '' !== $attributes['contentSelector'] ) {
+			$args['content_selector'] = sanitize_text_field( (string) $attributes['contentSelector'] );
 		}
 
 		return $args;

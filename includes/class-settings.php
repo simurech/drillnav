@@ -91,6 +91,10 @@ class Settings {
 			// WP Menu as navigation source (Pro). 0 = use page hierarchy.
 			'menu_id'               => 0,
 
+			// AJAX Content Loading (Pro).
+			'ajax_content'          => false, // Replace page content on drill-down click via REST.
+			'content_selector'      => 'main', // CSS selector for the content area to replace.
+
 			// WooCommerce Pro – product attribute filters.
 			// Each entry: ['taxonomy' => 'pa_brand', 'term_id' => 15, 'action' => 'exclude']
 			'woo_attribute_filters' => array(),
@@ -222,7 +226,9 @@ class Settings {
 		$clean['tracking_event_accordion']      = ! empty( $raw['tracking_event_accordion'] );
 		$clean['tracking_event_accordion_name'] = sanitize_key( $raw['tracking_event_accordion_name'] ?? '' ) ?: 'drillnav_accordion';
 
-		$clean['menu_id'] = absint( $raw['menu_id'] ?? 0 );
+		$clean['menu_id']          = absint( $raw['menu_id'] ?? 0 );
+		$clean['ajax_content']     = ! empty( $raw['ajax_content'] );
+		$clean['content_selector'] = sanitize_text_field( $raw['content_selector'] ?? 'main' ) ?: 'main';
 
 		// WooCommerce Pro – attribute filter rules.
 		$raw_filters = is_array( $raw['woo_attribute_filters'] ?? null ) ? $raw['woo_attribute_filters'] : array();

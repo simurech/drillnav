@@ -447,6 +447,32 @@ class Admin {
 			)
 		);
 
+		add_settings_field(
+			'ajax_content',
+			__( 'AJAX content loading', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			array( $this, 'field_checkbox_pro' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_behavior',
+			array(
+				'key'         => 'ajax_content',
+				'label'       => __( 'Replace page content on navigation click without a full page reload.', 'drillnav-drilldown-navigation' ),
+				'description' => __( 'Enables SPA-style navigation. Uses the History API and a REST endpoint to load content into the configured content selector.', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
+		add_settings_field(
+			'content_selector',
+			__( 'Content selector', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			array( $this, 'field_text_pro' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_behavior',
+			array(
+				'key'         => 'content_selector',
+				'placeholder' => 'main',
+				'help'        => __( 'CSS selector for the element whose content will be replaced (e.g. main, #content, .entry-content). Only relevant when AJAX content loading is enabled.', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
 		// --- Performance section ---
 		add_settings_section(
 			'drillnav_performance',

@@ -114,6 +114,8 @@
 			this.layout              = root.dataset.drillnavLayout || 'list';
 			this.preloadCache        = new Map();
 			this.accordionLazy       = !! ( this.data && this.data.settings && this.data.settings.accordion_lazy );
+			this.ajaxContent         = !! root.dataset.drillnavAjaxContent;
+			this.contentSelector     = root.dataset.drillnavContentSelector || 'main';
 
 			this.panel = document.getElementById( this.instanceId + '-panel' );
 			if ( ! this.panel ) {
@@ -152,6 +154,9 @@
 			this._bindEvents();
 			if ( this.drawerWrap ) {
 				this._bindDrawerEvents();
+			}
+			if ( this.ajaxContent ) {
+				this._bindAjaxContent();
 			}
 		}
 
@@ -434,6 +439,90 @@
 			}
 			window.dataLayer = window.dataLayer || [];
 			window.dataLayer.push( Object.assign( { event: ev.name }, data ) );
+		}
+
+		/* -----------------------------------------------------------------------
+		 * AJAX content loading (Pro)
+		 * -------------------------------------------------------------------- */
+
+		_bindAjaxContent() {
+			// Snapshot the original content + title for History API restoration.
+			const target = document.querySelector( this.contentSelector );
+			this._ajaxOriginalContent = target ? target.innerHTML : null;
+			this._ajaxOriginalTitle   = document.title;
+
+			// Mark the initial history entry so popstate can restore it.
+			if ( ! window.history.state || ! window.history.state.drillnavManaged ) {
+				window.history.replaceState(
+					{ drillnavManaged: true, drillnavOriginal: true },
+					document.title,
+					window.location.href
+				);
+			}
+
+			// Intercept clicks on nav item links.
+			this.root.addEventListener( 'click', ( e ) => {
+				const link = e.target.closest( '.drillnav__link' );
+				if ( ! link || ! this.root.contains( link ) ) { return; }
+				try {
+					if ( new URL( link.href ).origin !== window.location.origin ) { return; }
+				} catch ( _err ) { return; }
+				e.preventDefault();
+				this._ajaxLoadContent( link.href );
+			} );
+
+			// Handle browser back/forward.
+			window.addEventListener( 'popstate', ( evt ) => {
+				if ( ! evt.state || ! evt.state.drillnavManaged ) { return; }
+				if ( evt.state.drillnavOriginal ) {
+					const t = document.querySelector( this.contentSelector );
+					if ( t && this._ajaxOriginalContent !== null ) {
+						t.innerHTML = this._ajaxOriginalContent;
+					}
+					document.title = this._ajaxOriginalTitle;
+				} else if ( evt.state.drillnavUrl ) {
+					this._ajaxLoadContent( evt.state.drillnavUrl, false );
+				}
+			} );
+		}
+
+		/** @param {string} url */
+		async _ajaxLoadContent( url, shouldPushState = true ) {
+			const contentUrl = ( window.drillnavL10n && window.drillnavL10n.contentUrl ) || '';
+			const nonce      = ( window.drillnavL10n && window.drillnavL10n.nonce ) || '';
+			if ( ! contentUrl ) { window.location.href = url; return; }
+
+			const target = document.querySelector( this.contentSelector );
+			if ( ! target ) { window.location.href = url; return; }
+
+			try {
+				target.setAttribute( 'aria-busy', 'true' );
+				const res = await fetch(
+					contentUrl + '?url=' + encodeURIComponent( url ),
+					{ headers: { 'X-WP-Nonce': nonce }, credentials: 'same-origin' }
+				);
+				if ( ! res.ok ) { throw new Error( 'HTTP ' + res.status ); }
+				const data = await res.json();
+				if ( ! data || ! data.content ) { window.location.href = url; return; }
+
+				target.innerHTML   = data.content;
+				document.title     = data.title || document.title;
+
+				if ( shouldPushState ) {
+					window.history.pushState(
+						{ drillnavManaged: true, drillnavUrl: url },
+						data.title || document.title,
+						data.permalink || url
+					);
+				}
+
+				window.scrollTo( { top: 0, behavior: 'smooth' } );
+				target.focus?.( { preventScroll: true } );
+			} catch ( _err ) {
+				window.location.href = url;
+			} finally {
+				target.removeAttribute( 'aria-busy' );
+			}
 		}
 
 		/** @param {string} query */

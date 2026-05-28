@@ -128,6 +128,10 @@ $json_data = wp_json_encode(
 	</button>
 	<div class="drillnav-backdrop" data-drillnav-backdrop aria-hidden="true"></div>
 <?php endif; ?>
+<?php
+$ajax_content     = ( $is_pro_active && ! empty( $settings['ajax_content'] ) );
+$content_selector = $ajax_content ? (string) ( $settings['content_selector'] ?? 'main' ) : '';
+?>
 <nav
 	class="<?php echo esc_attr( implode( ' ', $nav_classes ) ); ?>"
 	role="navigation"
@@ -135,6 +139,10 @@ $json_data = wp_json_encode(
 	data-drillnav-instance="<?php echo esc_attr( $instance ); ?>"
 	data-drillnav-animation="<?php echo esc_attr( $animation ); ?>"
 	data-drillnav-layout="<?php echo esc_attr( $layout ); ?>"
+	<?php if ( $ajax_content ) : ?>
+	data-drillnav-ajax-content="1"
+	data-drillnav-content-selector="<?php echo esc_attr( $content_selector ); ?>"
+	<?php endif; ?>
 	<?php echo $nav_style_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above via esc_attr. ?>
 >
 	<?php if ( '' !== $drawer_logo_url ) : ?>

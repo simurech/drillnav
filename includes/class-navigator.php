@@ -59,6 +59,8 @@ class Navigator {
 				'search_filter'           => (bool) ( $this->settings->get( 'search_filter' ) ?? false ),
 				'accordion_lazy'          => (bool) ( $this->settings->get( 'accordion_lazy' ) ?? false ),
 				'menu_id'                 => (int) ( $this->settings->get( 'menu_id' ) ?? 0 ),
+				'ajax_content'            => (bool) ( $this->settings->get( 'ajax_content' ) ?? false ),
+				'content_selector'        => (string) ( $this->settings->get( 'content_selector' ) ?? 'main' ),
 			)
 		);
 
@@ -79,6 +81,9 @@ class Navigator {
 		}
 		if ( ! empty( $args['accordion_lazy'] ) && ! $is_pro ) {
 			$args['accordion_lazy'] = false;
+		}
+		if ( ! empty( $args['ajax_content'] ) && ! $is_pro ) {
+			$args['ajax_content'] = false;
 		}
 
 		$data = array(
@@ -110,6 +115,8 @@ class Navigator {
 				'custom_color_arrow'      => $args['custom_color_arrow'],
 				'search_filter'           => $args['search_filter'],
 				'accordion_lazy'          => $args['accordion_lazy'],
+				'ajax_content'            => $args['ajax_content'],
+				'content_selector'        => $args['content_selector'],
 			),
 		);
 

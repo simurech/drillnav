@@ -105,6 +105,7 @@ class Shortcode {
 				/* translators: %s: page title */
 				'showSubPages' => __( 'Show sub-pages of %s', 'drillnav-drilldown-navigation' ),
 				'restUrl'      => esc_url_raw( rest_url( 'drillnav/v1/' ) ),
+				'contentUrl'   => esc_url_raw( rest_url( 'drillnav/v1/content' ) ),
 				'nonce'        => wp_create_nonce( 'wp_rest' ),
 				'tracking'     => $tracking,
 			)
@@ -133,6 +134,8 @@ class Shortcode {
 				'search_filter'         => '',
 				'accordion_lazy'        => '',
 				'menu_id'               => '',
+				'ajax_content'          => '',
+				'content_selector'      => '',
 			),
 			$atts,
 			'drillnav'
@@ -189,6 +192,12 @@ class Shortcode {
 		}
 		if ( '' !== $atts['menu_id'] ) {
 			$args['menu_id'] = absint( $atts['menu_id'] );
+		}
+		if ( '' !== $atts['ajax_content'] ) {
+			$args['ajax_content'] = in_array( strtolower( $atts['ajax_content'] ), array( 'yes', '1', 'true' ), true );
+		}
+		if ( '' !== $atts['content_selector'] ) {
+			$args['content_selector'] = sanitize_text_field( $atts['content_selector'] );
 		}
 
 		return $args;

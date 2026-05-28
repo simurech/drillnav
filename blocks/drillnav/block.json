@@ -127,6 +127,14 @@
 		"menuId": {
 			"type": "integer",
 			"default": 0
+		},
+		"ajaxContent": {
+			"type": "boolean",
+			"default": false
+		},
+		"contentSelector": {
+			"type": "string",
+			"default": "main"
 		}
 	},
 	"example": {}
