@@ -245,7 +245,7 @@ No JavaScript changes required — RTL is handled entirely in CSS.
 | Custom Menu Source (Appearance > Menus) | Pro |
 | Custom Taxonomy Support | Pro |
 | AJAX Content Loading (SPA-like navigation) | Pro |
-| Settings Page Tabs (Tabbed interface for backend settings) | Free |
+| Settings Page Tabs (7 granular tabs: General, Appearance & Styling, Behavior, Blog, WooCommerce, Advanced, Tracking) | Free |
 | Analytics & Event Tracking (DataLayer push, GTM support, custom event names, individual toggles) | Pro |
 | Icon Support (Dashicons, SVG, Emojis) | Pro |
 | "Highlight" / "Featured" Badges | Pro |
