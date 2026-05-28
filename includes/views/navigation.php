@@ -62,7 +62,21 @@ if ( 'list' !== $layout ) {
 }
 if ( $mobile_toggle ) {
 	$nav_classes[] = 'drillnav--drawer-nav';
+	if ( $is_pro_active ) {
+		$drawer_effect   = (string) ( $settings['drawer_effect'] ?? 'default' );
+		$drawer_position = (string) ( $settings['drawer_position'] ?? 'left' );
+		if ( 'glassmorphism' === $drawer_effect ) {
+			$nav_classes[] = 'drillnav--drawer-effect-glass';
+		}
+		if ( 'top' === $drawer_position ) {
+			$nav_classes[] = 'drillnav--drawer-position-top';
+		}
+	}
 }
+
+$drawer_logo_url = ( $mobile_toggle && $is_pro_active )
+	? esc_url( (string) ( $settings['drawer_logo_url'] ?? '' ) )
+	: '';
 
 // Build inline style from CSS custom properties.
 $css_prop_map = array(
@@ -123,6 +137,17 @@ $json_data = wp_json_encode(
 	data-drillnav-layout="<?php echo esc_attr( $layout ); ?>"
 	<?php echo $nav_style_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above via esc_attr. ?>
 >
+	<?php if ( '' !== $drawer_logo_url ) : ?>
+	<div class="drillnav__drawer-header">
+		<img
+			src="<?php echo esc_url( $drawer_logo_url ); ?>"
+			alt="<?php esc_attr_e( 'Site logo', 'drillnav-drilldown-navigation' ); ?>"
+			class="drillnav__drawer-logo"
+			loading="lazy"
+		>
+	</div>
+	<?php endif; ?>
+
 	<?php // Hidden JSON data payload – read by frontend.js. ?>
 	<script type="application/json" id="<?php echo esc_attr( $instance ); ?>-data">
 		<?php echo $json_data; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_json_encode output is safe. ?>

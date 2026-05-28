@@ -74,6 +74,11 @@ class Settings {
 			'search_filter'           => false,
 			'accordion_lazy'          => false,
 
+			// Off-Canvas Drawer (Pro enhancements).
+			'drawer_effect'   => 'default', // 'default' | 'glassmorphism'.
+			'drawer_position' => 'left',    // 'left' | 'top'.
+			'drawer_logo_url' => '',        // URL to logo image shown at drawer top.
+
 			// Analytics & Event Tracking (Pro).
 			'tracking_enabled'              => false,
 			'tracking_event_drilldown'      => true,
@@ -195,6 +200,15 @@ class Settings {
 
 		$clean['search_filter']  = ! empty( $raw['search_filter'] );
 		$clean['accordion_lazy'] = ! empty( $raw['accordion_lazy'] );
+
+		// Drawer Pro options.
+		$clean['drawer_effect']   = in_array( $raw['drawer_effect'] ?? '', array( 'default', 'glassmorphism' ), true )
+			? $raw['drawer_effect']
+			: 'default';
+		$clean['drawer_position'] = in_array( $raw['drawer_position'] ?? '', array( 'left', 'top' ), true )
+			? $raw['drawer_position']
+			: 'left';
+		$clean['drawer_logo_url'] = esc_url_raw( $raw['drawer_logo_url'] ?? '' );
 
 		// Analytics & Event Tracking (Pro).
 		$clean['tracking_enabled']              = ! empty( $raw['tracking_enabled'] );

@@ -391,6 +391,50 @@ class Admin {
 			)
 		);
 
+		add_settings_field(
+			'drawer_effect',
+			__( 'Drawer effect', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			array( $this, 'field_select_pro' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_behavior',
+			array(
+				'key'     => 'drawer_effect',
+				'options' => array(
+					'default'        => __( 'Default (solid background)', 'drillnav-drilldown-navigation' ),
+					'glassmorphism'  => __( 'Glassmorphism (blur + transparency)', 'drillnav-drilldown-navigation' ),
+				),
+				'help'    => __( 'Only applies when Mobile hamburger toggle is enabled.', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
+		add_settings_field(
+			'drawer_position',
+			__( 'Drawer position', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			array( $this, 'field_select_pro' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_behavior',
+			array(
+				'key'     => 'drawer_position',
+				'options' => array(
+					'left' => __( 'Slide in from left (default)', 'drillnav-drilldown-navigation' ),
+					'top'  => __( 'Slide in from top', 'drillnav-drilldown-navigation' ),
+				),
+			)
+		);
+
+		add_settings_field(
+			'drawer_logo_url',
+			__( 'Drawer logo URL', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			array( $this, 'field_text_pro' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_behavior',
+			array(
+				'key'         => 'drawer_logo_url',
+				'placeholder' => 'https://example.com/logo.png',
+				'help'        => __( 'Image URL shown at the top of the drawer. Leave empty to hide.', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
 		// --- Performance section ---
 		add_settings_section(
 			'drillnav_performance',
@@ -894,6 +938,26 @@ class Admin {
 			}
 		}
 		return '#';
+	}
+
+	/** @param array<string,mixed> $args */
+	public function field_select_pro( array $args ): void {
+		if ( ! $this->is_pro_active() ) {
+			$options = $args['options'] ?? array();
+			echo '<select disabled>';
+			foreach ( $options as $val => $lbl ) {
+				printf( '<option value="%s">%s</option>', esc_attr( (string) $val ), esc_html( (string) $lbl ) );
+			}
+			echo '</select>';
+			if ( ! empty( $args['help'] ) ) {
+				printf( '<p class="description">%s</p>', esc_html( $args['help'] ) );
+			}
+			return;
+		}
+		$this->field_select( $args );
+		if ( ! empty( $args['help'] ) ) {
+			printf( '<p class="description">%s</p>', esc_html( $args['help'] ) );
+		}
 	}
 
 	/** @param array<string,mixed> $args */
