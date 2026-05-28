@@ -11,7 +11,7 @@
 
 > Contextual drill-down navigation that adapts to the current page — perfect for deeply nested WordPress sites. Zero configuration required.
 
-**→ [Plugin on WordPress.org](https://wordpress.org/plugins/drillnav-drilldown-navigation/)** — full description, screenshots, FAQ, and installation guide.
+**→ Plugin on WordPress.org (Coming soon)** — full description, screenshots, FAQ, and installation guide.
 
 ---
 
