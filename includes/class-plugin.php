@@ -116,8 +116,52 @@ final class Plugin {
 			$woo->register( $this->loader );
 		}
 
+		// Page builder integrations (Free + Pro).
+		if ( class_exists( '\Elementor\Plugin' ) ) {
+			$elementor = new Integrations\PageBuilders\Elementor();
+			$elementor->register( $this->loader );
+		}
+		if ( class_exists( '\FLBuilder' ) ) {
+			$bb = new Integrations\PageBuilders\BeaverBuilder();
+			$bb->register( $this->loader );
+		}
+		if ( class_exists( '\ET_Builder_Module' ) ) {
+			$divi = new Integrations\PageBuilders\Divi();
+			$divi->register( $this->loader );
+		}
+
 		// Run all registered hooks.
 		$this->loader->run();
+	}
+
+	/**
+	 * Shared render helper used by page-builder integrations.
+	 * Enqueues frontend assets and returns the navigation HTML.
+	 *
+	 * @param array<string,mixed> $args         Navigator args.
+	 * @param bool                $mobile_toggle Whether to render the hamburger drawer wrapper.
+	 * @return string HTML or empty string when nothing to show.
+	 */
+	public function render_navigation( array $args = array(), bool $mobile_toggle = false ): string {
+		$nav_data = $this->navigator->get_nav_data( $args );
+
+		if ( empty( $nav_data['current_level'] ) ) {
+			return '';
+		}
+
+		if ( $this->settings->get( 'load_css' ) ) {
+			wp_enqueue_style( 'drillnav-frontend' );
+		}
+		if ( $this->settings->get( 'load_a11y_css' ) ) {
+			wp_enqueue_style( 'drillnav-a11y' );
+		}
+		wp_enqueue_script( 'drillnav-frontend' );
+
+		$instance = 'drillnav-' . uniqid();
+
+		ob_start();
+		include DRILLNAV_PLUGIN_DIR . 'includes/views/navigation.php';
+		return ob_get_clean() ?: '';
 	}
 
 	/**
