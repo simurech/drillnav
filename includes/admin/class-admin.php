@@ -569,7 +569,7 @@ class Admin {
 			'<input type="number" id="%s" name="drillnav_settings[%s]" value="%d" min="%d" max="%d" class="small-text">',
 			esc_attr( $id ),
 			esc_attr( $args['key'] ),
-			$value,
+			(int) $value,
 			(int) ( $args['min'] ?? 0 ),
 			(int) ( $args['max'] ?? 99 )
 		);

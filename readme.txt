@@ -4,7 +4,7 @@ Tags:              navigation, contextual navigation, drilldown, page hierarchy,
 Requires at least: 6.3
 Tested up to:      7.0
 Requires PHP:      8.0
-Stable tag:        1.0.0
+Stable tag:        1.0.1
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -170,6 +170,11 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 
 == Changelog ==
 
+= 1.0.1 =
+* Fix: Escaped integer output in admin number field to satisfy WordPress coding standards
+* Update: Freemius premium slug updated to `drillnav-drilldown-navigation-pro`
+* Update: Freemius premium suffix changed to `(Pro)`
+
 = 1.0.0 =
 * Initial release
 * Gutenberg block with live ServerSideRender preview in the editor
@@ -188,6 +193,9 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 * WordPress Coding Standards compliant
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+No upgrade steps required.
 
 = 1.0.0 =
 Initial release. No upgrade steps required.
