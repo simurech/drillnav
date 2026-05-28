@@ -295,6 +295,23 @@ class Admin {
 		);
 
 		add_settings_field(
+			'layout',
+			__( 'Layout', 'drillnav-drilldown-navigation' ),
+			array( $this, 'field_select' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_appearance',
+			array(
+				'key'     => 'layout',
+				'options' => array(
+					'list'        => __( 'List (default)', 'drillnav-drilldown-navigation' ),
+					'horizontal'  => __( 'Horizontal', 'drillnav-drilldown-navigation' ),
+					'accordion'   => __( 'Accordion (Pro)', 'drillnav-drilldown-navigation' ),
+					'mega'        => __( 'Mega (Pro)', 'drillnav-drilldown-navigation' ),
+				),
+			)
+		);
+
+		add_settings_field(
 			'style_preset',
 			__( 'Style preset', 'drillnav-drilldown-navigation' ),
 			array( $this, 'field_select' ),

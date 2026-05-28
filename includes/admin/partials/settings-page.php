@@ -71,6 +71,7 @@ $is_pro_active = function_exists( 'drillnav_fs' ) && drillnav_fs()->can_use_prem
 					<tr><td><code>mobile_toggle</code></td><td><code>no</code></td><td><?php esc_html_e( 'Show a hamburger icon on mobile that opens the navigation as a side drawer (yes / no)', 'drillnav-drilldown-navigation' ); ?></td></tr>
 					<tr><td><code>max_width</code></td><td></td><td><?php esc_html_e( 'Limit the width of the navigation container, e.g. 300px or 60%. Leave empty for full width.', 'drillnav-drilldown-navigation' ); ?></td></tr>
 					<tr><td><code>multiple_back_buttons</code></td><td><code>no</code></td><td><?php esc_html_e( 'Show one back button per drilled level (yes / no)', 'drillnav-drilldown-navigation' ); ?></td></tr>
+					<tr><td><code>layout</code></td><td><code>list</code></td><td><?php esc_html_e( 'Display layout: list, horizontal, accordion (Pro), mega (Pro)', 'drillnav-drilldown-navigation' ); ?></td></tr>
 					<tr><td><code>style_preset</code></td><td><code>default</code></td><td><?php esc_html_e( 'Style preset: default, compact, comfortable, or cards (Pro)', 'drillnav-drilldown-navigation' ); ?></td></tr>
 				</tbody>
 			</table>

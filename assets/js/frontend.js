@@ -111,6 +111,7 @@
 			}
 
 			this.multipleBackButtons = !! ( this.data && this.data.settings && this.data.settings.multiple_back_buttons );
+			this.layout              = root.dataset.drillnavLayout || 'list';
 
 			this.panel = document.getElementById( this.instanceId + '-panel' );
 			if ( ! this.panel ) {
@@ -119,6 +120,13 @@
 
 			this.list = this.panel.querySelector( '.drillnav__list' );
 			if ( ! this.list ) {
+				return;
+			}
+
+			// Accordion layout: different interaction model – no drill-down stack.
+			if ( this.layout === 'accordion' ) {
+				this._bindAccordionEvents();
+				this._autoExpandAccordion();
 				return;
 			}
 
@@ -344,6 +352,80 @@
 			const cls = 'drillnav--anim-' + this.animation + '-' + direction;
 			ul.classList.add( cls );
 			ul.addEventListener( 'animationend', () => ul.classList.remove( cls ), { once: true } );
+		}
+
+		/* -----------------------------------------------------------------------
+		 * Accordion mode
+		 * -------------------------------------------------------------------- */
+
+		_bindAccordionEvents() {
+			this.root.addEventListener( 'click', ( e ) => {
+				const btn = e.target.closest( '[data-drillnav-item-id]' );
+				if ( btn && this.root.contains( btn ) ) {
+					e.preventDefault();
+					this._toggleAccordionItem( btn );
+				}
+			} );
+
+			this.root.addEventListener( 'keydown', ( e ) => {
+				if ( e.key === 'Escape' ) {
+					const openItem = e.target.closest( '.drillnav__item.is-open' );
+					if ( openItem ) {
+						const btn = openItem.querySelector( '[data-drillnav-item-id]' );
+						if ( btn ) {
+							e.preventDefault();
+							this._toggleAccordionItem( btn );
+							btn.focus( { preventScroll: true } );
+						}
+					}
+				}
+			} );
+		}
+
+		/** @param {HTMLButtonElement} btn */
+		_toggleAccordionItem( btn ) {
+			const li      = btn.closest( '.drillnav__item' );
+			const sublist = li ? li.querySelector( '[data-drillnav-sub]' ) : null;
+			if ( ! li || ! sublist ) {
+				return;
+			}
+			const isOpen = li.classList.contains( 'is-open' );
+			if ( isOpen ) {
+				sublist.style.maxHeight = '0';
+				li.classList.remove( 'is-open' );
+				btn.setAttribute( 'aria-expanded', 'false' );
+				sublist.setAttribute( 'aria-hidden', 'true' );
+			} else {
+				sublist.style.maxHeight = sublist.scrollHeight + 'px';
+				li.classList.add( 'is-open' );
+				btn.setAttribute( 'aria-expanded', 'true' );
+				sublist.setAttribute( 'aria-hidden', 'false' );
+				this._recalcParentHeights( sublist );
+			}
+		}
+
+		/** Recalculates max-height on all open ancestor sublists after a nested open. */
+		_recalcParentHeights( el ) {
+			let node = el.parentElement;
+			while ( node && node !== this.root ) {
+				if ( node.dataset.drillnavSub !== undefined && node.style.maxHeight ) {
+					node.style.maxHeight = node.scrollHeight + 'px';
+				}
+				node = node.parentElement;
+			}
+		}
+
+		/** Opens the path to the current page on initial render. */
+		_autoExpandAccordion() {
+			const ancestorIds = new Set(
+				( this.data.ancestors || [] ).map( ( a ) => String( a.id ) )
+			);
+			ancestorIds.forEach( ( id ) => {
+				const btn = this.root.querySelector( '[data-drillnav-item-id="' + id + '"]' );
+				if ( btn ) {
+					this._toggleAccordionItem( btn );
+				}
+			} );
 		}
 
 		/** @returns {boolean} */

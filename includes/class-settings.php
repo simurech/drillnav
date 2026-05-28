@@ -41,6 +41,7 @@ class Settings {
 			// Accessibility.
 			'nav_label'          => '', // Empty = default translated string.
 
+			'layout'             => 'list',    // 'list' | 'horizontal' | 'accordion' (Pro) | 'mega' (Pro).
 			'style_preset'       => 'default', // 'default' | 'compact' | 'comfortable' | 'cards' (Pro).
 
 			// Advanced.
@@ -135,6 +136,9 @@ class Settings {
 		$clean['color_scheme']  = in_array( $raw['color_scheme'] ?? '', array( 'default', 'light', 'dark' ), true )
 			? $raw['color_scheme']
 			: 'default';
+		$clean['layout']        = in_array( $raw['layout'] ?? '', array( 'list', 'horizontal', 'accordion', 'mega' ), true )
+			? $raw['layout']
+			: 'list';
 		$clean['style_preset']  = in_array( $raw['style_preset'] ?? '', array( 'default', 'compact', 'comfortable', 'cards' ), true )
 			? $raw['style_preset']
 			: 'default';

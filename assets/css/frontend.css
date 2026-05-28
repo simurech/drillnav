@@ -105,6 +105,53 @@
 }
 
 /* =========================================================================
+   Layout Variants
+   ========================================================================= */
+
+/* list: no additional styles needed (default behaviour) */
+
+.drillnav--layout-horizontal .drillnav__list {
+	display:     flex;
+	flex-wrap:   wrap;
+	align-items: center;
+	gap:         0 var(--drillnav-item-padding-x);
+}
+
+@media (max-width: 480px) {
+	.drillnav--layout-horizontal .drillnav__list {
+		flex-direction: column;
+		align-items:    stretch;
+	}
+}
+
+/* Mega (Pro) */
+.drillnav--layout-mega .drillnav__list {
+	display:               grid;
+	grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+	gap:                   var(--drillnav-item-padding-y) var(--drillnav-item-padding-x);
+}
+
+.drillnav--layout-mega .drillnav__expand-btn {
+	display: none;
+}
+
+/* Accordion (Pro) */
+.drillnav--layout-accordion .drillnav__sublist {
+	overflow:   hidden;
+	max-height: 0;
+	padding-left: calc(var(--drillnav-item-padding-x) + 0.5rem);
+	transition: max-height var(--drillnav-transition-speed) ease;
+}
+
+.drillnav--layout-accordion .drillnav__expand-btn {
+	transition: transform var(--drillnav-transition-speed) ease;
+}
+
+.drillnav--layout-accordion .drillnav__item.is-open > .drillnav__row > .drillnav__expand-btn {
+	transform: rotate(90deg);
+}
+
+/* =========================================================================
    Base Reset
    ========================================================================= */
 

@@ -62,6 +62,7 @@
 		 */
 		edit: function ( { attributes, setAttributes } ) {
 			const {
+				layout,
 				depth,
 				showHome,
 				homeLabel,
@@ -125,6 +126,45 @@
 							onChange: ( val ) => setAttributes( { depth: val } ),
 						} )
 					),
+				),
+
+				/* --- Layout --- */
+				el( PanelBody,
+					{
+						title:       __( 'Layout', 'drillnav-drilldown-navigation' ),
+						initialOpen: true,
+					},
+					el( PanelRow, null,
+						el( SelectControl, {
+							label:    __( 'Display layout', 'drillnav-drilldown-navigation' ),
+							value:    layout,
+							options:  [
+								{ label: __( 'List (default)', 'drillnav-drilldown-navigation' ),  value: 'list'        },
+								{ label: __( 'Horizontal', 'drillnav-drilldown-navigation' ),       value: 'horizontal'  },
+								{ label: __( 'Accordion (Pro)', 'drillnav-drilldown-navigation' ),  value: 'accordion'   },
+								{ label: __( 'Mega (Pro)', 'drillnav-drilldown-navigation' ),       value: 'mega'        },
+							],
+							onChange: ( val ) => setAttributes( { layout: val } ),
+						} )
+					),
+					[ 'accordion', 'mega' ].includes( layout ) && ! isPro && el( Notice,
+						{
+							status:        'warning',
+							isDismissible: false,
+						},
+						el( 'span', null,
+							__( 'This layout requires ', 'drillnav-drilldown-navigation' ),
+							el( 'strong', null, __( 'DrillNav Pro', 'drillnav-drilldown-navigation' ) ),
+							'. ',
+							el( 'a',
+								{
+									href:   ( typeof drillnavBlock !== 'undefined' && drillnavBlock.upgradeUrl ) ? drillnavBlock.upgradeUrl : '#',
+									target: '_blank',
+								},
+								__( 'Upgrade →', 'drillnav-drilldown-navigation' )
+							)
+						)
+					)
 				),
 
 				/* --- Style preset --- */

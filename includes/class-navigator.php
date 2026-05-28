@@ -45,6 +45,7 @@ class Navigator {
 				'nav_label'              => (string) $this->settings->get( 'nav_label' ),
 				'max_width'              => (string) $this->settings->get( 'max_width' ),
 				'multiple_back_buttons'  => (bool) $this->settings->get( 'multiple_back_buttons' ),
+				'layout'                 => (string) $this->settings->get( 'layout' ),
 				'style_preset'           => (string) $this->settings->get( 'style_preset' ),
 				'custom_font_size'        => '',
 				'custom_padding_y'        => '',
@@ -84,6 +85,7 @@ class Navigator {
 				'nav_label'              => (string) apply_filters( 'drillnav_translate_string', $args['nav_label'], 'nav_label' ),
 				'max_width'              => $args['max_width'],
 				'multiple_back_buttons'  => $args['multiple_back_buttons'],
+				'layout'                 => $args['layout'],
 				'style_preset'           => $args['style_preset'],
 				'custom_font_size'        => $args['custom_font_size'],
 				'custom_padding_y'        => $args['custom_padding_y'],
@@ -106,6 +108,10 @@ class Navigator {
 		 * @param array<string,mixed> $args
 		 */
 		$data = (array) apply_filters( 'drillnav_nav_items', $data, $args );
+
+		if ( 'accordion' === $args['layout'] ) {
+			$data['tree'] = $this->get_subtree( 0, $args );
+		}
 
 		$this->cache->set( $cache_key, $data );
 		return $data;
@@ -290,5 +296,29 @@ class Navigator {
 			'is_current'   => is_front_page(),
 			'has_children' => true,
 		);
+	}
+
+	/**
+	 * Returns a recursive tree of items for the accordion layout.
+	 *
+	 * @param int                 $parent_id Starting parent (0 = top-level).
+	 * @param array<string,mixed> $args
+	 * @param int                 $level     Current recursion depth (0-based).
+	 * @return array<int,array<string,mixed>>
+	 */
+	private function get_subtree( int $parent_id, array $args, int $level = 0 ): array {
+		$items     = $this->get_children( $parent_id, $args );
+		$max_depth = (int) ( $args['depth'] ?? 0 );
+
+		foreach ( $items as &$item ) {
+			if ( $item['has_children'] && ( $max_depth === 0 || $level < $max_depth - 1 ) ) {
+				$item['children'] = $this->get_subtree( (int) $item['id'], $args, $level + 1 );
+			} else {
+				$item['children'] = array();
+			}
+		}
+		unset( $item );
+
+		return $items;
 	}
 }

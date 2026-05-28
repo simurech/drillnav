@@ -12,7 +12,7 @@
 // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- intentional template scope.
 defined( 'ABSPATH' ) || exit;
 
-if ( empty( $nav_data ) || empty( $nav_data['current_level'] ) ) {
+if ( empty( $nav_data ) || ( empty( $nav_data['current_level'] ) && empty( $nav_data['tree'] ) ) ) {
 	return;
 }
 
@@ -33,10 +33,18 @@ $nav_label = ! empty( $settings['nav_label'] )
 	/* translators: ARIA label for the contextual page navigation landmark. */
 	: __( 'Page navigation', 'drillnav-drilldown-navigation' );
 
-// Style preset – Cards requires Pro; fall back to default silently.
-$style_preset  = (string) ( $settings['style_preset'] ?? 'default' );
-$pro_presets   = array( 'cards' );
 $is_pro_active = function_exists( 'drillnav_fs' ) && drillnav_fs()->can_use_premium_code__premium_only();
+
+// Layout – accordion/mega require Pro; fall back to list silently.
+$layout      = (string) ( $settings['layout'] ?? 'list' );
+$pro_layouts = array( 'accordion', 'mega' );
+if ( in_array( $layout, $pro_layouts, true ) && ! $is_pro_active ) {
+	$layout = 'list';
+}
+
+// Style preset – Cards requires Pro; fall back to default silently.
+$style_preset = (string) ( $settings['style_preset'] ?? 'default' );
+$pro_presets  = array( 'cards' );
 if ( in_array( $style_preset, $pro_presets, true ) && ! $is_pro_active ) {
 	$style_preset = 'default';
 }
@@ -48,6 +56,9 @@ if ( 'default' !== $color_scheme ) {
 }
 if ( 'default' !== $style_preset ) {
 	$nav_classes[] = 'drillnav--preset-' . esc_attr( $style_preset );
+}
+if ( 'list' !== $layout ) {
+	$nav_classes[] = 'drillnav--layout-' . esc_attr( $layout );
 }
 if ( $mobile_toggle ) {
 	$nav_classes[] = 'drillnav--drawer-nav';
@@ -109,12 +120,76 @@ $json_data = wp_json_encode(
 	aria-label="<?php echo esc_attr( $nav_label ); ?>"
 	data-drillnav-instance="<?php echo esc_attr( $instance ); ?>"
 	data-drillnav-animation="<?php echo esc_attr( $animation ); ?>"
+	data-drillnav-layout="<?php echo esc_attr( $layout ); ?>"
 	<?php echo $nav_style_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above via esc_attr. ?>
 >
 	<?php // Hidden JSON data payload – read by frontend.js. ?>
 	<script type="application/json" id="<?php echo esc_attr( $instance ); ?>-data">
 		<?php echo $json_data; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_json_encode output is safe. ?>
 	</script>
+
+	<?php if ( 'accordion' === $layout ) : ?>
+	<?php
+	$tree         = $nav_data['tree'] ?? array();
+	$render_items = null;
+	$render_items = function( array $items ) use ( &$render_items, $current_post_id ): void {
+		foreach ( $items as $item ) {
+			$item_id      = (int) $item['id'];
+			$item_title   = (string) $item['title'];
+			$item_url     = (string) $item['url'];
+			$is_current   = (bool) $item['is_current'];
+			$has_children = ! empty( $item['children'] );
+
+			$li_classes = array( 'drillnav__item' );
+			if ( $is_current ) {
+				$li_classes[] = 'drillnav__item--current';
+			}
+			if ( $has_children ) {
+				$li_classes[] = 'drillnav__item--has-children';
+			}
+			?>
+			<li class="<?php echo esc_attr( implode( ' ', $li_classes ) ); ?>" role="listitem">
+				<div class="drillnav__row">
+					<a
+						href="<?php echo esc_url( $item_url ); ?>"
+						class="drillnav__link"
+						<?php if ( $is_current ) : ?>
+						aria-current="page"
+						<?php endif; ?>
+					>
+						<?php echo esc_html( $item_title ); ?>
+					</a>
+					<?php if ( $has_children ) : ?>
+					<button
+						type="button"
+						class="drillnav__expand-btn"
+						aria-label="<?php
+							/* translators: %s: page title */
+							echo esc_attr( sprintf( __( 'Show sub-pages of %s', 'drillnav-drilldown-navigation' ), $item_title ) );
+						?>"
+						aria-expanded="false"
+						data-drillnav-item-id="<?php echo esc_attr( (string) $item_id ); ?>"
+					>
+						<span class="drillnav__arrow" aria-hidden="true">&#8250;</span>
+					</button>
+					<?php endif; ?>
+				</div>
+				<?php if ( $has_children ) : ?>
+				<ul class="drillnav__sublist" role="list" data-drillnav-sub aria-hidden="true">
+					<?php $render_items( $item['children'] ); ?>
+				</ul>
+				<?php endif; ?>
+			</li>
+			<?php
+		}
+	};
+	?>
+	<div class="drillnav__panel" id="<?php echo esc_attr( $instance ); ?>-panel">
+		<ul class="drillnav__list" role="list">
+			<?php $render_items( $tree ); ?>
+		</ul>
+	</div>
+	<?php else : ?>
 
 	<?php if ( $show_back && $back_item ) : ?>
 	<div class="drillnav__back-wrap">
@@ -187,6 +262,7 @@ $json_data = wp_json_encode(
 			<?php endforeach; ?>
 		</ul>
 	</div>
+	<?php endif; ?>
 </nav>
 <?php if ( $mobile_toggle ) : ?>
 </div>
