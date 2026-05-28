@@ -95,6 +95,45 @@
 }
 
 /* =========================================================================
+   Icons (Pro)
+   ========================================================================= */
+
+.drillnav__icon {
+	display:        inline-block;
+	margin-right:   0.3em;
+	vertical-align: middle;
+	line-height:    1;
+}
+
+.drillnav__icon.dashicons {
+	font-size: 1.1em;
+	width:     1.1em;
+	height:    1.1em;
+}
+
+/* =========================================================================
+   Badges (Pro)
+   ========================================================================= */
+
+.drillnav__badge {
+	display:        inline-block;
+	padding:        0.1em 0.45em;
+	border-radius:  3px;
+	font-size:      0.7em;
+	font-weight:    700;
+	line-height:    1.4;
+	vertical-align: middle;
+	margin-left:    0.4em;
+	white-space:    nowrap;
+}
+
+.drillnav__badge--red    { background: #dc2626; color: #fff; }
+.drillnav__badge--green  { background: #16a34a; color: #fff; }
+.drillnav__badge--blue   { background: #2563eb; color: #fff; }
+.drillnav__badge--orange { background: #ea580c; color: #fff; }
+.drillnav__badge--gray   { background: #6b7280; color: #fff; }
+
+/* =========================================================================
    Style Presets
    ========================================================================= */
 

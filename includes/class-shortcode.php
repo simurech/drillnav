@@ -41,6 +41,11 @@ class Shortcode {
 
 	/** Registers (but does not enqueue) the frontend assets. */
 	public function register_assets(): void {
+		// Dashicons may be needed for icon support (Pro); enqueue when Pro is active.
+		if ( function_exists( 'drillnav_fs' ) && drillnav_fs()->can_use_premium_code__premium_only() ) {
+			wp_enqueue_style( 'dashicons' );
+		}
+
 		if ( $this->settings->get( 'load_css' ) ) {
 			wp_register_style(
 				'drillnav-frontend',

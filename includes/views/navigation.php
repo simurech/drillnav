@@ -136,6 +136,33 @@ $json_data = wp_json_encode(
 			}
 		}
 	};
+
+	// Helper: renders the optional icon prefix inside a link.
+	$render_icon = static function( array $item ): void {
+		if ( empty( $item['icon'] ) ) {
+			return;
+		}
+		$icon = (string) $item['icon'];
+		if ( str_starts_with( $icon, 'dashicons-' ) ) {
+			printf( '<span class="dashicons %s drillnav__icon" aria-hidden="true"></span>', esc_attr( $icon ) );
+		} else {
+			printf( '<span class="drillnav__icon" aria-hidden="true">%s</span>', esc_html( $icon ) );
+		}
+	};
+
+	// Helper: renders the optional badge after a link (inside the row div).
+	$render_badge = static function( array $item ): void {
+		if ( empty( $item['badge'] ) ) {
+			return;
+		}
+		$valid_colors = array( 'red', 'green', 'blue', 'orange', 'gray' );
+		$color        = in_array( $item['badge_color'] ?? 'red', $valid_colors, true ) ? $item['badge_color'] : 'red';
+		printf(
+			'<span class="drillnav__badge drillnav__badge--%s" aria-hidden="true">%s</span>',
+			esc_attr( $color ),
+			esc_html( (string) $item['badge'] )
+		);
+	};
 	?>
 
 	<?php if ( 'accordion' === $layout ) : ?>
@@ -170,9 +197,10 @@ $json_data = wp_json_encode(
 						<?php if ( $is_current ) : ?>
 						aria-current="page"
 						<?php endif; ?>
-					>
+					><?php $render_icon( $item ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside helper. ?>
 						<?php echo esc_html( $item_title ); ?>
 					</a>
+					<?php $render_badge( $item ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside helper. ?>
 					<?php if ( $has_children ) : ?>
 					<button
 						type="button"
@@ -272,9 +300,10 @@ $json_data = wp_json_encode(
 						<?php if ( $is_current ) : ?>
 						aria-current="page"
 						<?php endif; ?>
-					>
+					><?php $render_icon( $item ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside helper. ?>
 						<?php echo esc_html( $item_title ); ?>
 					</a>
+					<?php $render_badge( $item ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside helper. ?>
 					<?php if ( $has_children ) : ?>
 					<button
 						type="button"

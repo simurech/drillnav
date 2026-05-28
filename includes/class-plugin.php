@@ -95,8 +95,14 @@ final class Plugin {
 		$multilingual = new Integrations\Multilingual();
 		$multilingual->register( $this->loader );
 
-		// WooCommerce Pro integration. The entire block is auto-stripped from the
-		// free version by Freemius because of can_use_premium_code__premium_only().
+		// Pro-only features – entire block auto-stripped from free version by Freemius.
+		if ( drillnav_fs()->can_use_premium_code__premium_only() ) {
+			// Per-page icon & badge meta box.
+			$item_meta = new Admin\ItemMeta();
+			$item_meta->register( $this->loader );
+		}
+
+		// WooCommerce Pro integration.
 		if ( drillnav_fs()->can_use_premium_code__premium_only() && $this->is_woocommerce_active() ) {
 			$woo = new Integrations\Woocommerce( $this->navigator, $this->cache, $this->settings );
 			$woo->register( $this->loader );
