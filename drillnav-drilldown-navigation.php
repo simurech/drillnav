@@ -5,7 +5,7 @@
  * Description:       Contextual drill-down navigation that adapts to the current page. Perfect for deeply nested WordPress site hierarchies. WooCommerce category navigation available in DrillNav Pro.
  * Version:           1.5.0
  * Requires at least: 6.3
- * Requires PHP:      8.0
+ * Requires PHP:      8.1
  * Author:            urech.dev
  * Author URI:        https://urech.dev/
  * License:           GPL-2.0-or-later

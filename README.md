@@ -6,7 +6,7 @@
 
 [![Stable Tag](https://img.shields.io/badge/stable-1.5.0-blue.svg)](https://github.com/simurech/drillnav/releases)
 [![WordPress](https://img.shields.io/badge/WordPress-6.3%2B-21759b.svg)](https://wordpress.org/)
-[![PHP](https://img.shields.io/badge/PHP-8.0%2B-8892be.svg)](https://php.net/)
+[![PHP](https://img.shields.io/badge/PHP-8.1%2B-8892be.svg)](https://php.net/)
 [![License](https://img.shields.io/badge/License-GPL--2.0--or--later-green.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
 
 > Contextual drill-down navigation that adapts to the current page — perfect for deeply nested WordPress sites. Zero configuration required.
@@ -60,7 +60,7 @@ No manual configuration. Place the block, add the shortcode, or drop in the widg
 | Component | Minimum | Recommended |
 |---|---|---|
 | WordPress | 6.3 | Latest |
-| PHP | 8.0 | 8.1+ |
+| PHP | 8.1 | 8.1+ |
 | WooCommerce (Pro only) | 8.0 | Latest |
 
 ---
