@@ -33,8 +33,9 @@ class Settings {
 			'depth'              => 0,    // 0 = unlimited.
 
 			// Appearance.
-			'show_breadcrumb'    => true,
-			'show_back_button'   => true,
+			'max_width'              => '',    // Empty = no max-width constraint.
+			'show_back_button'       => true,
+			'multiple_back_buttons'  => false, // Show one back button per drill level.
 			'animation'          => 'slide', // 'slide' | 'fade' | 'none'.
 
 			// Accessibility.
@@ -108,8 +109,9 @@ class Settings {
 		$clean['home_label']         = sanitize_text_field( $raw['home_label'] ?? '' );
 		$clean['depth']              = absint( $raw['depth'] ?? 0 );
 
-		$clean['show_breadcrumb']    = ! empty( $raw['show_breadcrumb'] );
-		$clean['show_back_button']   = ! empty( $raw['show_back_button'] );
+		$clean['max_width']             = sanitize_text_field( $raw['max_width'] ?? '' );
+		$clean['show_back_button']      = ! empty( $raw['show_back_button'] );
+		$clean['multiple_back_buttons'] = ! empty( $raw['multiple_back_buttons'] );
 		$clean['animation']          = in_array( $raw['animation'] ?? '', array( 'slide', 'fade', 'none' ), true )
 			? $raw['animation']
 			: $defaults['animation'];

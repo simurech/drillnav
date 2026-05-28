@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Assembles the tree of items the frontend needs:
- *  - ancestors (breadcrumb path from root)
+ *  - ancestors (path from root, used for back navigation)
  *  - current level items (siblings of current page + current page itself)
  *  - children of the current page (if any)
  *
@@ -37,13 +37,14 @@ class Navigator {
 			array(
 				'post_type'       => $this->settings->get( 'post_types' )[0] ?? 'page',
 				'depth'           => (int) $this->settings->get( 'depth' ),
-				'show_home'       => (bool) $this->settings->get( 'show_home' ),
-				'home_label'      => (string) $this->settings->get( 'home_label' ),
-				'show_breadcrumb' => (bool) $this->settings->get( 'show_breadcrumb' ),
-				'show_back'       => (bool) $this->settings->get( 'show_back_button' ),
-				'animation'       => (string) $this->settings->get( 'animation' ),
-				'color_scheme'    => (string) $this->settings->get( 'color_scheme' ),
-				'nav_label'       => (string) $this->settings->get( 'nav_label' ),
+				'show_home'              => (bool) $this->settings->get( 'show_home' ),
+				'home_label'             => (string) $this->settings->get( 'home_label' ),
+				'show_back'              => (bool) $this->settings->get( 'show_back_button' ),
+				'animation'              => (string) $this->settings->get( 'animation' ),
+				'color_scheme'           => (string) $this->settings->get( 'color_scheme' ),
+				'nav_label'              => (string) $this->settings->get( 'nav_label' ),
+				'max_width'              => (string) $this->settings->get( 'max_width' ),
+				'multiple_back_buttons'  => (bool) $this->settings->get( 'multiple_back_buttons' ),
 			)
 		);
 
@@ -65,13 +66,14 @@ class Navigator {
 			'children'        => $post_id > 0 ? $this->get_children( $post_id, $args ) : array(),
 			'has_children'    => false,
 			'settings'        => array(
-				'show_home'       => $args['show_home'],
-				'show_breadcrumb' => $args['show_breadcrumb'],
-				'show_back'       => $args['show_back'],
-				'animation'       => $args['animation'],
-				'color_scheme'    => $args['color_scheme'],
-				'home_label'      => (string) apply_filters( 'drillnav_translate_string', $args['home_label'], 'home_label' ) ?: get_bloginfo( 'name' ),
-				'nav_label'       => (string) apply_filters( 'drillnav_translate_string', $args['nav_label'], 'nav_label' ),
+				'show_home'             => $args['show_home'],
+				'show_back'             => $args['show_back'],
+				'animation'             => $args['animation'],
+				'color_scheme'          => $args['color_scheme'],
+				'home_label'            => (string) apply_filters( 'drillnav_translate_string', $args['home_label'], 'home_label' ) ?: get_bloginfo( 'name' ),
+				'nav_label'             => (string) apply_filters( 'drillnav_translate_string', $args['nav_label'], 'nav_label' ),
+				'max_width'             => $args['max_width'],
+				'multiple_back_buttons' => $args['multiple_back_buttons'],
 			),
 		);
 
@@ -90,7 +92,7 @@ class Navigator {
 	}
 
 	/**
-	 * Returns ancestor items (breadcrumb trail) from root to parent.
+	 * Returns ancestor items (path from root to parent, used for back navigation).
 	 *
 	 * @param array<string,mixed> $ctx
 	 * @param array<string,mixed> $args

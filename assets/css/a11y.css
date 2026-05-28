@@ -16,20 +16,18 @@
  * The fallback :focus rule covers browsers that don't support :focus-visible.
  */
 
-.drillnav__link:focus,
-.drillnav__expand-btn:focus,
-.drillnav__back-btn:focus,
-.drillnav__breadcrumb-link:focus,
-.drillnav-toggle-btn:focus {
+.drillnav .drillnav__link:focus,
+.drillnav .drillnav__expand-btn:focus,
+.drillnav .drillnav__back-btn:focus,
+.drillnav-drawer-wrap .drillnav-toggle-btn:focus {
 	/* Fallback for browsers without :focus-visible */
 	outline: 2px solid transparent;
 }
 
-.drillnav__link:focus-visible,
-.drillnav__expand-btn:focus-visible,
-.drillnav__back-btn:focus-visible,
-.drillnav__breadcrumb-link:focus-visible,
-.drillnav-toggle-btn:focus-visible {
+.drillnav .drillnav__link:focus-visible,
+.drillnav .drillnav__expand-btn:focus-visible,
+.drillnav .drillnav__back-btn:focus-visible,
+.drillnav-drawer-wrap .drillnav-toggle-btn:focus-visible {
 	outline:        2px solid currentColor;
 	outline-offset: 2px;
 	border-radius:  2px;
@@ -40,15 +38,14 @@
  * Ensures interactive elements remain distinguishable.
  */
 @media (forced-colors: active) {
-	.drillnav__link:focus-visible,
-	.drillnav__expand-btn:focus-visible,
-	.drillnav__back-btn:focus-visible,
-	.drillnav__breadcrumb-link:focus-visible,
-	.drillnav-toggle-btn:focus-visible {
+	.drillnav .drillnav__link:focus-visible,
+	.drillnav .drillnav__expand-btn:focus-visible,
+	.drillnav .drillnav__back-btn:focus-visible,
+	.drillnav-drawer-wrap .drillnav-toggle-btn:focus-visible {
 		outline: 2px solid ButtonText;
 	}
 
-	.drillnav__expand-btn {
+	.drillnav .drillnav__expand-btn {
 		forced-color-adjust: none;
 	}
 }
@@ -58,7 +55,7 @@
    (used for visually hidden but announced text if needed in JS)
    ========================================================================= */
 
-.drillnav__sr-only {
+.drillnav .drillnav__sr-only {
 	position: absolute;
 	width:    1px;
 	height:   1px;

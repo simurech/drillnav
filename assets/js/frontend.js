@@ -100,7 +100,7 @@
 			this.animation  = root.dataset.drillnavAnimation || 'slide';
 			this.loading    = false;
 
-			// Each entry: { listHTML, backHTML, backWasHidden, triggerItemId }.
+			// Each entry: { listHTML, backHTML, backWasHidden, triggerItemId, parentTitle }.
 			this.levelStack = [];
 
 			const dataEl = document.getElementById( this.instanceId + '-data' );
@@ -109,6 +109,8 @@
 			} catch ( e ) {
 				this.data = {};
 			}
+
+			this.multipleBackButtons = !! ( this.data && this.data.settings && this.data.settings.multiple_back_buttons );
 
 			this.panel = document.getElementById( this.instanceId + '-panel' );
 			if ( ! this.panel ) {
@@ -155,7 +157,12 @@
 				const back = e.target.closest( '[data-drillnav-back]' );
 				if ( back && this.root.contains( back ) && this.levelStack.length > 0 ) {
 					e.preventDefault();
-					this._goBack();
+					const levelAttr = back.dataset.drillnavLevel;
+					if ( levelAttr !== undefined ) {
+						this._goBackToLevel( parseInt( levelAttr, 10 ) );
+					} else {
+						this._goBack();
+					}
 				}
 			} );
 
@@ -210,6 +217,7 @@
 				backHTML:      this.backWrap.innerHTML,
 				backWasHidden: this.backWrap.hidden,
 				triggerItemId: String( postId ),
+				parentTitle:   parentTitle,
 			} );
 
 			// Replace list with children.
@@ -218,10 +226,14 @@
 			this.list.innerHTML = '';
 			this.list.appendChild( frag );
 
-			// Replace back-wrap content with a labelled back button.
-			this.backWrap.innerHTML = '';
-			this.backWrap.hidden    = false;
-			this.backWrap.appendChild( this._makeBackBtn( parentTitle ) );
+			// Update back button(s).
+			if ( this.multipleBackButtons ) {
+				this._renderMultipleBackButtons();
+			} else {
+				this.backWrap.innerHTML = '';
+				this.backWrap.hidden    = false;
+				this.backWrap.appendChild( this._makeBackBtn( parentTitle ) );
+			}
 
 			// Animate: new list slides in from the right.
 			this._animateList( this.list, 'in' );
@@ -236,14 +248,31 @@
 		}
 
 		_goBack() {
-			const state = this.levelStack.pop();
+			this._goBackToLevel( this.levelStack.length - 1 );
+		}
+
+		/**
+		 * Jumps back to the state saved at targetIndex in the levelStack.
+		 *
+		 * @param {number} targetIndex  Stack index of the state to restore.
+		 */
+		_goBackToLevel( targetIndex ) {
+			const state = this.levelStack[ targetIndex ];
 			if ( ! state ) {
 				return;
 			}
 
-			this.list.innerHTML     = state.listHTML;
-			this.backWrap.innerHTML = state.backHTML;
-			this.backWrap.hidden    = state.backWasHidden;
+			const triggerId = state.triggerItemId;
+			this.levelStack = this.levelStack.slice( 0, targetIndex );
+
+			this.list.innerHTML = state.listHTML;
+
+			if ( this.multipleBackButtons ) {
+				this._renderMultipleBackButtons();
+			} else {
+				this.backWrap.innerHTML = state.backHTML;
+				this.backWrap.hidden    = state.backWasHidden;
+			}
 
 			// Animate: restored list slides in from the left.
 			this._animateList( this.list, 'back' );
@@ -251,7 +280,7 @@
 			// A11Y: return focus to the button that initiated the drill-down.
 			requestAnimationFrame( () => {
 				const btn = this.list.querySelector(
-					'[data-drillnav-item-id="' + state.triggerItemId + '"]'
+					'[data-drillnav-item-id="' + triggerId + '"]'
 				);
 				if ( btn ) {
 					btn.focus( { preventScroll: true } );
@@ -259,12 +288,30 @@
 			} );
 		}
 
-		/** @param {string} label  Parent page title shown in the back button. */
-		_makeBackBtn( label ) {
+		/**
+		 * Renders all accumulated back buttons, one per stack entry (oldest first).
+		 * Called only when multipleBackButtons mode is active.
+		 */
+		_renderMultipleBackButtons() {
+			this.backWrap.innerHTML = '';
+			this.backWrap.hidden    = this.levelStack.length === 0;
+			this.levelStack.forEach( ( state, index ) => {
+				this.backWrap.appendChild( this._makeBackBtn( state.parentTitle, index ) );
+			} );
+		}
+
+		/**
+		 * @param {string}      label       Parent page title shown in the back button.
+		 * @param {number|null} levelIndex  Stack index this button jumps back to (null = single-mode).
+		 */
+		_makeBackBtn( label, levelIndex = null ) {
 			const btn     = document.createElement( 'button' );
 			btn.type      = 'button';
 			btn.className = 'drillnav__back-btn';
 			btn.dataset.drillnavBack = '';
+			if ( levelIndex !== null ) {
+				btn.dataset.drillnavLevel = String( levelIndex );
+			}
 			btn.setAttribute(
 				'aria-label',
 				( window.drillnavL10n

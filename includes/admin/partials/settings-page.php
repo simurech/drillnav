@@ -65,10 +65,12 @@ $is_pro_active = function_exists( 'drillnav_fs' ) && drillnav_fs()->can_use_prem
 				</thead>
 				<tbody>
 					<tr><td><code>depth</code></td><td><code>0</code></td><td><?php esc_html_e( 'Max depth (0 = unlimited)', 'drillnav-drilldown-navigation' ); ?></td></tr>
-					<tr><td><code>show_home</code></td><td><code>yes</code></td><td><?php esc_html_e( 'Show home link in breadcrumb (yes / no)', 'drillnav-drilldown-navigation' ); ?></td></tr>
+					<tr><td><code>show_home</code></td><td><code>yes</code></td><td><?php esc_html_e( 'Show home link as first back-navigation step (yes / no)', 'drillnav-drilldown-navigation' ); ?></td></tr>
 					<tr><td><code>home_label</code></td><td><?php esc_html_e( 'site name', 'drillnav-drilldown-navigation' ); ?></td><td><?php esc_html_e( 'Label for the home link', 'drillnav-drilldown-navigation' ); ?></td></tr>
 					<tr><td><code>post_type</code></td><td><code>page</code></td><td><?php esc_html_e( 'Hierarchical post type to navigate', 'drillnav-drilldown-navigation' ); ?></td></tr>
 					<tr><td><code>mobile_toggle</code></td><td><code>no</code></td><td><?php esc_html_e( 'Show a hamburger icon on mobile that opens the navigation as a side drawer (yes / no)', 'drillnav-drilldown-navigation' ); ?></td></tr>
+					<tr><td><code>max_width</code></td><td></td><td><?php esc_html_e( 'Limit the width of the navigation container, e.g. 300px or 60%. Leave empty for full width.', 'drillnav-drilldown-navigation' ); ?></td></tr>
+					<tr><td><code>multiple_back_buttons</code></td><td><code>no</code></td><td><?php esc_html_e( 'Show one back button per drilled level (yes / no)', 'drillnav-drilldown-navigation' ); ?></td></tr>
 				</tbody>
 			</table>
 			<p><code>[drillnav depth="2" show_home="yes" home_label="Home" post_type="page" mobile_toggle="yes"]</code></p>

@@ -101,7 +101,7 @@ class Admin {
 					'<thead><tr><th>' . esc_html__( 'Attribute', 'drillnav-drilldown-navigation' ) . '</th><th>' . esc_html__( 'Default', 'drillnav-drilldown-navigation' ) . '</th><th>' . esc_html__( 'Description', 'drillnav-drilldown-navigation' ) . '</th></tr></thead>' .
 					'<tbody>' .
 					'<tr><td><code>depth</code></td><td><code>0</code></td><td>' . esc_html__( 'Maximum number of levels to display. 0 = unlimited.', 'drillnav-drilldown-navigation' ) . '</td></tr>' .
-					'<tr><td><code>show_home</code></td><td><code>yes</code></td><td>' . esc_html__( 'Show/hide the home link. Values: yes / no.', 'drillnav-drilldown-navigation' ) . '</td></tr>' .
+					'<tr><td><code>show_home</code></td><td><code>yes</code></td><td>' . esc_html__( 'Show/hide the home link as the first back-navigation step. Values: yes / no.', 'drillnav-drilldown-navigation' ) . '</td></tr>' .
 					'<tr><td><code>home_label</code></td><td>' . esc_html__( 'Site name', 'drillnav-drilldown-navigation' ) . '</td><td>' . esc_html__( 'Custom label for the home link.', 'drillnav-drilldown-navigation' ) . '</td></tr>' .
 					'<tr><td><code>post_type</code></td><td><code>page</code></td><td>' . esc_html__( 'Hierarchical post type to navigate (e.g. page, product). Overrides the global setting for this instance only.', 'drillnav-drilldown-navigation' ) . '</td></tr>' .
 					'</tbody></table>' .
@@ -192,7 +192,7 @@ class Admin {
 			array( $this, 'field_checkbox' ),
 			'drillnav-drilldown-navigation',
 			'drillnav_general',
-			array( 'key' => 'show_home', 'label' => __( 'Include a link to the site home in the breadcrumb path.', 'drillnav-drilldown-navigation' ) )
+			array( 'key' => 'show_home', 'label' => __( 'Include a link to the site home as the first back-navigation step.', 'drillnav-drilldown-navigation' ) )
 		);
 
 		add_settings_field(
@@ -231,12 +231,16 @@ class Admin {
 		);
 
 		add_settings_field(
-			'show_breadcrumb',
-			__( 'Show breadcrumb', 'drillnav-drilldown-navigation' ),
-			array( $this, 'field_checkbox' ),
+			'max_width',
+			__( 'Max width', 'drillnav-drilldown-navigation' ),
+			array( $this, 'field_text' ),
 			'drillnav-drilldown-navigation',
 			'drillnav_appearance',
-			array( 'key' => 'show_breadcrumb', 'label' => __( 'Display the ancestor breadcrumb trail above the navigation.', 'drillnav-drilldown-navigation' ) )
+			array(
+				'key'         => 'max_width',
+				'placeholder' => __( 'e.g. 300px or 60%', 'drillnav-drilldown-navigation' ),
+				'help'        => __( 'Limit the width of the navigation container. Leave empty for full width. Can be overridden per block or shortcode.', 'drillnav-drilldown-navigation' ),
+			)
 		);
 
 		add_settings_field(
@@ -246,6 +250,15 @@ class Admin {
 			'drillnav-drilldown-navigation',
 			'drillnav_appearance',
 			array( 'key' => 'show_back_button', 'label' => __( 'Display a back-navigation link above the item list.', 'drillnav-drilldown-navigation' ) )
+		);
+
+		add_settings_field(
+			'multiple_back_buttons',
+			__( 'Multiple back buttons', 'drillnav-drilldown-navigation' ),
+			array( $this, 'field_checkbox' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_appearance',
+			array( 'key' => 'multiple_back_buttons', 'label' => __( 'Show one back button per drilled level (oldest first). Click any to jump directly to that level.', 'drillnav-drilldown-navigation' ) )
 		);
 
 		add_settings_field(
@@ -385,7 +398,7 @@ class Admin {
 			array(
 				'key'         => 'blog_label',
 				'placeholder' => __( 'Auto (uses Posts page title)', 'drillnav-drilldown-navigation' ),
-				'help'        => __( 'Label for the blog root link in the breadcrumb. Leave empty to auto-detect from the Posts page title set in Settings > Reading.', 'drillnav-drilldown-navigation' ),
+				'help'        => __( 'Label for the blog root link in back navigation. Leave empty to auto-detect from the Posts page title set in Settings > Reading.', 'drillnav-drilldown-navigation' ),
 			)
 		);
 

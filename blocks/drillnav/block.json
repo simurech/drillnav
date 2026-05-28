@@ -42,10 +42,6 @@
 			"type": "string",
 			"default": ""
 		},
-		"showBreadcrumb": {
-			"type": "boolean",
-			"default": true
-		},
 		"showBackButton": {
 			"type": "boolean",
 			"default": true
@@ -65,6 +61,14 @@
 			"enum": ["default", "light", "dark"]
 		},
 		"mobileToggle": {
+			"type": "boolean",
+			"default": false
+		},
+		"maxWidth": {
+			"type": "string",
+			"default": ""
+		},
+		"multipleBackButtons": {
 			"type": "boolean",
 			"default": false
 		}

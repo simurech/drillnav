@@ -65,12 +65,13 @@
 				depth,
 				showHome,
 				homeLabel,
-				showBreadcrumb,
 				showBackButton,
 				animation,
 				colorScheme,
 				mobileToggle,
 				postType,
+				maxWidth,
+				multipleBackButtons,
 			} = attributes;
 
 			const isPro = typeof drillnavBlock !== 'undefined' && drillnavBlock.isPro;
@@ -92,7 +93,7 @@
 					el( PanelRow, null,
 						el( ToggleControl, {
 							label:    __( 'Show home link', 'drillnav-drilldown-navigation' ),
-							help:     __( 'Adds a link to the site home as the first breadcrumb ancestor.', 'drillnav-drilldown-navigation' ),
+							help:     __( 'Adds a link to the site home as the first back-navigation step.', 'drillnav-drilldown-navigation' ),
 							checked:  showHome,
 							onChange: ( val ) => setAttributes( { showHome: val } ),
 						} )
@@ -124,16 +125,17 @@
 					},
 					el( PanelRow, null,
 						el( ToggleControl, {
-							label:    __( 'Show breadcrumb', 'drillnav-drilldown-navigation' ),
-							checked:  showBreadcrumb,
-							onChange: ( val ) => setAttributes( { showBreadcrumb: val } ),
-						} )
-					),
-					el( PanelRow, null,
-						el( ToggleControl, {
 							label:    __( 'Show back button', 'drillnav-drilldown-navigation' ),
 							checked:  showBackButton,
 							onChange: ( val ) => setAttributes( { showBackButton: val } ),
+						} )
+					),
+					showBackButton && el( PanelRow, null,
+						el( ToggleControl, {
+							label:    __( 'Multiple back buttons', 'drillnav-drilldown-navigation' ),
+							help:     __( 'Shows one back button per drilled level (oldest first). Click any to jump directly to that level.', 'drillnav-drilldown-navigation' ),
+							checked:  multipleBackButtons,
+							onChange: ( val ) => setAttributes( { multipleBackButtons: val } ),
 						} )
 					),
 					el( PanelRow, null,
@@ -158,6 +160,15 @@
 								{ label: __( 'Dark', 'drillnav-drilldown-navigation' ),                        value: 'dark'    },
 							],
 							onChange: ( val ) => setAttributes( { colorScheme: val } ),
+						} )
+					),
+					el( PanelRow, null,
+						el( TextControl, {
+							label:       __( 'Max width', 'drillnav-drilldown-navigation' ),
+							help:        __( 'e.g. 300px or 60%. Leave empty for full width.', 'drillnav-drilldown-navigation' ),
+							value:       maxWidth,
+							onChange:    ( val ) => setAttributes( { maxWidth: val } ),
+							placeholder: '',
 						} )
 					),
 				),

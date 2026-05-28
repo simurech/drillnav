@@ -18,10 +18,10 @@ if ( empty( $nav_data ) || empty( $nav_data['current_level'] ) ) {
 
 $mobile_toggle   = ! empty( $mobile_toggle ?? false );
 $settings        = $nav_data['settings'] ?? array();
-$show_breadcrumb = ! empty( $settings['show_breadcrumb'] );
 $show_back       = ! empty( $settings['show_back'] );
 $animation       = (string) ( $settings['animation'] ?? 'slide' );
 $color_scheme    = (string) ( $settings['color_scheme'] ?? 'default' );
+$max_width       = (string) ( $settings['max_width'] ?? '' );
 $ancestors       = $nav_data['ancestors'] ?? array();
 $current_level   = $nav_data['current_level'] ?? array();
 $current_post_id = (int) ( $nav_data['post_id'] ?? 0 );
@@ -77,33 +77,14 @@ $json_data = wp_json_encode(
 	aria-label="<?php echo esc_attr( $nav_label ); ?>"
 	data-drillnav-instance="<?php echo esc_attr( $instance ); ?>"
 	data-drillnav-animation="<?php echo esc_attr( $animation ); ?>"
+	<?php if ( $max_width ) : ?>
+	style="--drillnav-max-width: <?php echo esc_attr( $max_width ); ?>"
+	<?php endif; ?>
 >
 	<?php // Hidden JSON data payload – read by frontend.js. ?>
 	<script type="application/json" id="<?php echo esc_attr( $instance ); ?>-data">
 		<?php echo $json_data; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_json_encode output is safe. ?>
 	</script>
-
-	<?php if ( $show_breadcrumb && ! empty( $ancestors ) ) : ?>
-	<nav class="drillnav__breadcrumb" aria-label="<?php esc_attr_e( 'Breadcrumb', 'drillnav-drilldown-navigation' ); ?>">
-		<ol class="drillnav__breadcrumb-list" role="list">
-			<?php foreach ( $ancestors as $i => $ancestor ) : ?>
-			<?php $is_last = ( $i === count( $ancestors ) - 1 ); ?>
-			<li class="drillnav__breadcrumb-item" role="listitem">
-				<?php if ( $is_last ) : ?>
-					<span class="drillnav__breadcrumb-current" aria-current="page">
-						<?php echo esc_html( $ancestor['title'] ); ?>
-					</span>
-				<?php else : ?>
-					<a href="<?php echo esc_url( $ancestor['url'] ); ?>" class="drillnav__breadcrumb-link">
-						<?php echo esc_html( $ancestor['title'] ); ?>
-					</a>
-					<span class="drillnav__breadcrumb-sep" aria-hidden="true">›</span>
-				<?php endif; ?>
-			</li>
-			<?php endforeach; ?>
-		</ol>
-	</nav>
-	<?php endif; ?>
 
 	<?php if ( $show_back && $back_item ) : ?>
 	<div class="drillnav__back-wrap">

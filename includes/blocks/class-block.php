@@ -193,9 +193,6 @@ class Block {
 		if ( isset( $attributes['postType'] ) && post_type_exists( $attributes['postType'] ) ) {
 			$args['post_type'] = sanitize_key( (string) $attributes['postType'] );
 		}
-		if ( isset( $attributes['showBreadcrumb'] ) ) {
-			$args['show_breadcrumb'] = (bool) $attributes['showBreadcrumb'];
-		}
 		if ( isset( $attributes['showBackButton'] ) ) {
 			$args['show_back'] = (bool) $attributes['showBackButton'];
 		}
@@ -207,6 +204,12 @@ class Block {
 		}
 		if ( isset( $attributes['mobileToggle'] ) ) {
 			$args['mobile_toggle'] = (bool) $attributes['mobileToggle'];
+		}
+		if ( isset( $attributes['maxWidth'] ) && '' !== $attributes['maxWidth'] ) {
+			$args['max_width'] = sanitize_text_field( (string) $attributes['maxWidth'] );
+		}
+		if ( isset( $attributes['multipleBackButtons'] ) ) {
+			$args['multiple_back_buttons'] = (bool) $attributes['multipleBackButtons'];
 		}
 
 		return $args;

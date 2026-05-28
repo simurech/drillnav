@@ -1,6 +1,9 @@
 /*
  * DrillNav – Frontend Navigation Styles
- * Uses CSS Custom Properties so themes can override without !important hacks.
+ *
+ * BEM element selectors are scoped under .drillnav (or .drillnav-drawer-wrap)
+ * to win over generic theme resets (e.g. `a { color: … }`, `ul { list-style: disc; }`)
+ * while remaining overrideable with a more specific custom rule.
  *
  * @package DrillNav
  */
@@ -78,65 +81,23 @@
 	color:       var(--drillnav-color-text);
 	font-size:   var(--drillnav-font-size);
 	line-height: var(--drillnav-line-height);
+	max-width:   var(--drillnav-max-width, none);
 }
 
-/* Prevent themes from underlining nav links (breadcrumb hover underline is intentional below). */
+/* Prevent themes from underlining nav links. */
 .drillnav a {
 	text-decoration: none;
-}
-
-/* =========================================================================
-   Breadcrumb
-   ========================================================================= */
-
-.drillnav__breadcrumb {
-	margin-bottom: 0.5rem;
-}
-
-.drillnav__breadcrumb-list {
-	list-style:  none;
-	margin:      0;
-	padding:     0;
-	display:     flex;
-	flex-wrap:   wrap;
-	align-items: center;
-	gap:         0.25rem;
-	font-size:   0.85em;
-	opacity:     0.75;
-}
-
-.drillnav__breadcrumb-item {
-	display:     flex;
-	align-items: center;
-	gap:         0.25rem;
-}
-
-.drillnav__breadcrumb-link {
-	color:           var(--drillnav-color-link);
-	text-decoration: none;
-}
-
-.drillnav__breadcrumb-link:hover {
-	text-decoration: underline;
-}
-
-.drillnav__breadcrumb-current {
-	font-weight: 600;
-}
-
-.drillnav__breadcrumb-sep {
-	opacity: 0.5;
 }
 
 /* =========================================================================
    Back Button
    ========================================================================= */
 
-.drillnav__back-wrap {
+.drillnav .drillnav__back-wrap {
 	margin-bottom: 0.25rem;
 }
 
-.drillnav__back-btn {
+.drillnav .drillnav__back-btn {
 	display:         inline-flex;
 	align-items:     center;
 	gap:             0.375rem;
@@ -154,11 +115,11 @@
 	text-align:      left;
 }
 
-.drillnav__back-btn:hover {
+.drillnav .drillnav__back-btn:hover {
 	background: var(--drillnav-color-btn-hover);
 }
 
-.drillnav__back-arrow {
+.drillnav .drillnav__back-arrow {
 	opacity: 0.6;
 }
 
@@ -166,12 +127,12 @@
    Navigation Panel & List
    ========================================================================= */
 
-.drillnav__panel {
+.drillnav .drillnav__panel {
 	position: relative;
 	overflow: hidden; /* Clips slide animations at panel boundary. */
 }
 
-.drillnav__list {
+.drillnav .drillnav__list {
 	list-style: none;
 	margin:     0;
 	padding:    0;
@@ -181,12 +142,12 @@
    Row (link + expand button)
    ========================================================================= */
 
-.drillnav__row {
+.drillnav .drillnav__row {
 	display:     flex;
 	align-items: stretch;
 }
 
-.drillnav__link {
+.drillnav .drillnav__link {
 	flex:            1;
 	display:         flex;
 	align-items:     center;
@@ -201,20 +162,20 @@
 	min-width:       0;
 }
 
-.drillnav__link:hover {
+.drillnav .drillnav__link:hover {
 	background:      var(--drillnav-color-btn-hover);
 	text-decoration: none;
 }
 
 /* Current page */
-.drillnav__item--current > .drillnav__row > .drillnav__link {
+.drillnav .drillnav__item--current > .drillnav__row > .drillnav__link {
 	background:  var(--drillnav-color-current-bg);
 	color:       var(--drillnav-color-current);
 	font-weight: 600;
 }
 
 /* Expand (arrow) button */
-.drillnav__expand-btn {
+.drillnav .drillnav__expand-btn {
 	display:         flex;
 	align-items:     center;
 	justify-content: center;
@@ -231,7 +192,7 @@
 	padding:         0;
 }
 
-.drillnav__expand-btn:hover {
+.drillnav .drillnav__expand-btn:hover {
 	background: var(--drillnav-color-btn-hover);
 	color:      var(--drillnav-color-text);
 }
@@ -243,7 +204,7 @@
 @media (prefers-reduced-motion: no-preference) {
 
 	/* Slide: drill down (enters from right) */
-	.drillnav--anim-slide-in {
+	.drillnav .drillnav--anim-slide-in {
 		animation: drillnav-slide-in var(--drillnav-transition-speed) ease-out both;
 	}
 
@@ -259,7 +220,7 @@
 	}
 
 	/* Slide: go back (enters from left) */
-	.drillnav--anim-slide-back {
+	.drillnav .drillnav--anim-slide-back {
 		animation: drillnav-slide-back var(--drillnav-transition-speed) ease-out both;
 	}
 
@@ -275,12 +236,12 @@
 	}
 
 	/* Fade: drill down */
-	.drillnav--anim-fade-in {
+	.drillnav .drillnav--anim-fade-in {
 		animation: drillnav-fade-in var(--drillnav-transition-speed) ease both;
 	}
 
 	/* Fade: go back (same visual effect) */
-	.drillnav--anim-fade-back {
+	.drillnav .drillnav--anim-fade-back {
 		animation: drillnav-fade-in var(--drillnav-transition-speed) ease both;
 	}
 
@@ -291,10 +252,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.drillnav--anim-slide-in,
-	.drillnav--anim-slide-back,
-	.drillnav--anim-fade-in,
-	.drillnav--anim-fade-back {
+	.drillnav .drillnav--anim-slide-in,
+	.drillnav .drillnav--anim-slide-back,
+	.drillnav .drillnav--anim-fade-in,
+	.drillnav .drillnav--anim-fade-back {
 		animation: none;
 	}
 }
@@ -303,7 +264,7 @@
    Mobile Drawer – Toggle Button (Hamburger)
    ========================================================================= */
 
-.drillnav-toggle-btn {
+.drillnav-drawer-wrap .drillnav-toggle-btn {
 	display:         inline-flex;
 	align-items:     center;
 	justify-content: center;
@@ -319,11 +280,11 @@
 	transition:      opacity 200ms ease;
 }
 
-.drillnav-toggle-btn:hover {
+.drillnav-drawer-wrap .drillnav-toggle-btn:hover {
 	opacity: 1;
 }
 
-.drillnav-hamburger {
+.drillnav-drawer-wrap .drillnav-hamburger {
 	display:         flex;
 	flex-direction:  column;
 	justify-content: space-between;
@@ -332,7 +293,7 @@
 	pointer-events:  none;
 }
 
-.drillnav-hamburger span {
+.drillnav-drawer-wrap .drillnav-hamburger span {
 	display:          block;
 	width:            100%;
 	height:           2px;
@@ -358,7 +319,7 @@
 
 /* Hidden on desktop (≥769 px) */
 @media (min-width: 769px) {
-	.drillnav-toggle-btn {
+	.drillnav-drawer-wrap .drillnav-toggle-btn {
 		display: none;
 	}
 }
@@ -368,12 +329,12 @@
    ========================================================================= */
 
 /* Backdrop: hidden until drawer opens */
-.drillnav-backdrop {
+.drillnav-drawer-wrap .drillnav-backdrop {
 	display: none;
 }
 
 @media (max-width: 768px) {
-	.drillnav-backdrop {
+	.drillnav-drawer-wrap .drillnav-backdrop {
 		display:        block;
 		position:       fixed;
 		inset:          0;
@@ -421,8 +382,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.drillnav-hamburger span,
-	.drillnav-backdrop,
+	.drillnav-drawer-wrap .drillnav-hamburger span,
+	.drillnav-drawer-wrap .drillnav-backdrop,
 	.drillnav--drawer-nav {
 		transition: none;
 	}

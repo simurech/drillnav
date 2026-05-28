@@ -101,6 +101,8 @@ class Shortcode {
 				'title'         => '',
 				'post_type'     => '',
 				'mobile_toggle' => '',
+				'max_width'             => '',
+				'multiple_back_buttons' => '',
 			),
 			$atts,
 			'drillnav'
@@ -136,6 +138,12 @@ class Shortcode {
 		}
 		if ( '' !== $atts['mobile_toggle'] ) {
 			$args['mobile_toggle'] = in_array( strtolower( $atts['mobile_toggle'] ), array( 'yes', '1', 'true' ), true );
+		}
+		if ( '' !== $atts['max_width'] ) {
+			$args['max_width'] = sanitize_text_field( $atts['max_width'] );
+		}
+		if ( '' !== $atts['multiple_back_buttons'] ) {
+			$args['multiple_back_buttons'] = in_array( strtolower( $atts['multiple_back_buttons'] ), array( 'yes', '1', 'true' ), true );
 		}
 
 		return $args;
