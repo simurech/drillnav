@@ -1,3 +1,5 @@
+<img src="assets/wp-org/icons/icon-256x256.png" alt="DrillNav" width="96">
+
 # DrillNav – Smart Contextual Navigation for Deeply Nested Sites
 
 A WordPress plugin that renders a contextual, drill-down navigation based on the current page's position in the site hierarchy. No manual configuration required — it works automatically.
