@@ -240,7 +240,17 @@ No JavaScript changes required — RTL is handled entirely in CSS.
 
 | Feature | Tier |
 |---|---|
+| Hybrid Menus: Combine manual WP Menus with auto-populated WooCommerce categories (High Priority) | Pro |
 | WooCommerce attribute-based filtering improvements | Pro |
+| Custom Menu Source (Appearance > Menus) | Pro |
+| Custom Taxonomy Support | Pro |
+| AJAX Content Loading (SPA-like navigation) | Pro |
+| Analytics & Event Tracking (GA4/Matomo) | Free/Pro |
+| Icon Support (Dashicons, SVG, Emojis) | Pro |
+| "Highlight" / "Featured" Badges | Pro |
+| Native Page Builder Widgets (Elementor, Divi, Beaver Builder) | Free/Pro |
+| Off-Canvas Drawer enhancements (Backdrop blur, custom logo, top-slide) | Pro |
+| Automatic Dark-Mode (prefers-color-scheme) | Free |
 
 ---
 
