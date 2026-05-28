@@ -36,11 +36,8 @@ No manual configuration. Place the block, add the shortcode, or drop in the widg
 | Shortcode `[drillnav]` + sidebar widget | ✓ | ✓ |
 | List layout | ✓ | ✓ |
 | Horizontal layout | ✓ | ✓ |
-| Accordion layout (full tree, expand/collapse) | — | ✓ |
-| Mega navigation (CSS Grid) | — | ✓ |
 | Block variations (5 ready-made presets) | ✓ | ✓ |
 | Style presets: Default, Compact, Comfortable | ✓ | ✓ |
-| Cards style preset | — | ✓ |
 | Colour schemes: Default, Light, Dark | ✓ | ✓ |
 | Mobile hamburger toggle (side drawer) | ✓ | ✓ |
 | RTL support | ✓ | ✓ |
@@ -48,6 +45,9 @@ No manual configuration. Place the block, add the shortcode, or drop in the widg
 | Hover-preloading (instant drill-down) | ✓ | ✓ |
 | Live settings preview | ✓ | ✓ |
 | WCAG 2.1 AA accessible | ✓ | ✓ |
+| Accordion layout (full tree, expand/collapse) | — | ✓ |
+| Mega navigation (CSS Grid) | — | ✓ |
+| Cards style preset | — | ✓ |
 | Granular CSS overrides (9 custom properties) | — | ✓ |
 | WooCommerce product category navigation | — | ✓ |
 | Attribute-based product filtering | — | ✓ |
@@ -60,7 +60,7 @@ No manual configuration. Place the block, add the shortcode, or drop in the widg
 | Component | Minimum | Recommended |
 |---|---|---|
 | WordPress | 6.3 | Latest |
-| PHP | 8.1 | 8.1+ |
+| PHP | 8.1 | Latest |
 | WooCommerce (Pro only) | 8.0 | Latest |
 
 ---
@@ -240,18 +240,18 @@ No JavaScript changes required — RTL is handled entirely in CSS.
 
 | Feature | Tier |
 |---|---|
+| Settings Page Tabs (7 granular tabs: General, Appearance & Styling, Behavior, Blog, WooCommerce, Advanced, Tracking) | Free |
+| Automatic Dark-Mode (prefers-color-scheme) | Free |
+| Native Page Builder Widgets (Elementor, Divi, Beaver Builder) | Free/Pro |
 | Hybrid Menus: Combine manual WP Menus with auto-populated WooCommerce categories (High Priority) | Pro |
 | WooCommerce attribute-based filtering improvements | Pro |
 | Custom Menu Source (Appearance > Menus) | Pro |
 | Custom Taxonomy Support | Pro |
 | AJAX Content Loading (SPA-like navigation) | Pro |
-| Settings Page Tabs (7 granular tabs: General, Appearance & Styling, Behavior, Blog, WooCommerce, Advanced, Tracking) | Free |
 | Analytics & Event Tracking (DataLayer push, GTM support, custom event names, individual toggles) | Pro |
 | Icon Support (Dashicons, SVG, Emojis) | Pro |
 | "Highlight" / "Featured" Badges | Pro |
-| Native Page Builder Widgets (Elementor, Divi, Beaver Builder) | Free/Pro |
 | Off-Canvas Drawer enhancements (Backdrop blur, custom logo, top-slide) | Pro |
-| Automatic Dark-Mode (prefers-color-scheme) | Free |
 
 ---
 
