@@ -224,6 +224,19 @@ class Admin {
 			array( 'key' => 'post_types', 'help' => __( 'Which hierarchical post types the navigation should respond to. Only post types with parent–child relationships appear here. Regular Posts use a separate blog integration (categories &amp; tags) and are handled automatically.', 'drillnav-drilldown-navigation' ) )
 		);
 
+		add_settings_field(
+			'nav_label',
+			__( 'Navigation ARIA label', 'drillnav-drilldown-navigation' ),
+			array( $this, 'field_text' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_general',
+			array(
+				'key'         => 'nav_label',
+				'placeholder' => __( 'Page navigation', 'drillnav-drilldown-navigation' ),
+				'help'        => __( 'Screen readers announce this label when entering the navigation landmark. Leave empty to use the translated default "Page navigation".', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
 		// --- Appearance section ---
 		add_settings_section(
 			'drillnav_appearance',
@@ -242,52 +255,6 @@ class Admin {
 				'key'         => 'max_width',
 				'placeholder' => __( 'e.g. 300px or 60%', 'drillnav-drilldown-navigation' ),
 				'help'        => __( 'Limit the width of the navigation container. Leave empty for full width. Can be overridden per block or shortcode.', 'drillnav-drilldown-navigation' ),
-			)
-		);
-
-		add_settings_field(
-			'show_back_button',
-			__( 'Show back button', 'drillnav-drilldown-navigation' ),
-			array( $this, 'field_checkbox' ),
-			'drillnav-drilldown-navigation',
-			'drillnav_appearance',
-			array( 'key' => 'show_back_button', 'label' => __( 'Display a back-navigation link above the item list.', 'drillnav-drilldown-navigation' ) )
-		);
-
-		add_settings_field(
-			'multiple_back_buttons',
-			__( 'Multiple back buttons', 'drillnav-drilldown-navigation' ),
-			array( $this, 'field_checkbox' ),
-			'drillnav-drilldown-navigation',
-			'drillnav_appearance',
-			array( 'key' => 'multiple_back_buttons', 'label' => __( 'Show one back button per drilled level (oldest first). Click any to jump directly to that level.', 'drillnav-drilldown-navigation' ) )
-		);
-
-		add_settings_field(
-			'mobile_toggle',
-			__( 'Mobile hamburger toggle', 'drillnav-drilldown-navigation' ),
-			array( $this, 'field_checkbox' ),
-			'drillnav-drilldown-navigation',
-			'drillnav_appearance',
-			array(
-				'key'   => 'mobile_toggle',
-				'label' => __( 'On mobile (≤768 px) hide the navigation behind a hamburger icon that opens a side drawer.', 'drillnav-drilldown-navigation' ),
-			)
-		);
-
-		add_settings_field(
-			'animation',
-			__( 'Animation', 'drillnav-drilldown-navigation' ),
-			array( $this, 'field_select' ),
-			'drillnav-drilldown-navigation',
-			'drillnav_appearance',
-			array(
-				'key'     => 'animation',
-				'options' => array(
-					'slide' => __( 'Slide (default)', 'drillnav-drilldown-navigation' ),
-					'fade'  => __( 'Fade', 'drillnav-drilldown-navigation' ),
-					'none'  => __( 'None', 'drillnav-drilldown-navigation' ),
-				),
 			)
 		);
 
@@ -369,24 +336,57 @@ class Admin {
 			)
 		);
 
-		// --- Accessibility section ---
+		// --- Behavior section ---
 		add_settings_section(
-			'drillnav_accessibility',
-			__( 'Accessibility', 'drillnav-drilldown-navigation' ),
+			'drillnav_behavior',
+			__( 'Behavior', 'drillnav-drilldown-navigation' ),
 			'__return_false',
 			'drillnav-drilldown-navigation'
 		);
 
 		add_settings_field(
-			'nav_label',
-			__( 'Navigation ARIA label', 'drillnav-drilldown-navigation' ),
-			array( $this, 'field_text' ),
+			'show_back_button',
+			__( 'Show back button', 'drillnav-drilldown-navigation' ),
+			array( $this, 'field_checkbox' ),
 			'drillnav-drilldown-navigation',
-			'drillnav_accessibility',
+			'drillnav_behavior',
+			array( 'key' => 'show_back_button', 'label' => __( 'Display a back-navigation link above the item list.', 'drillnav-drilldown-navigation' ) )
+		);
+
+		add_settings_field(
+			'multiple_back_buttons',
+			__( 'Multiple back buttons', 'drillnav-drilldown-navigation' ),
+			array( $this, 'field_checkbox' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_behavior',
+			array( 'key' => 'multiple_back_buttons', 'label' => __( 'Show one back button per drilled level (oldest first). Click any to jump directly to that level.', 'drillnav-drilldown-navigation' ) )
+		);
+
+		add_settings_field(
+			'mobile_toggle',
+			__( 'Mobile hamburger toggle', 'drillnav-drilldown-navigation' ),
+			array( $this, 'field_checkbox' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_behavior',
 			array(
-				'key'         => 'nav_label',
-				'placeholder' => __( 'Page navigation', 'drillnav-drilldown-navigation' ),
-				'help'        => __( 'Screen readers announce this label when entering the navigation landmark. Leave empty to use the translated default "Page navigation".', 'drillnav-drilldown-navigation' ),
+				'key'   => 'mobile_toggle',
+				'label' => __( 'On mobile (≤768 px) hide the navigation behind a hamburger icon that opens a side drawer.', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
+		add_settings_field(
+			'animation',
+			__( 'Animation', 'drillnav-drilldown-navigation' ),
+			array( $this, 'field_select' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_behavior',
+			array(
+				'key'     => 'animation',
+				'options' => array(
+					'slide' => __( 'Slide (default)', 'drillnav-drilldown-navigation' ),
+					'fade'  => __( 'Fade', 'drillnav-drilldown-navigation' ),
+					'none'  => __( 'None', 'drillnav-drilldown-navigation' ),
+				),
 			)
 		);
 

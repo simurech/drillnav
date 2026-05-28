@@ -9,6 +9,46 @@
 	'use strict';
 
 	/* ---------------------------------------------------------------
+	 * Settings tabs
+	 * ------------------------------------------------------------- */
+
+	const tabNav = document.querySelector( '.drillnav-tab-nav' );
+	if ( tabNav ) {
+		const tabLinks  = tabNav.querySelectorAll( '.nav-tab' );
+		const tabPanels = document.querySelectorAll( '.drillnav-tab-panel' );
+
+		function activateTab( tabId ) {
+			tabPanels.forEach( function ( p ) { p.hidden = true; } );
+			tabLinks.forEach( function ( l ) { l.classList.remove( 'nav-tab-active' ); } );
+
+			var panel = document.getElementById( tabId );
+			var link  = tabNav.querySelector( '[data-tab="' + tabId.replace( 'tab-', '' ) + '"]' );
+
+			if ( panel ) { panel.hidden = false; }
+			if ( link )  { link.classList.add( 'nav-tab-active' ); }
+		}
+
+		tabLinks.forEach( function ( link ) {
+			link.addEventListener( 'click', function ( e ) {
+				e.preventDefault();
+				var tabId = 'tab-' + link.dataset.tab;
+				activateTab( tabId );
+				try { localStorage.setItem( 'drillnav_active_tab', tabId ); } catch ( _e ) {}
+			} );
+		} );
+
+		// Restore the active tab (after save redirect or page reload).
+		var initialTab = 'tab-general';
+		try {
+			var saved = localStorage.getItem( 'drillnav_active_tab' );
+			if ( saved && document.getElementById( saved ) ) {
+				initialTab = saved;
+			}
+		} catch ( _e ) {}
+		activateTab( initialTab );
+	}
+
+	/* ---------------------------------------------------------------
 	 * Cache clear
 	 * ------------------------------------------------------------- */
 

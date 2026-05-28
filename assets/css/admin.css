@@ -16,6 +16,62 @@
 	vertical-align: middle;
 }
 
+/* Tab navigation */
+.drillnav-tab-nav {
+	margin-bottom: 0;
+	border-bottom: 1px solid #c3c4c7;
+}
+
+.drillnav-tab-nav .nav-tab {
+	margin-bottom: -1px;
+}
+
+.drillnav-tab-nav .drillnav-pro-badge-inline {
+	font-size: 0.6em;
+	vertical-align: middle;
+}
+
+/* Tab panels */
+.drillnav-tab-panel {
+	padding-top: 1.25rem;
+}
+
+/* Tracking / coming soon card */
+.drillnav-coming-soon-card {
+	background:    #fff;
+	border:        1px solid #c3c4c7;
+	border-radius: 4px;
+	padding:       1.5rem 2rem;
+	max-width:     520px;
+}
+
+.drillnav-coming-soon-card h3 {
+	margin-top: 0;
+	display:    flex;
+	align-items: center;
+	gap:        0.4rem;
+}
+
+.drillnav-coming-soon-card ul {
+	margin:       0.5rem 0 1rem;
+	padding-left: 0;
+	list-style:   none;
+}
+
+.drillnav-coming-soon-card ul li {
+	margin-bottom: 0.3rem;
+}
+
+.drillnav-coming-soon-label {
+	display:       inline-block;
+	padding:       0.25em 0.6em;
+	background:    #f0f0f1;
+	border-radius: 3px;
+	font-size:     0.85em;
+	color:         #50575e;
+	margin-bottom: 1rem;
+}
+
 /* Two-column layout */
 .drillnav-settings-layout {
 	display:  flex;
