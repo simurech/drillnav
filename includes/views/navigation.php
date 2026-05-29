@@ -60,8 +60,15 @@ if ( 'default' !== $style_preset ) {
 if ( 'list' !== $layout ) {
 	$nav_classes[] = 'drillnav--layout-' . esc_attr( $layout );
 }
+$mobile_toggle_type = 'drawer';
 if ( $mobile_toggle ) {
-	$nav_classes[] = 'drillnav--drawer-nav';
+	if ( $is_pro_active && 'fullscreen' === ( $settings['mobile_toggle_type'] ?? 'drawer' ) ) {
+		$mobile_toggle_type = 'fullscreen';
+		$nav_classes[]      = 'drillnav--drawer-nav';
+		$nav_classes[]      = 'drillnav--fullscreen-nav';
+	} else {
+		$nav_classes[] = 'drillnav--drawer-nav';
+	}
 	if ( $is_pro_active ) {
 		$drawer_effect   = (string) ( $settings['drawer_effect'] ?? 'default' );
 		$drawer_position = (string) ( $settings['drawer_position'] ?? 'left' );
@@ -73,6 +80,9 @@ if ( $mobile_toggle ) {
 		}
 	}
 }
+$mobile_breakpoint = $is_pro_active ? max( 320, (int) ( $settings['mobile_breakpoint'] ?? 768 ) ) : 768;
+$expand_icon       = $is_pro_active ? esc_html( (string) ( $settings['expand_icon'] ?? '›' ) ) : '&#8250;';
+$back_icon         = $is_pro_active ? esc_html( (string) ( $settings['back_icon'] ?? '←' ) ) : '&#8592;';
 
 
 // Build inline style from CSS custom properties.
@@ -107,8 +117,20 @@ $json_data = wp_json_encode(
 	)
 );
 ?>
+<?php if ( $mobile_toggle && 768 !== $mobile_breakpoint ) : ?>
+<style>
+.drillnav-drawer-wrap-<?php echo esc_attr( $instance ); ?> .drillnav-toggle-btn { display: inline-flex; }
+@media (min-width: <?php echo (int) ( $mobile_breakpoint + 1 ); ?>px) {
+	.drillnav-drawer-wrap-<?php echo esc_attr( $instance ); ?> .drillnav-toggle-btn { display: none; }
+}
+@media (max-width: <?php echo (int) $mobile_breakpoint; ?>px) {
+	.drillnav-drawer-wrap-<?php echo esc_attr( $instance ); ?> .drillnav-backdrop { display: block; }
+	.drillnav-drawer-wrap-<?php echo esc_attr( $instance ); ?> .drillnav--drawer-nav { display: block; }
+}
+</style>
+<?php endif; ?>
 <?php if ( $mobile_toggle ) : ?>
-<div class="drillnav-drawer-wrap" data-drillnav-drawer-wrap>
+<div class="drillnav-drawer-wrap drillnav-drawer-wrap-<?php echo esc_attr( $instance ); ?>" data-drillnav-drawer-wrap>
 	<button
 		type="button"
 		class="drillnav-toggle-btn"
@@ -233,7 +255,7 @@ $content_selector = $ajax_content ? (string) ( $settings['content_selector'] ?? 
 						data-drillnav-item-type="<?php echo esc_attr( (string) ( $item['post_type'] ?? 'page' ) ); ?>"
 						<?php if ( $accordion_lazy ) : ?>data-drillnav-lazy="1"<?php endif; ?>
 					>
-						<span class="drillnav__arrow" aria-hidden="true">&#8250;</span>
+						<span class="drillnav__arrow" aria-hidden="true"><?php echo $expand_icon; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already escaped above. ?></span>
 					</button>
 					<?php endif; ?>
 				</div>
@@ -284,7 +306,7 @@ $content_selector = $ajax_content ? (string) ( $settings['content_selector'] ?? 
 				echo esc_attr( sprintf( __( 'Back to %s', 'drillnav-drilldown-navigation' ), $back_item['title'] ) );
 			?>"
 		>
-			<span class="drillnav__back-arrow" aria-hidden="true">&#8592;</span>
+			<span class="drillnav__back-arrow" aria-hidden="true"><?php echo $back_icon; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already escaped above. ?></span>
 			<span class="drillnav__back-label"><?php echo esc_html( $back_item['title'] ); ?></span>
 		</a>
 	</div>
@@ -340,7 +362,7 @@ $content_selector = $ajax_content ? (string) ( $settings['content_selector'] ?? 
 						data-drillnav-item-id="<?php echo esc_attr( (string) $item_id ); ?>"
 						data-drillnav-item-type="<?php echo esc_attr( (string) ( $item['post_type'] ?? 'page' ) ); ?>"
 					>
-						<span class="drillnav__arrow" aria-hidden="true">&#8250;</span>
+						<span class="drillnav__arrow" aria-hidden="true"><?php echo $expand_icon; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already escaped above. ?></span>
 					</button>
 					<?php endif; ?>
 				</div>

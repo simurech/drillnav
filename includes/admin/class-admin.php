@@ -448,6 +448,62 @@ class Admin {
 		);
 
 		add_settings_field(
+			'mobile_toggle_type',
+			__( 'Mobile toggle type', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			array( $this, 'field_select_pro' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_behavior',
+			array(
+				'key'     => 'mobile_toggle_type',
+				'options' => array(
+					'drawer'     => __( 'Side drawer (default)', 'drillnav-drilldown-navigation' ),
+					'fullscreen' => __( 'Fullscreen overlay', 'drillnav-drilldown-navigation' ),
+				),
+				'help'    => __( 'Only applies when Mobile hamburger toggle is enabled.', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
+		add_settings_field(
+			'mobile_breakpoint',
+			__( 'Mobile breakpoint', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			array( $this, 'field_number' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_behavior',
+			array(
+				'key'  => 'mobile_breakpoint',
+				'min'  => 320,
+				'max'  => 1920,
+				'help' => __( 'Viewport width in pixels at which the navigation switches to mobile mode (hamburger toggle). Default: 768.', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
+		add_settings_field(
+			'expand_icon',
+			__( 'Expand arrow icon', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			array( $this, 'field_icon_select_pro' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_behavior',
+			array(
+				'key'     => 'expand_icon',
+				'options' => array( '›', '→', '▶', '▸', '⟩', '+', '»', '↓' ),
+				'help'    => __( 'Icon shown on items that have child pages.', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
+		add_settings_field(
+			'back_icon',
+			__( 'Back button icon', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			array( $this, 'field_icon_select_pro' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_behavior',
+			array(
+				'key'     => 'back_icon',
+				'options' => array( '←', '‹', '◀', '◂', '⟨', '↑', '«' ),
+				'help'    => __( 'Icon shown on the back navigation button.', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
+		add_settings_field(
 			'ajax_content',
 			__( 'AJAX content loading', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span> <span class="drillnav-beta-badge">BETA</span>',
 			array( $this, 'field_checkbox_pro' ),
@@ -993,6 +1049,43 @@ class Admin {
 			return;
 		}
 		$this->field_select( $args );
+		if ( ! empty( $args['help'] ) ) {
+			printf( '<p class="description">%s</p>', esc_html( $args['help'] ) );
+		}
+	}
+
+	/**
+	 * Renders an icon selector (radio buttons showing the symbol) for Pro users.
+	 *
+	 * @param array<string,mixed> $args
+	 */
+	public function field_icon_select_pro( array $args ): void {
+		$key     = $args['key'];
+		$options = $args['options'] ?? array();
+		if ( ! $this->is_pro_active() ) {
+			echo '<fieldset disabled style="opacity:.6">';
+			foreach ( $options as $icon ) {
+				printf( '<label style="margin-right:.75rem;font-size:1.3em;cursor:default">%s</label>', esc_html( $icon ) );
+			}
+			echo '</fieldset>';
+			echo '<p class="description">' . esc_html__( 'Available in DrillNav Pro.', 'drillnav-drilldown-navigation' ) . '</p>';
+			return;
+		}
+		$saved = (string) $this->settings->get( $key );
+		$id    = 'drillnav_' . $key;
+		echo '<fieldset>';
+		foreach ( $options as $icon ) {
+			printf(
+				'<label style="margin-right:.75rem;font-size:1.3em;cursor:pointer">'
+				. '<input type="radio" name="drillnav_settings[%s]" value="%s" %s style="margin-right:.25rem">'
+				. '%s</label>',
+				esc_attr( $key ),
+				esc_attr( $icon ),
+				checked( $saved, $icon, false ),
+				esc_html( $icon )
+			);
+		}
+		echo '</fieldset>';
 		if ( ! empty( $args['help'] ) ) {
 			printf( '<p class="description">%s</p>', esc_html( $args['help'] ) );
 		}

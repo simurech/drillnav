@@ -76,8 +76,14 @@ class Settings {
 			'accordion_lazy'          => false,
 
 			// Off-Canvas Drawer (Pro enhancements).
-			'drawer_effect'   => 'default', // 'default' | 'glassmorphism'.
-			'drawer_position' => 'left',    // 'left' | 'right' (Pro).
+			'drawer_effect'        => 'default', // 'default' | 'glassmorphism'.
+			'drawer_position'      => 'left',    // 'left' | 'right' (Pro).
+			'mobile_toggle_type'   => 'drawer',  // 'drawer' | 'fullscreen' (Pro).
+			'mobile_breakpoint'    => 768,       // px – viewport width at which drawer hides.
+
+			// Icon selectors (Pro).
+			'expand_icon' => '›',
+			'back_icon'   => '←',
 
 			// Analytics & Event Tracking (Pro).
 			'tracking_enabled'              => false,
@@ -216,6 +222,14 @@ class Settings {
 		$clean['drawer_position'] = in_array( $raw['drawer_position'] ?? '', array( 'left', 'right' ), true )
 			? $raw['drawer_position']
 			: 'left';
+		$clean['mobile_toggle_type'] = in_array( $raw['mobile_toggle_type'] ?? '', array( 'drawer', 'fullscreen' ), true )
+			? $raw['mobile_toggle_type']
+			: 'drawer';
+		$clean['mobile_breakpoint'] = max( 320, min( 1920, absint( $raw['mobile_breakpoint'] ?? 768 ) ) );
+		$valid_icons = array( '›', '→', '▶', '▸', '⟩', '+', '»', '↓' );
+		$valid_back  = array( '←', '‹', '◀', '◂', '⟨', '↑', '«' );
+		$clean['expand_icon'] = in_array( $raw['expand_icon'] ?? '', $valid_icons, true ) ? $raw['expand_icon'] : '›';
+		$clean['back_icon']   = in_array( $raw['back_icon'] ?? '', $valid_back, true ) ? $raw['back_icon'] : '←';
 		// Analytics & Event Tracking (Pro).
 		$clean['tracking_enabled']              = ! empty( $raw['tracking_enabled'] );
 		$clean['tracking_event_drilldown']      = ! empty( $raw['tracking_event_drilldown'] );

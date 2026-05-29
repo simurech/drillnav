@@ -633,6 +633,25 @@
 		transform: translateX(0);
 	}
 
+	/* Fullscreen overlay (Pro) */
+	.drillnav--fullscreen-nav.drillnav--drawer-nav {
+		inset:      0;
+		width:      100% !important;
+		max-height: 100vh;
+		transform:  scale(0.96);
+		opacity:    0;
+		transition: transform 250ms ease, opacity 250ms ease;
+		display:    flex;
+		flex-direction: column;
+		justify-content: center;
+		padding:    2rem;
+	}
+
+	.drillnav-drawer-wrap.is-open .drillnav--fullscreen-nav.drillnav--drawer-nav {
+		transform: scale(1);
+		opacity:   1;
+	}
+
 }
 
 @media (prefers-reduced-motion: reduce) {
