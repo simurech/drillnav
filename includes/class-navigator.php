@@ -75,7 +75,7 @@ class Navigator {
 		}
 
 		// Pro feature guards – reset flags for non-Pro users.
-		$is_pro = function_exists( 'drillnav_fs' ) && drillnav_fs()->can_use_premium_code__premium_only();
+		$is_pro = function_exists( 'drillnav_fs' ) && drillnav_fs()->is__premium_only();
 		if ( ! empty( $args['search_filter'] ) && ! $is_pro ) {
 			$args['search_filter'] = false;
 		}

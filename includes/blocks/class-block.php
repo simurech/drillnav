@@ -73,7 +73,7 @@ class Block {
 			DRILLNAV_PLUGIN_DIR . 'languages'
 		);
 
-		$is_pro      = function_exists( 'drillnav_fs' ) && drillnav_fs()->can_use_premium_code__premium_only();
+		$is_pro      = function_exists( 'drillnav_fs' ) && drillnav_fs()->is__premium_only();
 		$upgrade_url = ( ! $is_pro && function_exists( 'drillnav_fs' ) ) ? drillnav_fs()->get_upgrade_url() : '';
 		wp_localize_script(
 			'drillnav-block-editor',
@@ -213,12 +213,12 @@ class Block {
 		$post_id   = (int) $request->get_param( 'post_id' );
 		$post_type = sanitize_key( (string) $request->get_param( 'post_type' ) );
 
-		// Validate post type is hierarchical.
+		// Validate post type is hierarchical and publicly accessible.
 		$pto = get_post_type_object( $post_type );
-		if ( ! $pto || ! $pto->hierarchical ) {
+		if ( ! $pto || ! $pto->hierarchical || ! $pto->public ) {
 			return new \WP_Error(
 				'drillnav_invalid_post_type',
-				__( 'Post type is not hierarchical.', 'drillnav-drilldown-navigation' ),
+				__( 'Post type not supported.', 'drillnav-drilldown-navigation' ),
 				array( 'status' => 400 )
 			);
 		}

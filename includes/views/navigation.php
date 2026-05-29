@@ -33,7 +33,7 @@ $nav_label = ! empty( $settings['nav_label'] )
 	/* translators: ARIA label for the contextual page navigation landmark. */
 	: __( 'Page navigation', 'drillnav-drilldown-navigation' );
 
-$is_pro_active = function_exists( 'drillnav_fs' ) && drillnav_fs()->can_use_premium_code__premium_only();
+$is_pro_active = function_exists( 'drillnav_fs' ) && drillnav_fs()->is__premium_only();
 
 // Layout – accordion requires Pro; fall back to list silently.
 $layout      = (string) ( $settings['layout'] ?? 'list' );

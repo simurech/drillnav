@@ -42,7 +42,7 @@ class Shortcode {
 	/** Registers (but does not enqueue) the frontend assets. */
 	public function register_assets(): void {
 		// Dashicons may be needed for icon support (Pro); enqueue when Pro is active.
-		if ( function_exists( 'drillnav_fs' ) && drillnav_fs()->can_use_premium_code__premium_only() ) {
+		if ( function_exists( 'drillnav_fs' ) && drillnav_fs()->is__premium_only() ) {
 			wp_enqueue_style( 'dashicons' );
 		}
 
@@ -76,7 +76,7 @@ class Shortcode {
 		);
 
 		// Localised strings for JS (translated, safe for JS).
-		$is_pro      = function_exists( 'drillnav_fs' ) && drillnav_fs()->can_use_premium_code__premium_only();
+		$is_pro      = function_exists( 'drillnav_fs' ) && drillnav_fs()->is__premium_only();
 		$tracking    = null;
 		if ( $is_pro && $this->settings->get( 'tracking_enabled' ) ) {
 			$tracking = array(

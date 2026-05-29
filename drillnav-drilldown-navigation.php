@@ -13,7 +13,8 @@
  * Text Domain:       drillnav-drilldown-navigation
  * Domain Path:       /languages
  *
- * @package DrillNav
+ * @package           DrillNav
+ * @fs_premium_only   /includes/integrations/class-woocommerce.php, /includes/admin/class-itemmeta.php, /includes/integrations/class-taxonomy.php, /includes/integrations/class-menu.php
  */
 
 defined( 'ABSPATH' ) || exit;

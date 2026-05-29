@@ -550,6 +550,6 @@ class Woocommerce {
 		if ( ! function_exists( 'drillnav_fs' ) ) {
 			return false;
 		}
-		return (bool) drillnav_fs()->can_use_premium_code__premium_only();
+		return (bool) drillnav_fs()->is__premium_only();
 	}
 }

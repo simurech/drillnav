@@ -12,7 +12,7 @@ if ( ! current_user_can( 'manage_options' ) ) {
 	return;
 }
 
-$is_pro_active = function_exists( 'drillnav_fs' ) && drillnav_fs()->can_use_premium_code__premium_only();
+$is_pro_active = function_exists( 'drillnav_fs' ) && drillnav_fs()->is__premium_only();
 
 $upgrade_url = '';
 if ( function_exists( 'drillnav_fs' ) ) {

@@ -95,8 +95,8 @@ final class Plugin {
 		$multilingual = new Integrations\Multilingual();
 		$multilingual->register( $this->loader );
 
-		// Pro-only features – entire block auto-stripped from free version by Freemius.
-		if ( drillnav_fs()->can_use_premium_code__premium_only() ) {
+		// Pro-only features – files excluded from free build via @fs_premium_only.
+		if ( drillnav_fs()->is__premium_only() ) {
 			// Per-page icon & badge meta box.
 			$item_meta = new Admin\ItemMeta();
 			$item_meta->register( $this->loader );
@@ -110,8 +110,8 @@ final class Plugin {
 			$menu->register( $this->loader );
 		}
 
-		// WooCommerce Pro integration.
-		if ( drillnav_fs()->can_use_premium_code__premium_only() && $this->is_woocommerce_active() ) {
+		// WooCommerce Pro integration – file excluded from free build via @fs_premium_only.
+		if ( drillnav_fs()->is__premium_only() && $this->is_woocommerce_active() ) {
 			$woo = new Integrations\Woocommerce( $this->navigator, $this->cache, $this->settings );
 			$woo->register( $this->loader );
 		}

@@ -32,6 +32,7 @@ class Admin {
 		$loader->add_action( 'admin_menu',                        array( $this, 'add_menu_page' ) );
 		$loader->add_action( 'admin_init',                        array( $this, 'register_settings' ) );
 		$loader->add_action( 'admin_enqueue_scripts',             array( $this, 'enqueue_assets' ) );
+		$loader->add_action( 'admin_enqueue_scripts',             array( $this, 'enqueue_onboarding_script' ) );
 		$loader->add_action( 'wp_ajax_drillnav_clear_cache',      array( $this, 'ajax_clear_cache' ) );
 		$loader->add_action( 'admin_notices',                     array( $this, 'onboarding_notice' ) );
 		$loader->add_action( 'wp_ajax_drillnav_dismiss_onboard',  array( $this, 'ajax_dismiss_onboarding' ) );
@@ -812,7 +813,7 @@ class Admin {
 	 * @return bool
 	 */
 	private function is_pro_active(): bool {
-		return function_exists( 'drillnav_fs' ) && ( drillnav_fs()->is_paying() || drillnav_fs()->is_trial() );
+		return function_exists( 'drillnav_fs' ) && drillnav_fs()->is__premium_only();
 	}
 
 	/** Renders the settings page. */
@@ -866,6 +867,30 @@ class Admin {
 		);
 	}
 
+	/** Enqueues the onboarding dismiss script on all admin pages (until dismissed). */
+	public function enqueue_onboarding_script(): void {
+		if ( get_option( 'drillnav_onboarding_dismissed' ) ) {
+			return;
+		}
+
+		wp_enqueue_script(
+			'drillnav-onboarding',
+			DRILLNAV_PLUGIN_URL . 'assets/js/onboarding.js',
+			array(),
+			DRILLNAV_VERSION,
+			true
+		);
+
+		wp_localize_script(
+			'drillnav-onboarding',
+			'drillnavOnboarding',
+			array(
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'nonce'   => wp_create_nonce( 'drillnav_dismiss_onboard' ),
+			)
+		);
+	}
+
 	/** AJAX handler: clears all DrillNav transients. */
 	public function ajax_clear_cache(): void {
 		check_ajax_referer( 'drillnav_clear_cache', 'nonce' );
@@ -899,23 +924,6 @@ class Admin {
 				</a>
 			</p>
 		</div>
-		<script>
-		( function() {
-			var notice = document.getElementById( 'drillnav-onboarding-notice' );
-			if ( notice ) {
-				notice.addEventListener( 'click', function( e ) {
-					if ( e.target.classList.contains( 'notice-dismiss' ) ) {
-						fetch( <?php echo wp_json_encode( admin_url( 'admin-ajax.php' ) ); ?>, {
-							method: 'POST',
-							credentials: 'same-origin',
-							headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-							body: 'action=drillnav_dismiss_onboard&nonce=' + <?php echo wp_json_encode( wp_create_nonce( 'drillnav_dismiss_onboard' ) ); ?>
-						} );
-					}
-				} );
-			}
-		} )();
-		</script>
 		<?php
 	}
 
