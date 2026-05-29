@@ -4,7 +4,7 @@ Tags:              navigation, contextual navigation, drilldown, page hierarchy,
 Requires at least: 6.3
 Tested up to:      7.0
 Requires PHP:      8.1
-Stable tag:        1.5.0
+Stable tag:        1.6.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,12 +27,14 @@ No configuration required. Place the block, add the shortcode, or drop in the wi
 * **Zero configuration** – works out of the box, adapts to any page hierarchy
 * **Gutenberg block** with live editor preview and five ready-made block variations in the inserter
 * **Shortcode** `[drillnav]` and **sidebar widget** for classic themes
+* **Native page builder widgets** – dedicated modules for Elementor, Beaver Builder, and Divi
 * **Unlimited depth** – works with any number of hierarchy levels
 * **Four layouts** – List (default), Horizontal, Accordion (Pro), Mega Grid (Pro)
 * **Style presets** – Default, Compact, Comfortable, Cards (Pro)
 * **Mobile hamburger toggle** – optional side-drawer mode for themes without an off-canvas menu
-* **Colour scheme presets** – Default (inherits theme), Light, and Dark, all customisable via CSS custom properties
+* **Colour scheme presets** – Default (inherits theme), Light, Dark, and Auto (follows OS dark/light preference)
 * **RTL support** – full right-to-left layout with mirrored animations and logical CSS properties
+* **Admin settings in 7 tabs** – General, Appearance & Styling, Behaviour, Blog, WooCommerce, Advanced, Tracking
 * **Live settings preview** – see colour scheme, layout, and style changes instantly on the Settings page
 * **WCAG 2.1 AA accessible** – full keyboard navigation, correct ARIA attributes, automatic focus management after drill-down
 * **Blazing fast** – assets load only on pages where the navigation is used; hover-preloading makes drill-down feel instant; 7-day intelligent caching with automatic cache invalidation
@@ -49,15 +51,38 @@ No configuration required. Place the block, add the shortcode, or drop in the wi
 * Large school or university websites
 * Any site with more than 3 levels of pages
 
-= Pro Version – WooCommerce Support =
+= Pro Version =
 
-[DrillNav Pro](https://github.com/simurech/drillnav) extends the plugin with full WooCommerce product category navigation:
+[DrillNav Pro](https://github.com/simurech/drillnav) extends the plugin with powerful advanced features:
 
+**Navigation sources**
+* WP nav menu as navigation source – use any classic WordPress menu (including custom links and manual sorting)
+* Hybrid menus – combine a WP menu with auto-populated WooCommerce sub-categories
+* General hierarchical taxonomy navigation – navigate custom taxonomies on any post type
+
+**WooCommerce**
 * Drill-down through product categories (unlimited depth)
 * Live product count per category
 * Smart empty-category filtering (checks actual stock availability, not just post count)
 * Exclude specific categories from the navigation
-* Context-aware: auto-detects category pages, product pages, and the shop page
+
+**Layouts & appearance**
+* Accordion layout with lazy-loading deeper levels via REST
+* Mega navigation (CSS Grid multi-column)
+* Cards style preset
+* Granular CSS overrides (9 custom properties settable globally and per block instance)
+* Icon support – assign Dashicons, SVG, or emoji to individual navigation items
+* Highlight / Featured badges – mark items with a custom label (e.g. "New", "Sale")
+* Off-canvas drawer enhancements – glassmorphism blur, custom logo, top-slide animation
+
+**Behaviour**
+* Search / filter – live text filter above navigation items, resets on drill-down
+* AJAX content loading – SPA-style page content loading with History API (`pushState`)
+
+**Analytics**
+* Event tracking – DataLayer push for Google Tag Manager; configurable event names; per-event toggles for drill-down, back, and accordion interactions
+
+**Support**
 * Priority support
 
 = Multilingual Support =
@@ -203,6 +228,19 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 
 == Changelog ==
 
+= 1.6.0 =
+* New: Auto colour scheme – follows OS light/dark preference automatically via `prefers-color-scheme`
+* New: Admin settings reorganised into 7 tabs (General, Appearance & Styling, Behaviour, Blog, WooCommerce, Advanced, Tracking)
+* New: Native page builder widgets – dedicated modules for Elementor, Beaver Builder, and Divi
+* New: WP nav menu as navigation source (Pro) – use any classic WordPress menu as the drill-down tree
+* New: Hybrid menus (Pro) – combine a WP menu with auto-populated WooCommerce sub-categories
+* New: General hierarchical taxonomy navigation (Pro) – navigate any custom hierarchical taxonomy on any post type
+* New: AJAX content loading (Pro) – SPA-style page content loading with History API `pushState`; back/forward navigation preserved
+* New: Analytics & Event Tracking (Pro) – DataLayer push for Google Tag Manager; configurable event names; per-event toggles
+* New: Icon support (Pro) – assign Dashicons, SVG, or emoji to individual navigation items
+* New: Highlight / Featured badges (Pro) – mark items with a custom badge label
+* New: Off-canvas drawer enhancements (Pro) – glassmorphism blur, custom logo integration, top-slide animation
+
 = 1.5.0 =
 * New: Search/Filter (Pro) – live text filter above navigation items; debounced input hides non-matching items instantly; resets automatically on drill-down and back
 * New: Lazy-loading Accordion (Pro) – accordion renders only the first level server-side; deeper levels are fetched via REST on expand; hover-preloading reduces perceived latency
@@ -257,6 +295,9 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 * WordPress Coding Standards compliant
 
 == Upgrade Notice ==
+
+= 1.6.0 =
+No upgrade steps required. All new features are disabled by default; enable them in Settings → DrillNav.
 
 = 1.5.0 =
 No upgrade steps required. New Pro features (Search/Filter, Lazy Accordion) are disabled by default.

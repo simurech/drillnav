@@ -4,7 +4,7 @@
 
 # DrillNav – Smart Contextual Navigation for Deeply Nested Sites
 
-[![Stable Tag](https://img.shields.io/badge/stable-1.5.0-blue.svg)](https://github.com/simurech/drillnav/releases)
+[![Stable Tag](https://img.shields.io/badge/stable-1.6.0-blue.svg)](https://github.com/simurech/drillnav/releases)
 [![WordPress](https://img.shields.io/badge/WordPress-6.3%2B-21759b.svg)](https://wordpress.org/)
 [![PHP](https://img.shields.io/badge/PHP-8.1%2B-8892be.svg)](https://php.net/)
 [![License](https://img.shields.io/badge/License-GPL--2.0--or--later-green.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
@@ -38,19 +38,31 @@ No manual configuration. Place the block, add the shortcode, or drop in the widg
 | Horizontal layout | ✓ | ✓ |
 | Block variations (5 ready-made presets) | ✓ | ✓ |
 | Style presets: Default, Compact, Comfortable | ✓ | ✓ |
-| Colour schemes: Default, Light, Dark | ✓ | ✓ |
+| Colour schemes: Default, Light, Dark, Auto (OS) | ✓ | ✓ |
 | Mobile hamburger toggle (side drawer) | ✓ | ✓ |
 | RTL support | ✓ | ✓ |
 | WPML & Polylang compatibility | ✓ | ✓ |
 | Hover-preloading (instant drill-down) | ✓ | ✓ |
 | Live settings preview | ✓ | ✓ |
+| Admin settings in 7 organised tabs | ✓ | ✓ |
+| Native page builder widgets (Elementor, Beaver Builder, Divi) | ✓ | ✓ |
 | WCAG 2.1 AA accessible | ✓ | ✓ |
 | Accordion layout (full tree, expand/collapse) | — | ✓ |
+| Lazy-loading accordion (deeper levels via REST) | — | ✓ |
 | Mega navigation (CSS Grid) | — | ✓ |
 | Cards style preset | — | ✓ |
 | Granular CSS overrides (9 custom properties) | — | ✓ |
+| Search / filter inside navigation | — | ✓ |
+| WP nav menu as navigation source | — | ✓ |
+| Hybrid menus (WP menu + WooCommerce sub-categories) | — | ✓ |
+| General hierarchical taxonomy navigation | — | ✓ |
+| AJAX content loading (SPA-style, History API) | — | ✓ |
 | WooCommerce product category navigation | — | ✓ |
 | Attribute-based product filtering | — | ✓ |
+| Icon support (Dashicons, SVG, Emoji) | — | ✓ |
+| Highlight / Featured badges | — | ✓ |
+| Analytics & Event Tracking (GTM / DataLayer) | — | ✓ |
+| Off-canvas drawer: blur, logo, top-slide | — | ✓ |
 | Priority support | — | ✓ |
 
 ---
@@ -116,6 +128,9 @@ All attributes are optional and override the global settings for that instance:
 | `mobile_toggle` | `no` | Hamburger icon + side drawer on mobile (`yes` / `no`) |
 | `max_width` | — | Limit container width, e.g. `300px` or `60%` |
 | `multiple_back_buttons` | `no` | One back button per drilled level (`yes` / `no`) |
+| `menu_id` | `0` | Use a WP nav menu as navigation source (Pro) |
+| `ajax_content` | `no` | Load page content via AJAX on link click (Pro) |
+| `content_selector` | `main` | CSS selector for the content container (Pro) |
 
 Example:
 ```
@@ -233,25 +248,6 @@ Full right-to-left layout support (since v1.4.0):
 - Accordion indent uses `padding-inline-start`
 
 No JavaScript changes required — RTL is handled entirely in CSS.
-
----
-
-## Roadmap
-
-| Feature | Tier |
-|---|---|
-| Settings Page Tabs (7 granular tabs: General, Appearance & Styling, Behavior, Blog, WooCommerce, Advanced, Tracking) | Free |
-| Automatic Dark-Mode (prefers-color-scheme) | Free |
-| Native Page Builder Widgets (Elementor, Divi, Beaver Builder) | Free/Pro |
-| Hybrid Menus: Combine manual WP Menus with auto-populated WooCommerce categories (High Priority) | Pro |
-| WooCommerce attribute-based filtering improvements | Pro |
-| Custom Menu Source (Appearance > Menus) | Pro |
-| Custom Taxonomy Support | Pro |
-| AJAX Content Loading (SPA-like navigation) | Pro |
-| Analytics & Event Tracking (DataLayer push, GTM support, custom event names, individual toggles) | Pro |
-| Icon Support (Dashicons, SVG, Emojis) | Pro |
-| "Highlight" / "Featured" Badges | Pro |
-| Off-Canvas Drawer enhancements (Backdrop blur, custom logo, top-slide) | Pro |
 
 ---
 
