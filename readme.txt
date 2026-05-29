@@ -83,7 +83,6 @@ No configuration required. Place the block, add the shortcode, or drop in the wi
 * Event tracking – DataLayer push for Google Tag Manager; configurable event names; per-event toggles for drill-down, back, and accordion interactions
 
 **Support**
-* Priority support
 
 = Multilingual Support =
 

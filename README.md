@@ -63,7 +63,6 @@ No manual configuration. Place the block, add the shortcode, or drop in the widg
 | Highlight / Featured badges | — | ✓ |
 | Analytics & Event Tracking (GTM / DataLayer) | — | ✓ |
 | Off-canvas drawer: blur, logo, top-slide | — | ✓ |
-| Priority support | — | ✓ |
 
 ---
 
@@ -128,6 +127,8 @@ All attributes are optional and override the global settings for that instance:
 | `mobile_toggle` | `no` | Hamburger icon + side drawer on mobile (`yes` / `no`) |
 | `max_width` | — | Limit container width, e.g. `300px` or `60%` |
 | `multiple_back_buttons` | `no` | One back button per drilled level (`yes` / `no`) |
+| `search_filter` | `no` | Enable live text filter above navigation items (Pro) |
+| `accordion_lazy` | `no` | Lazy-load deeper accordion levels via REST (Pro) |
 | `menu_id` | `0` | Use a WP nav menu as navigation source (Pro) |
 | `ajax_content` | `no` | Load page content via AJAX on link click (Pro) |
 | `content_selector` | `main` | CSS selector for the content container (Pro) |
@@ -152,7 +153,7 @@ The default layout. Items stacked vertically, drill-down replaces the visible li
 Items arranged in a row. Works great in headers and sticky bars.
 
 ### Accordion (Pro)
-The full page tree is server-side rendered with JS-powered expand/collapse. No REST requests — works without JavaScript for initial load.
+The full page tree is server-side rendered with JS-powered expand/collapse. With lazy-loading enabled (Pro), deeper levels are fetched via REST on expand.
 
 ### Mega Navigation (Pro)
 CSS Grid multi-column layout. Top-level categories as column headers with children below.
@@ -223,7 +224,7 @@ Override any token in your theme's stylesheet:
 }
 ```
 
-Pro users can set all nine properties globally in **Settings → DrillNav → Customize** or per block instance in the Inspector panel.
+Pro users can set all nine properties globally in **Settings → DrillNav → Appearance & Styling** or per block instance in the Inspector panel.
 
 ---
 
