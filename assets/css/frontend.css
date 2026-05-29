@@ -382,20 +382,21 @@
 
 /* Expand (arrow) button */
 .drillnav .drillnav__expand-btn {
-	display:         flex;
-	align-items:     center;
-	justify-content: center;
-	flex-shrink:     0;
-	width:           2.5rem;
-	background:      none;
-	border:          none;
-	border-radius:   var(--drillnav-border-radius);
-	color:           var(--drillnav-color-arrow);
-	cursor:          pointer;
-	font-size:       1.25em;
-	line-height:     1;
-	transition:      background var(--drillnav-transition-speed);
-	padding:         0;
+	display:              flex;
+	align-items:          center;
+	justify-content:      center;
+	flex-shrink:          0;
+	width:                2.5rem;
+	background:           none;
+	border:               none;
+	border-inline-start:  1px solid var(--drillnav-color-border);
+	border-radius:        0 var(--drillnav-border-radius) var(--drillnav-border-radius) 0;
+	color:                var(--drillnav-color-arrow);
+	cursor:               pointer;
+	font-size:            1.25em;
+	line-height:          1;
+	transition:           background var(--drillnav-transition-speed);
+	padding:              0;
 }
 
 .drillnav .drillnav__expand-btn:hover {

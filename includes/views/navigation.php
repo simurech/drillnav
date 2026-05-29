@@ -281,7 +281,7 @@ $content_selector = $ajax_content ? (string) ( $settings['content_selector'] ?? 
 	</div>
 	<?php endif; ?>
 
-	<?php if ( $show_back && $back_item ) : ?>
+	<?php if ( $show_back && $back_item && empty( $back_item['is_current'] ) ) : ?>
 	<div class="drillnav__back-wrap">
 		<a
 			href="<?php echo esc_url( $back_item['url'] ); ?>"
