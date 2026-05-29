@@ -203,7 +203,7 @@ $content_selector = $ajax_content ? (string) ( $settings['content_selector'] ?? 
 	$tree         = $nav_data['tree'] ?? array();
 	$render_items = null;
 	$accordion_lazy = ! empty( $settings['accordion_lazy'] );
-	$render_items = function( array $items ) use ( &$render_items, $current_post_id, $layout, $render_extra_attrs, $accordion_lazy ): void {
+	$render_items = function( array $items ) use ( &$render_items, $current_post_id, $layout, $render_extra_attrs, $accordion_lazy, $render_icon, $render_badge ): void {
 		foreach ( $items as $item ) {
 			$item_id      = (int) $item['id'];
 			$item_title   = (string) $item['title'];

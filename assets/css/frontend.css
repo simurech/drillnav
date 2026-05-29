@@ -357,7 +357,7 @@
 	align-items:     center;
 	padding:         var(--drillnav-item-padding-y) var(--drillnav-item-padding-x);
 	color:           var(--drillnav-color-link);
-	text-decoration: none;
+	text-decoration: none !important;
 	border-radius:   var(--drillnav-border-radius);
 	transition:      background var(--drillnav-transition-speed);
 	overflow:        hidden;
@@ -366,9 +366,11 @@
 	min-width:       0;
 }
 
-.drillnav .drillnav__link:hover {
+.drillnav .drillnav__link:hover,
+.drillnav .drillnav__link:focus,
+.drillnav .drillnav__link:visited {
 	background:      var(--drillnav-color-btn-hover);
-	text-decoration: none;
+	text-decoration: none !important;
 }
 
 /* Current page */
