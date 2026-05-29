@@ -68,8 +68,8 @@ if ( $mobile_toggle ) {
 		if ( 'glassmorphism' === $drawer_effect ) {
 			$nav_classes[] = 'drillnav--drawer-effect-glass';
 		}
-		if ( 'top' === $drawer_position ) {
-			$nav_classes[] = 'drillnav--drawer-position-top';
+		if ( 'right' === $drawer_position ) {
+			$nav_classes[] = 'drillnav--drawer-position-right';
 		}
 	}
 }
@@ -254,7 +254,13 @@ $content_selector = $ajax_content ? (string) ( $settings['content_selector'] ?? 
 	</div>
 	<?php else : ?>
 
-	<?php if ( ! empty( $settings['search_filter'] ) && in_array( $layout, array( 'list', 'horizontal' ), true ) ) : ?>
+	<?php
+	$search_min = (int) ( $settings['search_filter_min_items'] ?? 5 );
+	$show_search = ! empty( $settings['search_filter'] )
+		&& in_array( $layout, array( 'list', 'horizontal' ), true )
+		&& ( 0 === $search_min || count( $current_level ) >= $search_min );
+	?>
+	<?php if ( $show_search ) : ?>
 	<div class="drillnav__search">
 		<input
 			type="search"

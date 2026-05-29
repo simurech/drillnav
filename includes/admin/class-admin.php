@@ -348,6 +348,20 @@ class Admin {
 			)
 		);
 
+		add_settings_field(
+			'search_filter_min_items',
+			__( 'Search filter min. items', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			array( $this, 'field_number' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_appearance',
+			array(
+				'key'  => 'search_filter_min_items',
+				'min'  => 0,
+				'max'  => 50,
+				'help' => __( 'Only show the search field when the current level has at least this many items. 0 = always show. Default: 5.', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
 		// --- Behavior section ---
 		add_settings_section(
 			'drillnav_behavior',
@@ -427,8 +441,8 @@ class Admin {
 			array(
 				'key'     => 'drawer_position',
 				'options' => array(
-					'left' => __( 'Slide in from left (default)', 'drillnav-drilldown-navigation' ),
-					'top'  => __( 'Slide in from top', 'drillnav-drilldown-navigation' ),
+					'left'  => __( 'Slide in from left (default)', 'drillnav-drilldown-navigation' ),
+					'right' => __( 'Slide in from right', 'drillnav-drilldown-navigation' ),
 				),
 			)
 		);

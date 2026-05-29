@@ -72,11 +72,12 @@ class Settings {
 
 			// Pro search/lazy features.
 			'search_filter'           => false,
+			'search_filter_min_items' => 5,   // Show search only when current level has this many items or more.
 			'accordion_lazy'          => false,
 
 			// Off-Canvas Drawer (Pro enhancements).
 			'drawer_effect'   => 'default', // 'default' | 'glassmorphism'.
-			'drawer_position' => 'left',    // 'left' | 'right'.
+			'drawer_position' => 'left',    // 'left' | 'right' (Pro).
 
 			// Analytics & Event Tracking (Pro).
 			'tracking_enabled'              => false,
@@ -204,14 +205,15 @@ class Settings {
 			$clean[ $custom_key ] = sanitize_text_field( $raw[ $custom_key ] ?? '' );
 		}
 
-		$clean['search_filter']  = ! empty( $raw['search_filter'] );
-		$clean['accordion_lazy'] = ! empty( $raw['accordion_lazy'] );
+		$clean['search_filter']           = ! empty( $raw['search_filter'] );
+		$clean['search_filter_min_items'] = max( 0, absint( $raw['search_filter_min_items'] ?? 5 ) );
+		$clean['accordion_lazy']          = ! empty( $raw['accordion_lazy'] );
 
 		// Drawer Pro options.
 		$clean['drawer_effect']   = in_array( $raw['drawer_effect'] ?? '', array( 'default', 'glassmorphism' ), true )
 			? $raw['drawer_effect']
 			: 'default';
-		$clean['drawer_position'] = in_array( $raw['drawer_position'] ?? '', array( 'left', 'top' ), true )
+		$clean['drawer_position'] = in_array( $raw['drawer_position'] ?? '', array( 'left', 'right' ), true )
 			? $raw['drawer_position']
 			: 'left';
 		// Analytics & Event Tracking (Pro).
