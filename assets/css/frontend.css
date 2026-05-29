@@ -192,17 +192,6 @@
 	}
 }
 
-/* Mega (Pro) */
-.drillnav--layout-mega .drillnav__list {
-	display:               grid;
-	grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-	gap:                   var(--drillnav-item-padding-y) var(--drillnav-item-padding-x);
-}
-
-.drillnav--layout-mega .drillnav__expand-btn {
-	display: none;
-}
-
 /* Accordion (Pro) */
 .drillnav--layout-accordion .drillnav__sublist {
 	overflow:            hidden;
@@ -642,20 +631,6 @@
 		transform: translateY(0);
 	}
 
-	/* Drawer logo header */
-	.drillnav__drawer-header {
-		padding:       0 0 1rem;
-		margin-bottom: 0.75rem;
-		border-bottom: 1px solid var(--drillnav-color-border);
-	}
-
-	.drillnav__drawer-logo {
-		display:    block;
-		max-height: 48px;
-		max-width:  160px;
-		width:      auto;
-		height:     auto;
-	}
 }
 
 @media (prefers-reduced-motion: reduce) {

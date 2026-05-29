@@ -102,7 +102,6 @@ class ElementorWidget extends \Elementor\Widget_Base {
 					'list'       => esc_html__( 'List (default)', 'drillnav-drilldown-navigation' ),
 					'horizontal' => esc_html__( 'Horizontal', 'drillnav-drilldown-navigation' ),
 					'accordion'  => esc_html__( 'Accordion (Pro)', 'drillnav-drilldown-navigation' ),
-					'mega'       => esc_html__( 'Mega (Pro)', 'drillnav-drilldown-navigation' ),
 				),
 			)
 		);

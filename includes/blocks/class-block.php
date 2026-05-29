@@ -267,7 +267,7 @@ class Block {
 		if ( isset( $attributes['multipleBackButtons'] ) ) {
 			$args['multiple_back_buttons'] = (bool) $attributes['multipleBackButtons'];
 		}
-		if ( isset( $attributes['layout'] ) && in_array( $attributes['layout'], array( 'list', 'horizontal', 'accordion', 'mega' ), true ) ) {
+		if ( isset( $attributes['layout'] ) && in_array( $attributes['layout'], array( 'list', 'horizontal', 'accordion' ), true ) ) {
 			$args['layout'] = sanitize_key( (string) $attributes['layout'] );
 		}
 		if ( isset( $attributes['stylePreset'] ) && in_array( $attributes['stylePreset'], array( 'default', 'compact', 'comfortable', 'cards' ), true ) ) {

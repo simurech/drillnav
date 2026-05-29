@@ -41,7 +41,7 @@ class Settings {
 			// Accessibility.
 			'nav_label'          => '', // Empty = default translated string.
 
-			'layout'             => 'list',    // 'list' | 'horizontal' | 'accordion' (Pro) | 'mega' (Pro).
+			'layout'             => 'list',    // 'list' | 'horizontal' | 'accordion' (Pro).
 			'style_preset'       => 'default', // 'default' | 'compact' | 'comfortable' | 'cards' (Pro).
 
 			// Mobile.
@@ -76,8 +76,7 @@ class Settings {
 
 			// Off-Canvas Drawer (Pro enhancements).
 			'drawer_effect'   => 'default', // 'default' | 'glassmorphism'.
-			'drawer_position' => 'left',    // 'left' | 'top'.
-			'drawer_logo_url' => '',        // URL to logo image shown at drawer top.
+			'drawer_position' => 'left',    // 'left' | 'right'.
 
 			// Analytics & Event Tracking (Pro).
 			'tracking_enabled'              => false,
@@ -177,7 +176,7 @@ class Settings {
 		$clean['color_scheme']  = in_array( $raw['color_scheme'] ?? '', array( 'default', 'light', 'dark', 'auto' ), true )
 			? $raw['color_scheme']
 			: 'default';
-		$clean['layout']        = in_array( $raw['layout'] ?? '', array( 'list', 'horizontal', 'accordion', 'mega' ), true )
+		$clean['layout']        = in_array( $raw['layout'] ?? '', array( 'list', 'horizontal', 'accordion' ), true )
 			? $raw['layout']
 			: 'list';
 		$clean['style_preset']  = in_array( $raw['style_preset'] ?? '', array( 'default', 'compact', 'comfortable', 'cards' ), true )
@@ -215,8 +214,6 @@ class Settings {
 		$clean['drawer_position'] = in_array( $raw['drawer_position'] ?? '', array( 'left', 'top' ), true )
 			? $raw['drawer_position']
 			: 'left';
-		$clean['drawer_logo_url'] = esc_url_raw( $raw['drawer_logo_url'] ?? '' );
-
 		// Analytics & Event Tracking (Pro).
 		$clean['tracking_enabled']              = ! empty( $raw['tracking_enabled'] );
 		$clean['tracking_event_drilldown']      = ! empty( $raw['tracking_event_drilldown'] );

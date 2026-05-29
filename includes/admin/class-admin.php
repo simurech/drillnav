@@ -297,10 +297,9 @@ class Admin {
 			array(
 				'key'     => 'layout',
 				'options' => array(
-					'list'        => __( 'List (default)', 'drillnav-drilldown-navigation' ),
-					'horizontal'  => __( 'Horizontal', 'drillnav-drilldown-navigation' ),
-					'accordion'   => __( 'Accordion (Pro)', 'drillnav-drilldown-navigation' ),
-					'mega'        => __( 'Mega (Pro)', 'drillnav-drilldown-navigation' ),
+					'list'       => __( 'List (default)', 'drillnav-drilldown-navigation' ),
+					'horizontal' => __( 'Horizontal', 'drillnav-drilldown-navigation' ),
+					'accordion'  => __( 'Accordion (Pro)', 'drillnav-drilldown-navigation' ),
 				),
 			)
 		);
@@ -431,19 +430,6 @@ class Admin {
 					'left' => __( 'Slide in from left (default)', 'drillnav-drilldown-navigation' ),
 					'top'  => __( 'Slide in from top', 'drillnav-drilldown-navigation' ),
 				),
-			)
-		);
-
-		add_settings_field(
-			'drawer_logo_url',
-			__( 'Drawer logo URL', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
-			array( $this, 'field_text_pro' ),
-			'drillnav-drilldown-navigation',
-			'drillnav_behavior',
-			array(
-				'key'         => 'drawer_logo_url',
-				'placeholder' => 'https://example.com/logo.png',
-				'help'        => __( 'Image URL shown at the top of the drawer. Leave empty to hide.', 'drillnav-drilldown-navigation' ),
 			)
 		);
 

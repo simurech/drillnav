@@ -67,7 +67,6 @@ class BeaverBuilder {
 										'list'       => __( 'List (default)', 'drillnav-drilldown-navigation' ),
 										'horizontal' => __( 'Horizontal', 'drillnav-drilldown-navigation' ),
 										'accordion'  => __( 'Accordion (Pro)', 'drillnav-drilldown-navigation' ),
-										'mega'       => __( 'Mega (Pro)', 'drillnav-drilldown-navigation' ),
 									),
 								),
 								'animation'    => array(

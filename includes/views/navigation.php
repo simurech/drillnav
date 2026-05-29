@@ -35,9 +35,9 @@ $nav_label = ! empty( $settings['nav_label'] )
 
 $is_pro_active = function_exists( 'drillnav_fs' ) && drillnav_fs()->can_use_premium_code__premium_only();
 
-// Layout – accordion/mega require Pro; fall back to list silently.
+// Layout – accordion requires Pro; fall back to list silently.
 $layout      = (string) ( $settings['layout'] ?? 'list' );
-$pro_layouts = array( 'accordion', 'mega' );
+$pro_layouts = array( 'accordion' );
 if ( in_array( $layout, $pro_layouts, true ) && ! $is_pro_active ) {
 	$layout = 'list';
 }
@@ -74,9 +74,6 @@ if ( $mobile_toggle ) {
 	}
 }
 
-$drawer_logo_url = ( $mobile_toggle && $is_pro_active )
-	? esc_url( (string) ( $settings['drawer_logo_url'] ?? '' ) )
-	: '';
 
 // Build inline style from CSS custom properties.
 $css_prop_map = array(
@@ -145,17 +142,6 @@ $content_selector = $ajax_content ? (string) ( $settings['content_selector'] ?? 
 	<?php endif; ?>
 	<?php echo $nav_style_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above via esc_attr. ?>
 >
-	<?php if ( '' !== $drawer_logo_url ) : ?>
-	<div class="drillnav__drawer-header">
-		<img
-			src="<?php echo esc_url( $drawer_logo_url ); ?>"
-			alt="<?php esc_attr_e( 'Site logo', 'drillnav-drilldown-navigation' ); ?>"
-			class="drillnav__drawer-logo"
-			loading="lazy"
-		>
-	</div>
-	<?php endif; ?>
-
 	<?php // Hidden JSON data payload – read by frontend.js. ?>
 	<script type="application/json" id="<?php echo esc_attr( $instance ); ?>-data">
 		<?php echo $json_data; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_json_encode output is safe. ?>
