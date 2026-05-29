@@ -4,7 +4,7 @@ Tags:              navigation, contextual navigation, drilldown, page hierarchy,
 Requires at least: 6.3
 Tested up to:      7.0
 Requires PHP:      8.1
-Stable tag:        1.6.2
+Stable tag:        1.6.3
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -229,6 +229,11 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 
 == Changelog ==
 
+= 1.6.3 =
+* Fix: Replace raw inline script with wp_enqueue_script() for onboarding notice dismiss handler
+* Fix: REST /children endpoint now rejects non-public post types
+* Fix: Replace Freemius license-check calls with is__premium_only() throughout; add @fs_premium_only annotation for Pro-only files
+
 = 1.6.2 =
 * Fix: Suppress back button when the back target is the current page (home page with show_home enabled)
 * New: Expand arrow icon selector (Pro) – choose from 8 predefined symbols
@@ -313,6 +318,9 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 * WordPress Coding Standards compliant
 
 == Upgrade Notice ==
+
+= 1.6.3 =
+No upgrade steps required.
 
 = 1.6.2 =
 No upgrade steps required. The drawer_position "top" value is replaced by "right" — if you had "top" saved, it will reset to "left" on next save.
