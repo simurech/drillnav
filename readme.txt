@@ -4,7 +4,7 @@ Tags:              navigation, contextual navigation, drilldown, page hierarchy,
 Requires at least: 6.3
 Tested up to:      7.0
 Requires PHP:      8.1
-Stable tag:        1.6.1
+Stable tag:        1.6.2
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -227,6 +227,20 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 
 == Changelog ==
 
+= 1.6.2 =
+* Fix: Suppress back button when the back target is the current page (home page with show_home enabled)
+* New: Expand arrow icon selector (Pro) – choose from 8 predefined symbols
+* New: Back button icon selector (Pro) – choose from 7 predefined symbols
+* New: Configurable mobile breakpoint (Pro) – override the default 768 px threshold
+* New: Fullscreen overlay mobile menu type (Pro) – alternative to the side drawer
+* New: Search / filter min-items threshold – only show search bar when item count meets the minimum
+* New: Drawer position "right" replaces "top"; slide-from-right animation added
+* Update: Admin settings layout overhauled – sticky live preview panel, Quick Start card in General tab
+* Update: Expand button now has a thin separator line from the item link
+* Update: Mega layout removed (reserved for a future release)
+* Update: Drawer logo URL removed
+* Fix: Block variation names now include "DrillNav – " prefix for easier discovery in the inserter
+
 = 1.6.1 =
 * Fix: Fatal error on activation — class-item-meta.php renamed to match PSR-4 autoloader convention (class-itemmeta.php)
 
@@ -297,6 +311,9 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 * WordPress Coding Standards compliant
 
 == Upgrade Notice ==
+
+= 1.6.2 =
+No upgrade steps required. The drawer_position "top" value is replaced by "right" — if you had "top" saved, it will reset to "left" on next save.
 
 = 1.6.1 =
 No upgrade steps required.
