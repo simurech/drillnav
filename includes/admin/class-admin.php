@@ -449,7 +449,7 @@ class Admin {
 
 		add_settings_field(
 			'ajax_content',
-			__( 'AJAX content loading', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			__( 'AJAX content loading', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span> <span class="drillnav-beta-badge">BETA</span>',
 			array( $this, 'field_checkbox_pro' ),
 			'drillnav-drilldown-navigation',
 			'drillnav_behavior',

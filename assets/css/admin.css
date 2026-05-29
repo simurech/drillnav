@@ -77,17 +77,50 @@
 	display:  flex;
 	gap:      2rem;
 	margin-top: 1rem;
+	align-items: flex-start;
 }
 
 .drillnav-settings-main {
 	flex: 1;
 	min-width: 0;
-	max-width: 680px;
 }
 
-.drillnav-settings-sidebar {
-	width: 280px;
+/* Sticky live-preview panel */
+.drillnav-preview-panel {
+	width:       280px;
 	flex-shrink: 0;
+	position:    sticky;
+	top:         46px;
+}
+
+.drillnav-preview-panel__inner {
+	background:    #fff;
+	border:        1px solid #c3c4c7;
+	border-radius: 4px;
+	padding:       1rem 1.25rem;
+}
+
+.drillnav-preview-panel__label {
+	font-weight:   600;
+	margin:        0 0 0.2rem;
+}
+
+/* Quick-start card inside General tab */
+.drillnav-quickstart-card {
+	background:    #f0f6fc;
+	border:        1px solid #c3d9f0;
+	border-radius: 4px;
+	padding:       1rem 1.25rem;
+	margin-bottom: 1.25rem;
+}
+
+.drillnav-quickstart-card ol {
+	margin:       0.5rem 0 0.75rem;
+	padding-left: 1.25rem;
+}
+
+.drillnav-quickstart-card ol li {
+	margin-bottom: 0.3rem;
 }
 
 /* Cards */
@@ -194,15 +227,28 @@
 /* Live preview stage */
 .drillnav-preview-stage {
 	margin-top:    0.75rem;
-	padding:       1.5rem;
+	padding:       1rem;
 	background:    #f6f7f7;
 	border:        1px solid #c3c4c7;
 	border-radius: 4px;
-	max-width:     420px;
 }
 
 .drillnav-preview-stage .drillnav--layout-accordion .drillnav__sublist {
 	max-height: 300px !important;
+}
+
+/* Beta badge */
+.drillnav-beta-badge {
+	display:        inline-block;
+	padding:        0.15em 0.45em;
+	background:     #2271b1;
+	color:          #fff;
+	border-radius:  3px;
+	font-size:      0.65em;
+	font-weight:    700;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	vertical-align: middle;
 }
 
 /* Responsive */
@@ -211,7 +257,8 @@
 		flex-direction: column;
 	}
 
-	.drillnav-settings-sidebar {
-		width: 100%;
+	.drillnav-preview-panel {
+		width:    100%;
+		position: static;
 	}
 }
