@@ -4,7 +4,7 @@ Tags:              navigation, contextual navigation, drilldown, page hierarchy,
 Requires at least: 6.3
 Tested up to:      7.0
 Requires PHP:      8.1
-Stable tag:        1.6.0
+Stable tag:        1.6.1
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -227,6 +227,9 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 
 == Changelog ==
 
+= 1.6.1 =
+* Fix: Fatal error on activation — class-item-meta.php renamed to match PSR-4 autoloader convention (class-itemmeta.php)
+
 = 1.6.0 =
 * New: Auto colour scheme – follows OS light/dark preference automatically via `prefers-color-scheme`
 * New: Admin settings reorganised into 7 tabs (General, Appearance & Styling, Behaviour, Blog, WooCommerce, Advanced, Tracking)
@@ -294,6 +297,9 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 * WordPress Coding Standards compliant
 
 == Upgrade Notice ==
+
+= 1.6.1 =
+No upgrade steps required.
 
 = 1.6.0 =
 No upgrade steps required. All new features are disabled by default; enable them in Settings → DrillNav.
