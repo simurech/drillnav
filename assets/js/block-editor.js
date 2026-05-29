@@ -549,7 +549,7 @@
 	const variations = [
 		{
 			name:        'drillnav-horizontal',
-			title:       __( 'Horizontal Navigation', 'drillnav-drilldown-navigation' ),
+			title:       __( 'DrillNav – Horizontal Navigation', 'drillnav-drilldown-navigation' ),
 			description: __( 'Navigation items arranged in a horizontal row.', 'drillnav-drilldown-navigation' ),
 			icon:        'align-wide',
 			attributes:  { layout: 'horizontal' },
@@ -558,7 +558,7 @@
 		},
 		{
 			name:        'drillnav-compact',
-			title:       __( 'Compact List', 'drillnav-drilldown-navigation' ),
+			title:       __( 'DrillNav – Compact List', 'drillnav-drilldown-navigation' ),
 			description: __( 'Smaller font and reduced padding for tight sidebar use.', 'drillnav-drilldown-navigation' ),
 			icon:        'list-view',
 			attributes:  { stylePreset: 'compact' },
@@ -567,7 +567,7 @@
 		},
 		{
 			name:        'drillnav-dark',
-			title:       __( 'Dark Navigation', 'drillnav-drilldown-navigation' ),
+			title:       __( 'DrillNav – Dark Navigation', 'drillnav-drilldown-navigation' ),
 			description: __( 'Dark colour scheme – works on any background.', 'drillnav-drilldown-navigation' ),
 			icon:        'admin-appearance',
 			attributes:  { colorScheme: 'dark' },
@@ -576,7 +576,7 @@
 		},
 		{
 			name:        'drillnav-accordion',
-			title:       __( 'Accordion (Pro)', 'drillnav-drilldown-navigation' ),
+			title:       __( 'DrillNav – Accordion (Pro)', 'drillnav-drilldown-navigation' ),
 			description: __( 'Full page tree with expandable levels. Requires DrillNav Pro.', 'drillnav-drilldown-navigation' ),
 			icon:        'menu-alt',
 			attributes:  { layout: 'accordion' },
