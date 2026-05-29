@@ -29,12 +29,12 @@ No configuration required. Place the block, add the shortcode, or drop in the wi
 * **Shortcode** `[drillnav]` and **sidebar widget** for classic themes
 * **Native page builder widgets** – dedicated modules for Elementor, Beaver Builder, and Divi
 * **Unlimited depth** – works with any number of hierarchy levels
-* **Four layouts** – List (default), Horizontal, Accordion (Pro), Mega Grid (Pro)
+* **Three layouts** – List (default), Horizontal, Accordion (Pro)
 * **Style presets** – Default, Compact, Comfortable, Cards (Pro)
 * **Mobile hamburger toggle** – optional side-drawer mode for themes without an off-canvas menu
 * **Colour scheme presets** – Default (inherits theme), Light, Dark, and Auto (follows OS dark/light preference)
 * **RTL support** – full right-to-left layout with mirrored animations and logical CSS properties
-* **Admin settings in 7 tabs** – General, Appearance & Styling, Behaviour, Blog, WooCommerce, Advanced, Tracking
+* **Admin settings in 6 tabs** – General (incl. Blog & Posts), Appearance & Styling, Behaviour, WooCommerce, Tracking, Advanced
 * **Live settings preview** – see colour scheme, layout, and style changes instantly on the Settings page
 * **WCAG 2.1 AA accessible** – full keyboard navigation, correct ARIA attributes, automatic focus management after drill-down
 * **Blazing fast** – assets load only on pages where the navigation is used; hover-preloading makes drill-down feel instant; 7-day intelligent caching with automatic cache invalidation
@@ -68,15 +68,17 @@ No configuration required. Place the block, add the shortcode, or drop in the wi
 
 **Layouts & appearance**
 * Accordion layout with lazy-loading deeper levels via REST
-* Mega navigation (CSS Grid multi-column)
 * Cards style preset
 * Granular CSS overrides (9 custom properties settable globally and per block instance)
 * Icon support – assign Dashicons, SVG, or emoji to individual navigation items
 * Highlight / Featured badges – mark items with a custom label (e.g. "New", "Sale")
-* Off-canvas drawer enhancements – glassmorphism blur, custom logo, top-slide animation
+* Off-canvas drawer enhancements – glassmorphism blur, slide-from-right animation
+* Arrow icon selector (8 options) and back button icon selector (7 options)
+* Fullscreen menu overlay mode
 
 **Behaviour**
-* Search / filter – live text filter above navigation items, resets on drill-down
+* Search / filter – live text filter above navigation items; configurable minimum item threshold
+* Configurable mobile breakpoint (default 768 px)
 * AJAX content loading – SPA-style page content loading with History API (`pushState`)
 
 **Analytics**

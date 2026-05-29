@@ -49,10 +49,14 @@ No manual configuration. Place the block, add the shortcode, or drop in the widg
 | WCAG 2.1 AA accessible | ✓ | ✓ |
 | Accordion layout (full tree, expand/collapse) | — | ✓ |
 | Lazy-loading accordion (deeper levels via REST) | — | ✓ |
-| Mega navigation (CSS Grid) | — | ✓ |
 | Cards style preset | — | ✓ |
 | Granular CSS overrides (9 custom properties) | — | ✓ |
 | Search / filter inside navigation | — | ✓ |
+| Search filter min-items threshold | — | ✓ |
+| Arrow icon selector (8 options) | — | ✓ |
+| Back button icon selector (7 options) | — | ✓ |
+| Configurable mobile breakpoint | — | ✓ |
+| Fullscreen menu overlay mode | — | ✓ |
 | WP nav menu as navigation source | — | ✓ |
 | Hybrid menus (WP menu + WooCommerce sub-categories) | — | ✓ |
 | General hierarchical taxonomy navigation | — | ✓ |
@@ -105,8 +109,7 @@ Search for **DrillNav** in the block inserter. Use the Inspector panel to config
 | Horizontal Navigation | Horizontal | Items in a horizontal row |
 | Compact List | List | Reduced padding for tight sidebars |
 | Dark Navigation | List | Dark colour scheme |
-| Accordion (Pro) | Accordion | Full page tree, expandable |
-| Mega Navigation (Pro) | Mega | CSS Grid multi-column layout |
+| DrillNav – Accordion (Pro) | Accordion | Full page tree, expandable |
 
 ### Shortcode
 
@@ -122,7 +125,7 @@ All attributes are optional and override the global settings for that instance:
 | `show_home` | `yes` | Show home link as first back-navigation step |
 | `home_label` | site name | Custom label for the home link |
 | `post_type` | `page` | Hierarchical post type to navigate |
-| `layout` | `list` | `list`, `horizontal`, `accordion` (Pro), `mega` (Pro) |
+| `layout` | `list` | `list`, `horizontal`, `accordion` (Pro) |
 | `style_preset` | `default` | `default`, `compact`, `comfortable`, `cards` (Pro) |
 | `mobile_toggle` | `no` | Hamburger icon + side drawer on mobile (`yes` / `no`) |
 | `max_width` | — | Limit container width, e.g. `300px` or `60%` |
@@ -154,9 +157,6 @@ Items arranged in a row. Works great in headers and sticky bars.
 
 ### Accordion (Pro)
 The full page tree is server-side rendered with JS-powered expand/collapse. With lazy-loading enabled (Pro), deeper levels are fetched via REST on expand.
-
-### Mega Navigation (Pro)
-CSS Grid multi-column layout. Top-level categories as column headers with children below.
 
 ---
 
