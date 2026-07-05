@@ -4,7 +4,7 @@ Tags:              navigation, contextual navigation, drilldown, page hierarchy,
 Requires at least: 6.3
 Tested up to:      7.0
 Requires PHP:      8.1
-Stable tag:        1.6.3
+Stable tag:        1.6.4
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -229,6 +229,26 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 
 == Changelog ==
 
+= 1.6.4 =
+* Fix: Current-page highlighting no longer leaks between sibling pages via shared cache entries – the current flag is now applied at render time
+* Fix: Cache is now invalidated when pages are saved via the block editor, the REST API, or WP-CLI (previously only classic admin saves triggered a flush)
+* Fix: Cache invalidation now also runs when categories, tags, or other public taxonomy terms are created, edited, or deleted, and when navigation menus are saved
+* Fix: Cache flushing now works reliably on hosts with a persistent object cache (Redis/Memcached) via a cache generation number
+* Fix: Drill-down expand now works for blog categories, product categories, and custom taxonomy terms – the /children REST endpoint accepts hierarchical taxonomies
+* Fix: Frontend no longer sends a REST nonce to the public endpoints; expired nonces baked into page-cached HTML caused 403 errors on drill-down
+* Fix: Blog, taxonomy, and WooCommerce navigation context is now detected on archives and single posts (the context filter previously only ran for hierarchical post types)
+* Fix: Expand/back icon selection, mobile breakpoint, fullscreen toggle type, drawer position/effect, and search filter minimum items now reach the frontend template (previously always defaults)
+* Fix: Icons and badges now also render on drill-down levels loaded via REST, using the configured arrow icons
+* Fix: Implemented the documented drillnav_cache_duration filter
+* Fix: Empty has-children results are now cached correctly (previously re-queried on every request)
+* Fix: Widget settings form now offers the post type selection it already saved
+* Performance: Child pages are checked for grandchildren with a single batch query instead of one query per item
+* Performance: Dashicons are only enqueued on pages that actually render a navigation (Pro)
+* Performance: Plugin activation and uninstall no longer flush the entire site object cache
+* Security: The /content REST endpoint (AJAX content loading) is only registered when Pro is active
+* Security: Onboarding notice and its dismiss handler now require the manage_options capability
+* Cache is automatically cleared once after updating to this version
+
 = 1.6.3 =
 * Fix: Replace raw inline script with wp_enqueue_script() for onboarding notice dismiss handler
 * Fix: REST /children endpoint now rejects non-public post types
@@ -318,6 +338,9 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 * WordPress Coding Standards compliant
 
 == Upgrade Notice ==
+
+= 1.6.4 =
+No upgrade steps required. The navigation cache is cleared automatically once after the update.
 
 = 1.6.3 =
 No upgrade steps required.

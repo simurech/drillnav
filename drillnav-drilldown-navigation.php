@@ -3,7 +3,7 @@
  * Plugin Name:       DrillNav – Smart Contextual Navigation for Deeply Nested Sites
  * Plugin URI:        https://github.com/simurech/drillnav
  * Description:       Contextual drill-down navigation that adapts to the current page. Perfect for deeply nested WordPress site hierarchies. WooCommerce category navigation available in DrillNav Pro.
- * Version:           1.6.3
+ * Version:           1.6.4
  * Requires at least: 6.3
  * Requires PHP:      8.1
  * Author:            urech.dev
@@ -31,7 +31,7 @@ if ( function_exists( 'drillnav_fs' ) ) {
 } else {
 
 	// Plugin constants.
-	define( 'DRILLNAV_VERSION', '1.6.3' );
+	define( 'DRILLNAV_VERSION', '1.6.4' );
 	define( 'DRILLNAV_PLUGIN_FILE', __FILE__ );
 	define( 'DRILLNAV_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 	define( 'DRILLNAV_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -119,6 +119,7 @@ if ( function_exists( 'drillnav_fs' ) ) {
 			'drillnav_version',
 			'drillnav_settings',
 			'drillnav_onboarding_dismissed',
+			'drillnav_cache_ver',
 		);
 		foreach ( $option_keys as $key ) {
 			delete_option( $key );
@@ -129,8 +130,8 @@ if ( function_exists( 'drillnav_fs' ) ) {
 		$wpdb->query(
 			"DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_drillnav_%' OR option_name LIKE '_transient_timeout_drillnav_%'"
 		);
-
-		wp_cache_flush();
+		// Transients held in an external object cache expire via their TTL;
+		// flushing the entire site cache on uninstall would be too invasive.
 	}
 
 	drillnav_fs()->add_action( 'after_uninstall', 'drillnav_fs_uninstall_cleanup' );
