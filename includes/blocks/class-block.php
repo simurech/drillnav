@@ -110,6 +110,9 @@ class Block {
 		if ( $this->settings->get( 'load_a11y_css' ) ) {
 			wp_enqueue_style( 'drillnav-a11y' );
 		}
+		if ( function_exists( 'drillnav_fs' ) && drillnav_fs()->is__premium_only() ) {
+			wp_enqueue_style( 'dashicons' ); // Per-item icon support (Pro).
+		}
 		wp_enqueue_script( 'drillnav-frontend' );
 
 		$instance = 'drillnav-block-' . uniqid();
@@ -124,22 +127,25 @@ class Block {
 	 * frontend JS for lazy-loading children.
 	 */
 	public function register_rest_routes(): void {
-		register_rest_route(
-			'drillnav/v1',
-			'/content',
-			array(
-				'methods'             => \WP_REST_Server::READABLE,
-				'callback'            => array( $this, 'rest_content' ),
-				'permission_callback' => '__return_true',
-				'args'                => array(
-					'url' => array(
-						'type'              => 'string',
-						'required'          => true,
-						'sanitize_callback' => 'esc_url_raw',
+		// AJAX content loading is a Pro feature – don't expose the endpoint otherwise.
+		if ( function_exists( 'drillnav_fs' ) && drillnav_fs()->is__premium_only() ) {
+			register_rest_route(
+				'drillnav/v1',
+				'/content',
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'rest_content' ),
+					'permission_callback' => '__return_true',
+					'args'                => array(
+						'url' => array(
+							'type'              => 'string',
+							'required'          => true,
+							'sanitize_callback' => 'esc_url_raw',
+						),
 					),
-				),
-			)
-		);
+				)
+			);
+		}
 
 		register_rest_route(
 			'drillnav/v1',
@@ -204,7 +210,11 @@ class Block {
 	}
 
 	/**
-	 * REST handler: returns the direct children of a post as JSON.
+	 * REST handler: returns the direct children of a post or term as JSON.
+	 *
+	 * The post_type parameter carries the item type from the navigation data –
+	 * either a hierarchical post type (page hierarchy) or a hierarchical
+	 * taxonomy (blog categories, product categories, custom taxonomies).
 	 *
 	 * @param \WP_REST_Request $request
 	 * @return \WP_REST_Response|\WP_Error
@@ -213,19 +223,88 @@ class Block {
 		$post_id   = (int) $request->get_param( 'post_id' );
 		$post_type = sanitize_key( (string) $request->get_param( 'post_type' ) );
 
-		// Validate post type is hierarchical and publicly accessible.
+		// Hierarchical, publicly accessible post type → post children.
 		$pto = get_post_type_object( $post_type );
-		if ( ! $pto || ! $pto->hierarchical || ! $pto->public ) {
-			return new \WP_Error(
-				'drillnav_invalid_post_type',
-				__( 'Post type not supported.', 'drillnav-drilldown-navigation' ),
-				array( 'status' => 400 )
+		if ( $pto && $pto->hierarchical && $pto->public ) {
+			return rest_ensure_response(
+				$this->navigator->get_children( $post_id, array( 'post_type' => $post_type ) )
 			);
 		}
 
-		$items = $this->navigator->get_children( $post_id, array( 'post_type' => $post_type ) );
+		// Hierarchical, public taxonomy → term children.
+		$tax = get_taxonomy( $post_type );
+		if ( $tax && $tax->hierarchical && $tax->public ) {
+			/**
+			 * Allows integrations (blog, WooCommerce) to supply the child items
+			 * for a taxonomy term. Return an array to short-circuit the generic
+			 * term lookup.
+			 *
+			 * @param array<int,array<string,mixed>>|null $items
+			 * @param string                              $taxonomy
+			 * @param int                                 $parent_id
+			 */
+			$items = apply_filters( 'drillnav_term_children_items', null, $post_type, $post_id );
+			if ( ! is_array( $items ) ) {
+				$items = $this->term_children( $post_type, $post_id );
+			}
+			return rest_ensure_response( $items );
+		}
 
-		return rest_ensure_response( $items );
+		return new \WP_Error(
+			'drillnav_invalid_post_type',
+			__( 'Post type not supported.', 'drillnav-drilldown-navigation' ),
+			array( 'status' => 400 )
+		);
+	}
+
+	/**
+	 * Generic term-children lookup used when no integration supplies the items.
+	 *
+	 * @param string $taxonomy
+	 * @param int    $parent_id
+	 * @return array<int,array<string,mixed>>
+	 */
+	private function term_children( string $taxonomy, int $parent_id ): array {
+		$terms = get_terms(
+			array(
+				'taxonomy'   => $taxonomy,
+				'parent'     => $parent_id,
+				'hide_empty' => false,
+				'orderby'    => 'name',
+				'order'      => 'ASC',
+			)
+		);
+
+		if ( is_wp_error( $terms ) || ! is_array( $terms ) ) {
+			return array();
+		}
+
+		$items = array();
+		foreach ( $terms as $term ) {
+			if ( ! $term instanceof \WP_Term ) {
+				continue;
+			}
+			$grandchildren = get_terms(
+				array(
+					'taxonomy' => $taxonomy,
+					'parent'   => $term->term_id,
+					'number'   => 1,
+					'fields'   => 'ids',
+				)
+			);
+			$items[]       = array(
+				'id'           => $term->term_id,
+				'title'        => $term->name,
+				'url'          => get_term_link( $term, $taxonomy ),
+				'parent_id'    => $parent_id,
+				'post_type'    => $taxonomy,
+				'menu_order'   => 0,
+				'is_current'   => false,
+				'has_children' => ! is_wp_error( $grandchildren ) && ! empty( $grandchildren ),
+			);
+		}
+
+		return $items;
 	}
 
 	/**

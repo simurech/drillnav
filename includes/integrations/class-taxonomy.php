@@ -164,7 +164,7 @@ class Taxonomy {
 		$cache_key = 'tax_terms_' . $taxonomy . '_' . $parent_id . '_' . $lang;
 		$cached    = $this->cache->get( $cache_key );
 		if ( false !== $cached ) {
-			return (array) $cached;
+			return $this->mark_current_items( (array) $cached, $current_id );
 		}
 
 		$terms = get_terms(
@@ -204,13 +204,35 @@ class Taxonomy {
 				'id'           => $translated->term_id,
 				'title'        => $translated->name,
 				'url'          => get_term_link( $translated, $taxonomy ),
-				'is_current'   => ( $translated->term_id === $current_id ),
+				// Applied at retrieval time – never baked into the shared cache.
+				'is_current'   => false,
 				'has_children' => $has_children,
 				'post_type'    => $taxonomy,
 			);
 		}
 
 		$this->cache->set( $cache_key, $items );
+		return $this->mark_current_items( $items, $current_id );
+	}
+
+	/**
+	 * Marks the term matching the given ID as current.
+	 *
+	 * Applied after cache retrieval so the flag is never stored in cache
+	 * entries shared between pages.
+	 *
+	 * @param array<int,array<string,mixed>> $items
+	 * @param int                            $current_id
+	 * @return array<int,array<string,mixed>>
+	 */
+	private function mark_current_items( array $items, int $current_id ): array {
+		if ( $current_id <= 0 ) {
+			return $items;
+		}
+		foreach ( $items as &$item ) {
+			$item['is_current'] = isset( $item['id'] ) && (int) $item['id'] === $current_id;
+		}
+		unset( $item );
 		return $items;
 	}
 

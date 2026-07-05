@@ -41,11 +41,6 @@ class Shortcode {
 
 	/** Registers (but does not enqueue) the frontend assets. */
 	public function register_assets(): void {
-		// Dashicons may be needed for icon support (Pro); enqueue when Pro is active.
-		if ( function_exists( 'drillnav_fs' ) && drillnav_fs()->is__premium_only() ) {
-			wp_enqueue_style( 'dashicons' );
-		}
-
 		if ( $this->settings->get( 'load_css' ) ) {
 			wp_register_style(
 				'drillnav-frontend',
@@ -95,6 +90,17 @@ class Shortcode {
 			);
 		}
 
+		// Icons for JS-rendered navigation levels (Pro selectors, free defaults).
+		$expand_icon = '›';
+		$back_icon   = '←';
+		if ( $is_pro ) {
+			$expand_icon = (string) ( $this->settings->get( 'expand_icon' ) ?: '›' );
+			$back_icon   = (string) ( $this->settings->get( 'back_icon' ) ?: '←' );
+		}
+
+		// Note: no REST nonce here on purpose. The drillnav endpoints are
+		// public, and a nonce baked into page-cached HTML expires and would
+		// make WordPress reject the request entirely.
 		wp_localize_script(
 			'drillnav-frontend',
 			'drillnavL10n',
@@ -106,7 +112,8 @@ class Shortcode {
 				'showSubPages' => __( 'Show sub-pages of %s', 'drillnav-drilldown-navigation' ),
 				'restUrl'      => esc_url_raw( rest_url( 'drillnav/v1/' ) ),
 				'contentUrl'   => esc_url_raw( rest_url( 'drillnav/v1/content' ) ),
-				'nonce'        => wp_create_nonce( 'wp_rest' ),
+				'expandIcon'   => $expand_icon,
+				'backIcon'     => $back_icon,
 				'tracking'     => $tracking,
 			)
 		);
@@ -240,6 +247,9 @@ class Shortcode {
 		}
 		if ( $this->settings->get( 'load_a11y_css' ) ) {
 			wp_enqueue_style( 'drillnav-a11y' );
+		}
+		if ( function_exists( 'drillnav_fs' ) && drillnav_fs()->is__premium_only() ) {
+			wp_enqueue_style( 'dashicons' ); // Per-item icon support (Pro).
 		}
 		wp_enqueue_script( 'drillnav-frontend' );
 	}

@@ -140,6 +140,25 @@ class Widget extends \WP_Widget {
 				<?php esc_html_e( 'Show home link', 'drillnav-drilldown-navigation' ); ?>
 			</label>
 		</p>
+		<p>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'post_type' ) ); ?>">
+				<?php esc_html_e( 'Post type:', 'drillnav-drilldown-navigation' ); ?>
+			</label>
+			<select
+				class="widefat"
+				id="<?php echo esc_attr( $this->get_field_id( 'post_type' ) ); ?>"
+				name="<?php echo esc_attr( $this->get_field_name( 'post_type' ) ); ?>"
+			>
+				<?php foreach ( $this->settings->get_hierarchical_post_types() as $type_slug ) : ?>
+					<?php $pto = get_post_type_object( $type_slug ); ?>
+					<?php if ( $pto ) : ?>
+						<option value="<?php echo esc_attr( $type_slug ); ?>" <?php selected( $post_type, $type_slug ); ?>>
+							<?php echo esc_html( $pto->label ); ?>
+						</option>
+					<?php endif; ?>
+				<?php endforeach; ?>
+			</select>
+		</p>
 		<?php
 		return '';
 	}
@@ -167,6 +186,9 @@ class Widget extends \WP_Widget {
 		}
 		if ( $this->settings->get( 'load_a11y_css' ) ) {
 			wp_enqueue_style( 'drillnav-a11y' );
+		}
+		if ( function_exists( 'drillnav_fs' ) && drillnav_fs()->is__premium_only() ) {
+			wp_enqueue_style( 'dashicons' ); // Per-item icon support (Pro).
 		}
 		wp_enqueue_script( 'drillnav-frontend' );
 	}

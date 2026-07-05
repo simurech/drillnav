@@ -13,26 +13,73 @@
 ( function () {
 	'use strict';
 
+	// Set once the first instance takes over AJAX content loading (Pro).
+	let ajaxContentBound = false;
+
 	/* -------------------------------------------------------------------------
 	 * REST helper
 	 * ---------------------------------------------------------------------- */
 
+	// Note: the drillnav REST endpoints are public, so no nonce is sent.
+	// A nonce baked into page-cached HTML would expire and make WordPress
+	// reject the request entirely (403).
 	async function fetchChildren( postId, postType ) {
-		const base  = ( window.drillnavL10n && window.drillnavL10n.restUrl ) || '/wp-json/drillnav/v1/';
-		const nonce = ( window.drillnavL10n && window.drillnavL10n.nonce ) || '';
-		const url   = base + 'children?post_id=' + encodeURIComponent( postId ) +
-		              '&post_type=' + encodeURIComponent( postType );
+		const base = ( window.drillnavL10n && window.drillnavL10n.restUrl ) || '/wp-json/drillnav/v1/';
+		const url  = base + 'children?post_id=' + encodeURIComponent( postId ) +
+		             '&post_type=' + encodeURIComponent( postType );
 
-		const res = await fetch( url, {
-			headers:     { 'X-WP-Nonce': nonce },
-			credentials: 'same-origin',
-		} );
+		const res = await fetch( url, { credentials: 'same-origin' } );
 
 		if ( ! res.ok ) {
 			throw new Error( 'DrillNav REST error: ' + res.status );
 		}
 
 		return res.json();
+	}
+
+	/* -------------------------------------------------------------------------
+	 * Shared item helpers (icons, badges, configured arrow symbols)
+	 * ---------------------------------------------------------------------- */
+
+	function expandIconChar() {
+		return ( window.drillnavL10n && window.drillnavL10n.expandIcon ) || '›';
+	}
+
+	function backIconChar() {
+		return ( window.drillnavL10n && window.drillnavL10n.backIcon ) || '←';
+	}
+
+	/**
+	 * Prepends the item icon to the link and appends the badge to the row,
+	 * mirroring the server-side template markup.
+	 *
+	 * @param {HTMLElement} row  The .drillnav__row element.
+	 * @param {HTMLElement} a    The .drillnav__link element (already in row).
+	 * @param {Object}      item Item data from the REST response.
+	 */
+	function applyItemExtras( row, a, item ) {
+		if ( item.icon ) {
+			const iconStr = String( item.icon );
+			const icon    = document.createElement( 'span' );
+			icon.setAttribute( 'aria-hidden', 'true' );
+			if ( /^dashicons-[a-z0-9-]+$/.test( iconStr ) ) {
+				icon.className = 'dashicons ' + iconStr + ' drillnav__icon';
+			} else {
+				icon.className   = 'drillnav__icon';
+				icon.textContent = iconStr;
+			}
+			a.insertBefore( icon, a.firstChild );
+		}
+
+		if ( item.badge ) {
+			const colors = [ 'red', 'green', 'blue', 'orange', 'gray' ];
+			const color  = colors.indexOf( item.badge_color ) !== -1 ? item.badge_color : 'red';
+			const badge  = document.createElement( 'span' );
+			badge.className = 'drillnav__badge drillnav__badge--' + color;
+			badge.setAttribute( 'aria-hidden', 'true' );
+			badge.textContent = String( item.badge );
+			row.appendChild( badge );
+		}
 	}
 
 	/* -------------------------------------------------------------------------
@@ -61,6 +108,7 @@
 			a.setAttribute( 'aria-current', 'page' );
 		}
 		row.appendChild( a );
+		applyItemExtras( row, a, item );
 
 		if ( item.has_children ) {
 			const btn     = document.createElement( 'button' );
@@ -78,7 +126,7 @@
 			const arrow     = document.createElement( 'span' );
 			arrow.className = 'drillnav__arrow';
 			arrow.setAttribute( 'aria-hidden', 'true' );
-			arrow.textContent = '›';
+			arrow.textContent = expandIconChar();
 			btn.appendChild( arrow );
 			row.appendChild( btn );
 		}
@@ -411,7 +459,7 @@
 			const arrow     = document.createElement( 'span' );
 			arrow.className = 'drillnav__back-arrow';
 			arrow.setAttribute( 'aria-hidden', 'true' );
-			arrow.textContent = '←';
+			arrow.textContent = backIconChar();
 
 			const lbl       = document.createElement( 'span' );
 			lbl.className   = 'drillnav__back-label';
@@ -446,6 +494,13 @@
 		 * -------------------------------------------------------------------- */
 
 		_bindAjaxContent() {
+			// Only one instance may manage the page content and history state;
+			// additional instances would double-handle clicks and popstate.
+			if ( ajaxContentBound ) {
+				return;
+			}
+			ajaxContentBound = true;
+
 			// Snapshot the original content + title for History API restoration.
 			const target = document.querySelector( this.contentSelector );
 			this._ajaxOriginalContent = target ? target.innerHTML : null;
@@ -489,7 +544,6 @@
 		/** @param {string} url */
 		async _ajaxLoadContent( url, shouldPushState = true ) {
 			const contentUrl = ( window.drillnavL10n && window.drillnavL10n.contentUrl ) || '';
-			const nonce      = ( window.drillnavL10n && window.drillnavL10n.nonce ) || '';
 			if ( ! contentUrl ) { window.location.href = url; return; }
 
 			const target = document.querySelector( this.contentSelector );
@@ -499,7 +553,7 @@
 				target.setAttribute( 'aria-busy', 'true' );
 				const res = await fetch(
 					contentUrl + '?url=' + encodeURIComponent( url ),
-					{ headers: { 'X-WP-Nonce': nonce }, credentials: 'same-origin' }
+					{ credentials: 'same-origin' }
 				);
 				if ( ! res.ok ) { throw new Error( 'HTTP ' + res.status ); }
 				const data = await res.json();
@@ -666,6 +720,7 @@
 				a.setAttribute( 'aria-current', 'page' );
 			}
 			row.appendChild( a );
+			applyItemExtras( row, a, item );
 
 			if ( item.has_children ) {
 				const btn = document.createElement( 'button' );
@@ -687,7 +742,7 @@
 				const arrow     = document.createElement( 'span' );
 				arrow.className = 'drillnav__arrow';
 				arrow.setAttribute( 'aria-hidden', 'true' );
-				arrow.textContent = '›';
+				arrow.textContent = expandIconChar();
 				btn.appendChild( arrow );
 				row.appendChild( btn );
 

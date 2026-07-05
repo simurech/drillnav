@@ -31,8 +31,15 @@ class Context {
 			return $this->resolved;
 		}
 
-		$this->resolved = $this->resolve();
-		return $this->resolved;
+		$resolved = $this->resolve();
+		if ( null === $resolved ) {
+			// Too early to resolve – return defaults without memoizing so the
+			// context is resolved again on the next access.
+			return $this->defaults();
+		}
+
+		$this->resolved = $resolved;
+		return $resolved;
 	}
 
 	/** Shorthand – returns the current post/page ID, or 0. */
@@ -70,56 +77,68 @@ class Context {
 	}
 
 	/**
-	 * Builds the context array from the current WordPress query.
+	 * Returns the default (empty) context array.
 	 *
 	 * @return array<string,mixed>
 	 */
-	private function resolve(): array {
-		$context = array(
+	private function defaults(): array {
+		return array(
 			'post_id'       => 0,
 			'post_type'     => '',
 			'parent_id'     => 0,
 			'ancestors'     => array(),
 			'is_front_page' => false,
 		);
+	}
+
+	/**
+	 * Builds the context array from the current WordPress query.
+	 *
+	 * The drillnav_current_context filter runs on every resolved context – also
+	 * for archives and non-hierarchical singulars – so integrations (blog,
+	 * taxonomy, WooCommerce) can inject their own context data.
+	 *
+	 * @return array<string,mixed>|null Null when it is too early to resolve.
+	 */
+	private function resolve(): ?array {
+		$context = $this->defaults();
 
 		$is_rest = defined( 'REST_REQUEST' ) && REST_REQUEST;
 
 		if ( ! did_action( 'wp' ) && ! is_admin() && ! $is_rest ) {
-			// Too early to resolve – will be resolved again on next access.
-			return $context;
+			return null;
 		}
 
 		// In REST context (e.g. block editor ServerSideRender preview), WordPress
-		// calls setup_postdata() before the render callback, so get_the_ID() is reliable.
-		$post_id = $is_rest ? (int) get_the_ID() : (int) get_queried_object_id();
-
-		if ( $post_id <= 0 ) {
-			$context['is_front_page'] = ! $is_rest && is_front_page();
-			return $context;
+		// calls setup_postdata() before the render callback, so get_the_ID() is
+		// reliable. On the frontend only singular views carry a post ID – on
+		// archives get_queried_object_id() returns a term ID that must not be
+		// mistaken for a post ID.
+		if ( $is_rest ) {
+			$post_id = (int) get_the_ID();
+		} else {
+			$post_id = is_singular() ? (int) get_queried_object_id() : 0;
 		}
 
-		$post = get_post( $post_id );
-		if ( ! $post ) {
-			return $context;
+		if ( $post_id > 0 ) {
+			$post = get_post( $post_id );
+			if ( $post ) {
+				$post_type_obj = get_post_type_object( $post->post_type );
+				if ( $post_type_obj && $post_type_obj->hierarchical ) {
+					// get_ancestors() returns [immediate_parent, ..., root_parent];
+					// reverse so we get [root, ..., immediate_parent] (top-down).
+					$ancestors = array_reverse(
+						array_map( 'intval', get_ancestors( $post_id, $post->post_type, 'post_type' ) )
+					);
+
+					$context['post_id']   = $post_id;
+					$context['post_type'] = $post->post_type;
+					$context['parent_id'] = (int) $post->post_parent;
+					$context['ancestors'] = $ancestors;
+				}
+			}
 		}
 
-		$post_type_obj = get_post_type_object( $post->post_type );
-		if ( ! $post_type_obj || ! $post_type_obj->hierarchical ) {
-			// Non-hierarchical post type – no contextual nav possible.
-			$context['is_front_page'] = is_front_page();
-			return $context;
-		}
-
-		// get_ancestors() returns [immediate_parent, grandparent, ..., root_parent].
-		$ancestors_reversed = array_map( 'intval', get_ancestors( $post_id, $post->post_type, 'post_type' ) );
-		// Reverse so we get [root, ..., immediate_parent] (top-down order).
-		$ancestors = array_reverse( $ancestors_reversed );
-
-		$context['post_id']       = $post_id;
-		$context['post_type']     = $post->post_type;
-		$context['parent_id']     = (int) $post->post_parent;
-		$context['ancestors']     = $ancestors;
 		$context['is_front_page'] = ! $is_rest && is_front_page();
 
 		/**

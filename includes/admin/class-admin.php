@@ -37,10 +37,8 @@ class Admin {
 		$loader->add_action( 'admin_notices',                     array( $this, 'onboarding_notice' ) );
 		$loader->add_action( 'wp_ajax_drillnav_dismiss_onboard',  array( $this, 'ajax_dismiss_onboarding' ) );
 
-		// Invalidate cache when posts/pages change.
-		$loader->add_action( 'save_post',    array( $this->cache, 'invalidate_on_post_change' ) );
-		$loader->add_action( 'delete_post',  array( $this->cache, 'invalidate_on_post_change' ) );
-		$loader->add_action( 'trashed_post', array( $this->cache, 'invalidate_on_post_change' ) );
+		// Note: cache-invalidation hooks (save_post etc.) are registered in
+		// Plugin::init_components so they also run outside wp-admin (REST, CLI).
 	}
 
 	/** Adds the DrillNav settings page under the Settings menu. */
@@ -138,7 +136,7 @@ class Admin {
 
 					'<h3>' . esc_html__( 'REST API', 'drillnav-drilldown-navigation' ) . '</h3>' .
 					'<p><code>GET /wp-json/drillnav/v1/children?post_id=123&amp;post_type=page</code><br>' .
-					esc_html__( 'Returns the direct children of a hierarchical post as a JSON array. Used by the frontend JavaScript for lazy-loading drill-down levels.', 'drillnav-drilldown-navigation' ) . '</p>' .
+					esc_html__( 'Returns the direct children of a hierarchical post as a JSON array. Used by the frontend JavaScript for lazy-loading drill-down levels. Also accepts a hierarchical taxonomy slug (e.g. category, product_cat) as post_type together with a term ID to return child terms.', 'drillnav-drilldown-navigation' ) . '</p>' .
 					'<p><code>GET /wp-json/drillnav/v1/woo-children?cat_id=5</code> <em>(' . esc_html__( 'Pro', 'drillnav-drilldown-navigation' ) . ')</em><br>' .
 					esc_html__( 'Returns direct child product categories as JSON.', 'drillnav-drilldown-navigation' ) . '</p>' .
 
@@ -869,7 +867,7 @@ class Admin {
 
 	/** Enqueues the onboarding dismiss script on all admin pages (until dismissed). */
 	public function enqueue_onboarding_script(): void {
-		if ( get_option( 'drillnav_onboarding_dismissed' ) ) {
+		if ( get_option( 'drillnav_onboarding_dismissed' ) || ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
 
@@ -905,7 +903,7 @@ class Admin {
 
 	/** Displays a one-time onboarding notice after activation. */
 	public function onboarding_notice(): void {
-		if ( get_option( 'drillnav_onboarding_dismissed' ) ) {
+		if ( get_option( 'drillnav_onboarding_dismissed' ) || ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
 		$screen = get_current_screen();
@@ -930,6 +928,11 @@ class Admin {
 	/** AJAX handler: persists the dismissed state of the onboarding notice. */
 	public function ajax_dismiss_onboarding(): void {
 		check_ajax_referer( 'drillnav_dismiss_onboard', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( array( 'message' => 'Insufficient permissions.' ), 403 );
+		}
+
 		update_option( 'drillnav_onboarding_dismissed', true );
 		wp_send_json_success();
 	}

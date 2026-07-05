@@ -52,8 +52,6 @@ final class Plugin {
 	public static function activate(): void {
 		// Set a version flag so we can run migrations later.
 		update_option( 'drillnav_version', DRILLNAV_VERSION );
-		// Schedule cache flush after activation.
-		wp_cache_flush();
 	}
 
 	/** Runs on plugin deactivation. */
@@ -69,6 +67,24 @@ final class Plugin {
 		$this->cache     = new Cache();
 		$this->context   = new Context();
 		$this->navigator = new Navigator( $this->context, $this->cache, $this->settings );
+
+		// Flush stale caches once after a plugin update (activation hooks do
+		// not run reliably on updates).
+		if ( DRILLNAV_VERSION !== get_option( 'drillnav_version' ) ) {
+			update_option( 'drillnav_version', DRILLNAV_VERSION );
+			$this->cache->flush();
+		}
+
+		// Cache invalidation must work in every context – the block editor
+		// saves via the REST API where is_admin() is false, and WP-CLI or
+		// importers never enter wp-admin at all.
+		$this->loader->add_action( 'save_post',          array( $this->cache, 'invalidate_on_post_change' ) );
+		$this->loader->add_action( 'delete_post',        array( $this->cache, 'invalidate_on_post_change' ) );
+		$this->loader->add_action( 'trashed_post',       array( $this->cache, 'invalidate_on_post_change' ) );
+		$this->loader->add_action( 'created_term',       array( $this->cache, 'invalidate_on_term_change' ), 10, 3 );
+		$this->loader->add_action( 'edited_term',        array( $this->cache, 'invalidate_on_term_change' ), 10, 3 );
+		$this->loader->add_action( 'delete_term',        array( $this->cache, 'invalidate_on_term_change' ), 10, 3 );
+		$this->loader->add_action( 'wp_update_nav_menu', array( $this->cache, 'flush' ) );
 
 		// Frontend.
 		$shortcode = new Shortcode( $this->navigator, $this->settings );
@@ -154,6 +170,9 @@ final class Plugin {
 		}
 		if ( $this->settings->get( 'load_a11y_css' ) ) {
 			wp_enqueue_style( 'drillnav-a11y' );
+		}
+		if ( drillnav_fs()->is__premium_only() ) {
+			wp_enqueue_style( 'dashicons' ); // Per-item icon support (Pro).
 		}
 		wp_enqueue_script( 'drillnav-frontend' );
 

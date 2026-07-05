@@ -49,8 +49,9 @@ class Woocommerce {
 			return;
 		}
 
-		$loader->add_filter( 'drillnav_current_context', array( $this, 'filter_woo_context' ) );
-		$loader->add_filter( 'drillnav_nav_items',       array( $this, 'filter_nav_items' ), 10, 2 );
+		$loader->add_filter( 'drillnav_current_context',    array( $this, 'filter_woo_context' ) );
+		$loader->add_filter( 'drillnav_nav_items',          array( $this, 'filter_nav_items' ), 10, 2 );
+		$loader->add_filter( 'drillnav_term_children_items', array( $this, 'filter_term_children' ), 10, 3 );
 		$loader->add_filter( 'woocommerce_loop_product_link', array( $this, 'append_from_cat' ), 10, 2 );
 		$loader->add_action( 'rest_api_init',            array( $this, 'register_rest_routes' ) );
 
@@ -150,7 +151,7 @@ class Woocommerce {
 
 		$cached = $this->cache->get( $cache_key );
 		if ( false !== $cached ) {
-			return $cached;
+			return $this->mark_current_items( (array) $cached );
 		}
 
 		$terms = get_terms(
@@ -196,7 +197,8 @@ class Woocommerce {
 				'parent_id'    => $parent_id,
 				'post_type'    => 'product_cat',
 				'menu_order'   => 0,
-				'is_current'   => ( (int) ( get_queried_object_id() ) === $term->term_id ),
+				// Applied at retrieval time – never baked into the shared cache.
+				'is_current'   => false,
 				'has_children' => $has_children,
 			);
 
@@ -208,7 +210,44 @@ class Woocommerce {
 		}
 
 		$this->cache->set( $cache_key, $items );
+		return $this->mark_current_items( $items );
+	}
+
+	/**
+	 * Marks the category matching the currently viewed category archive as current.
+	 *
+	 * Applied after cache retrieval so the flag is never stored in cache
+	 * entries shared between pages.
+	 *
+	 * @param array<int,array<string,mixed>> $items
+	 * @return array<int,array<string,mixed>>
+	 */
+	private function mark_current_items( array $items ): array {
+		$current_id = is_product_category() ? (int) get_queried_object_id() : 0;
+		if ( $current_id <= 0 ) {
+			return $items;
+		}
+		foreach ( $items as &$item ) {
+			$item['is_current'] = isset( $item['id'] ) && (int) $item['id'] === $current_id;
+		}
+		unset( $item );
 		return $items;
+	}
+
+	/**
+	 * Supplies child categories for the REST drill-down when expanding a
+	 * product category item.
+	 *
+	 * @param array<int,array<string,mixed>>|null $items
+	 * @param string                              $taxonomy
+	 * @param int                                 $parent_id
+	 * @return array<int,array<string,mixed>>|null
+	 */
+	public function filter_term_children( $items, string $taxonomy, int $parent_id ) {
+		if ( 'product_cat' !== $taxonomy || is_array( $items ) ) {
+			return $items;
+		}
+		return $this->get_woo_categories( $parent_id, $this->get_woo_settings() );
 	}
 
 	/**
@@ -276,7 +315,8 @@ class Woocommerce {
 			}
 		}
 
-		$this->cache->set( $cache_key, $result );
+		// Stored as int: boolean false would be indistinguishable from a cache miss.
+		$this->cache->set( $cache_key, (int) $result );
 		return $result;
 	}
 
@@ -407,7 +447,8 @@ class Woocommerce {
 		);
 
 		$result = ! is_wp_error( $children ) && ! empty( $children );
-		$this->cache->set( $cache_key, $result );
+		// Stored as int: boolean false would be indistinguishable from a cache miss.
+		$this->cache->set( $cache_key, (int) $result );
 		return $result;
 	}
 

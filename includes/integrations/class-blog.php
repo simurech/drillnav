@@ -47,8 +47,9 @@ class Blog {
 	 * @param Loader $loader
 	 */
 	public function register( Loader $loader ): void {
-		$loader->add_filter( 'drillnav_current_context', array( $this, 'filter_blog_context' ) );
-		$loader->add_filter( 'drillnav_nav_items',       array( $this, 'filter_nav_items' ), 10, 2 );
+		$loader->add_filter( 'drillnav_current_context',    array( $this, 'filter_blog_context' ) );
+		$loader->add_filter( 'drillnav_nav_items',          array( $this, 'filter_nav_items' ), 10, 2 );
+		$loader->add_filter( 'drillnav_term_children_items', array( $this, 'filter_term_children' ), 10, 3 );
 
 		// Append ?from_cat= to post links when browsing a category archive.
 		$loader->add_filter( 'the_permalink', array( $this, 'append_from_cat' ), 10, 2 );
@@ -146,18 +147,18 @@ class Blog {
 			case 'post_category':
 				$cat_id = (int) ( $context['blog_cat_id'] ?? 0 );
 				$data['ancestors']     = $this->build_blog_ancestors( $context, $blog_settings );
+				$data['current_level'] = $this->mark_current_items(
+					$this->get_categories( (int) ( $context['blog_cat_parent'] ?? 0 ), $blog_settings ),
+					$cat_id
+				);
 				// Show subcategories if they exist, otherwise show posts (leaf level).
 				$sub_cats = $this->get_categories( $cat_id, $blog_settings );
 				if ( ! empty( $sub_cats ) ) {
-					$data['current_level'] = $this->get_categories( (int) ( $context['blog_cat_parent'] ?? 0 ), $blog_settings );
-					$data['children']      = $sub_cats;
-					$data['has_children']  = true;
-				} else {
-					$data['current_level'] = $this->get_categories( (int) ( $context['blog_cat_parent'] ?? 0 ), $blog_settings );
-					if ( $blog_settings['show_posts'] ) {
-						$data['children']     = $this->get_posts_for_category( $cat_id, $blog_settings );
-						$data['has_children'] = ! empty( $data['children'] );
-					}
+					$data['children']     = $sub_cats;
+					$data['has_children'] = true;
+				} elseif ( $blog_settings['show_posts'] ) {
+					$data['children']     = $this->get_posts_for_category( $cat_id, $blog_settings );
+					$data['has_children'] = ! empty( $data['children'] );
 				}
 				break;
 
@@ -166,7 +167,10 @@ class Blog {
 				$data['ancestors']     = $this->build_blog_ancestors( $context, $blog_settings );
 				$data['current_level'] = $this->get_categories( (int) ( $context['blog_cat_parent'] ?? 0 ), $blog_settings );
 				if ( $blog_settings['show_posts'] ) {
-					$data['children']     = $this->get_posts_for_category( $cat_id, $blog_settings );
+					$data['children']     = $this->mark_current_items(
+						$this->get_posts_for_category( $cat_id, $blog_settings ),
+						(int) ( $context['blog_post_id'] ?? 0 )
+					);
 					$data['has_children'] = ! empty( $data['children'] );
 				}
 				break;
@@ -181,6 +185,51 @@ class Blog {
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Supplies child items for the REST drill-down when expanding a category.
+	 * Shows subcategories, or posts at the leaf level (mirrors the SSR logic).
+	 *
+	 * @param array<int,array<string,mixed>>|null $items
+	 * @param string                              $taxonomy
+	 * @param int                                 $parent_id
+	 * @return array<int,array<string,mixed>>|null
+	 */
+	public function filter_term_children( $items, string $taxonomy, int $parent_id ) {
+		if ( 'category' !== $taxonomy || is_array( $items ) ) {
+			return $items;
+		}
+
+		$blog_settings = $this->get_blog_settings();
+
+		$categories = $this->get_categories( $parent_id, $blog_settings );
+		if ( ! empty( $categories ) || ! $blog_settings['show_posts'] ) {
+			return $categories;
+		}
+
+		return $this->get_posts_for_category( $parent_id, $blog_settings );
+	}
+
+	/**
+	 * Marks the item with the given ID as current.
+	 *
+	 * Applied after cache retrieval so the flag is never stored in cache
+	 * entries shared between pages.
+	 *
+	 * @param array<int,array<string,mixed>> $items
+	 * @param int                            $current_id
+	 * @return array<int,array<string,mixed>>
+	 */
+	private function mark_current_items( array $items, int $current_id ): array {
+		if ( $current_id <= 0 ) {
+			return $items;
+		}
+		foreach ( $items as &$item ) {
+			$item['is_current'] = isset( $item['id'] ) && (int) $item['id'] === $current_id;
+		}
+		unset( $item );
+		return $items;
 	}
 
 	/* ------------------------------------------------------------------
@@ -218,8 +267,6 @@ class Blog {
 			return array();
 		}
 
-		$queried_id = (int) get_queried_object_id();
-
 		$items = array();
 		foreach ( $terms as $term ) {
 			if ( ! $term instanceof \WP_Term ) {
@@ -235,7 +282,8 @@ class Blog {
 				'parent_id'    => $parent_id,
 				'post_type'    => 'category',
 				'menu_order'   => 0,
-				'is_current'   => ( is_category() && $queried_id === $term->term_id ),
+				// Applied at retrieval time – never baked into the shared cache.
+				'is_current'   => false,
 				'has_children' => $has_children || ( $blog_settings['show_posts'] && $term->count > 0 ),
 				'count'        => (int) $term->count,
 			);
@@ -274,8 +322,7 @@ class Blog {
 			)
 		);
 
-		$current_id = is_singular( 'post' ) ? (int) get_queried_object_id() : 0;
-		$items      = array();
+		$items = array();
 
 		foreach ( $query->posts as $post ) {
 			if ( ! $post instanceof \WP_Post ) {
@@ -288,7 +335,8 @@ class Blog {
 				'parent_id'    => $cat_id,
 				'post_type'    => 'post',
 				'menu_order'   => 0,
-				'is_current'   => ( $current_id === $post->ID ),
+				// Applied at retrieval time – never baked into the shared cache.
+				'is_current'   => false,
 				'has_children' => false,
 			);
 		}
@@ -376,7 +424,8 @@ class Blog {
 		);
 
 		$result = ! is_wp_error( $children ) && ! empty( $children );
-		$this->cache->set( $cache_key, $result );
+		// Stored as int: boolean false would be indistinguishable from a cache miss.
+		$this->cache->set( $cache_key, (int) $result );
 		return $result;
 	}
 

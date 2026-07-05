@@ -64,10 +64,13 @@ class Navigator {
 			)
 		);
 
-		$ctx      = $this->context->get();
-		$post_id  = (int) $ctx['post_id'];
-		$lang     = (string) apply_filters( 'drillnav_language', '' );
-		$cache_key = 'nav_' . md5( wp_json_encode( $args ) . '_' . $post_id . '_' . $lang );
+		$ctx     = $this->context->get();
+		$post_id = (int) $ctx['post_id'];
+		$lang    = (string) apply_filters( 'drillnav_language', '' );
+		// The full context is part of the key so that archives (term ID instead
+		// of post ID) and integration data (blog/taxonomy/WooCommerce) each get
+		// their own cache entry.
+		$cache_key = 'nav_' . md5( wp_json_encode( $args ) . '_' . wp_json_encode( $ctx ) . '_' . $lang );
 
 		$cached = $this->cache->get( $cache_key );
 		if ( false !== $cached ) {
@@ -117,6 +120,14 @@ class Navigator {
 				'accordion_lazy'          => $args['accordion_lazy'],
 				'ajax_content'            => $args['ajax_content'],
 				'content_selector'        => $args['content_selector'],
+				// Global-only settings (no per-instance override).
+				'search_filter_min_items' => (int) ( $this->settings->get( 'search_filter_min_items' ) ?? 5 ),
+				'expand_icon'             => (string) ( $this->settings->get( 'expand_icon' ) ?: '›' ),
+				'back_icon'               => (string) ( $this->settings->get( 'back_icon' ) ?: '←' ),
+				'mobile_breakpoint'       => (int) ( $this->settings->get( 'mobile_breakpoint' ) ?: 768 ),
+				'mobile_toggle_type'      => (string) ( $this->settings->get( 'mobile_toggle_type' ) ?: 'drawer' ),
+				'drawer_effect'           => (string) ( $this->settings->get( 'drawer_effect' ) ?: 'default' ),
+				'drawer_position'         => (string) ( $this->settings->get( 'drawer_position' ) ?: 'left' ),
 			),
 		);
 
@@ -155,7 +166,7 @@ class Navigator {
 		foreach ( $ctx['ancestors'] as $ancestor_id ) {
 			$post = get_post( $ancestor_id );
 			if ( $post ) {
-				$items[] = $this->post_to_item( $post, false );
+				$items[] = $this->post_to_item( $post );
 			}
 		}
 
@@ -210,11 +221,13 @@ class Navigator {
 		$cache_key = 'children_' . $args['post_type'] . '_' . $parent_id . '_' . $lang;
 		$cached    = $this->cache->get( $cache_key );
 		if ( false !== $cached ) {
-			return $cached;
+			return $this->mark_current_items( (array) $cached );
 		}
 
+		$post_type = sanitize_key( $args['post_type'] );
+
 		$query_args = array(
-			'post_type'        => sanitize_key( $args['post_type'] ),
+			'post_type'        => $post_type,
 			'post_parent'      => $parent_id,
 			'post_status'      => 'publish',
 			'posts_per_page'   => -1,
@@ -225,11 +238,16 @@ class Navigator {
 		);
 
 		$posts = get_posts( $query_args );
-		$items = array_map( fn( $p ) => $this->post_to_item( $p, false ), $posts );
+		$items = array_map( fn( $p ) => $this->post_to_item( $p ), $posts );
 
-		// Tag items that have children (for arrow indicator, ARIA).
+		// Tag items that have children (for arrow indicator, ARIA) with a
+		// single batch query instead of one query per item.
+		$parents_with_children = $this->parents_with_children(
+			array_map( static fn( $item ) => (int) $item['id'], $items ),
+			$post_type
+		);
 		foreach ( $items as &$item ) {
-			$item['has_children'] = $this->has_children( $item['id'], $args['post_type'] );
+			$item['has_children'] = in_array( (int) $item['id'], $parents_with_children, true );
 		}
 		unset( $item );
 
@@ -243,7 +261,56 @@ class Navigator {
 		$items = (array) apply_filters( 'drillnav_children_items', $items, $parent_id, $args );
 
 		$this->cache->set( $cache_key, $items );
+		return $this->mark_current_items( $items );
+	}
+
+	/**
+	 * Marks the item matching the current page as current.
+	 *
+	 * Runs after cache retrieval so the current flag is never baked into
+	 * cache entries that are shared between sibling pages.
+	 *
+	 * @param array<int,array<string,mixed>> $items
+	 * @return array<int,array<string,mixed>>
+	 */
+	private function mark_current_items( array $items ): array {
+		$current_id = $this->context->post_id();
+		if ( $current_id <= 0 ) {
+			return $items;
+		}
+		foreach ( $items as &$item ) {
+			$item['is_current'] = isset( $item['id'] ) && (int) $item['id'] === $current_id;
+		}
+		unset( $item );
 		return $items;
+	}
+
+	/**
+	 * Returns the subset of the given post IDs that have published children.
+	 *
+	 * @param int[]  $ids       Candidate parent IDs.
+	 * @param string $post_type
+	 * @return int[]
+	 */
+	private function parents_with_children( array $ids, string $post_type ): array {
+		$ids = array_values( array_filter( array_map( 'intval', $ids ) ) );
+		if ( empty( $ids ) ) {
+			return array();
+		}
+
+		$children = get_posts(
+			array(
+				'post_type'        => $post_type,
+				'post_parent__in'  => $ids,
+				'post_status'      => 'publish',
+				'posts_per_page'   => -1,
+				'fields'           => 'id=>parent',
+				'no_found_rows'    => true,
+				'suppress_filters' => false,
+			)
+		);
+
+		return array_values( array_unique( array_map( 'intval', wp_list_pluck( $children, 'post_parent' ) ) ) );
 	}
 
 	/**
@@ -274,20 +341,22 @@ class Navigator {
 		);
 
 		$result = ! empty( $children );
-		$this->cache->set( $cache_key, $result );
+		// Stored as int: boolean false would be indistinguishable from a cache miss.
+		$this->cache->set( $cache_key, (int) $result );
 		return $result;
 	}
 
 	/**
 	 * Converts a WP_Post to a normalised navigation item array.
 	 *
+	 * The is_current flag is intentionally left false here: items end up in
+	 * caches shared between sibling pages, so the flag is applied at
+	 * retrieval time via mark_current_items().
+	 *
 	 * @param \WP_Post $post
-	 * @param bool     $is_current Whether this is the active page.
 	 * @return array<string,mixed>
 	 */
-	private function post_to_item( \WP_Post $post, bool $is_current = false ): array {
-		$is_current = $is_current || ( (int) get_queried_object_id() === $post->ID );
-
+	private function post_to_item( \WP_Post $post ): array {
 		return array(
 			'id'           => $post->ID,
 			'title'        => get_the_title( $post ),
@@ -295,7 +364,7 @@ class Navigator {
 			'parent_id'    => (int) $post->post_parent,
 			'post_type'    => $post->post_type,
 			'menu_order'   => (int) $post->menu_order,
-			'is_current'   => $is_current,
+			'is_current'   => false,
 			'has_children' => false, // Filled in by get_children().
 		);
 	}
