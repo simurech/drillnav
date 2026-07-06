@@ -4,7 +4,7 @@ Tags:              navigation, contextual navigation, drilldown, page hierarchy,
 Requires at least: 6.3
 Tested up to:      7.0
 Requires PHP:      8.1
-Stable tag:        1.6.4
+Stable tag:        1.7.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -229,6 +229,15 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 
 == Changelog ==
 
+= 1.7.0 =
+* New: WooCommerce display settings (Pro) – the previously hardcoded category display behaviour is now configurable in Settings → DrillNav → WooCommerce
+* New: Shop root label setting (Pro), translatable via WPML String Translation / Polylang
+* New: "Hide empty categories" toggle (Pro) – disable the stock-availability check on very large shops to speed up uncached page loads
+* New: "Show Uncategorized" toggle (Pro)
+* New: Product counts next to category names (Pro), rendered in server-side and lazily loaded navigation levels
+* New: Exclude specific product categories from the navigation via a checkbox list (Pro)
+* Fix: Navigation caches are now flushed automatically when plugin settings are saved
+
 = 1.6.4 =
 * Fix: Current-page highlighting no longer leaks between sibling pages via shared cache entries – the current flag is now applied at render time
 * Fix: Cache is now invalidated when pages are saved via the block editor, the REST API, or WP-CLI (previously only classic admin saves triggered a flush)
@@ -338,6 +347,9 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 * WordPress Coding Standards compliant
 
 == Upgrade Notice ==
+
+= 1.7.0 =
+No upgrade steps required. New WooCommerce display settings default to the previous behaviour.
 
 = 1.6.4 =
 No upgrade steps required. The navigation cache is cleared automatically once after the update.
