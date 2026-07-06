@@ -85,6 +85,9 @@ final class Plugin {
 		$this->loader->add_action( 'edited_term',        array( $this->cache, 'invalidate_on_term_change' ), 10, 3 );
 		$this->loader->add_action( 'delete_term',        array( $this->cache, 'invalidate_on_term_change' ), 10, 3 );
 		$this->loader->add_action( 'wp_update_nav_menu', array( $this->cache, 'flush' ) );
+		// Settings influence cached navigation data (e.g. WooCommerce display
+		// options) without being part of every cache key.
+		$this->loader->add_action( 'update_option_drillnav_settings', array( $this->cache, 'flush' ) );
 
 		// Frontend.
 		$shortcode = new Shortcode( $this->navigator, $this->settings );

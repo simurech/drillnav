@@ -166,6 +166,17 @@ $pv_style_attr = $pv_style_parts ? ' style="' . implode( ';', $pv_style_parts ) 
 				<?php /* ── Tab: WooCommerce (Pro) ── */ ?>
 				<div id="tab-woocommerce" class="drillnav-tab-panel" hidden>
 					<h3>
+						<?php esc_html_e( 'Display', 'drillnav-drilldown-navigation' ); ?>
+						<span class="drillnav-pro-badge-inline">PRO</span>
+					</h3>
+					<p class="description"><?php esc_html_e( 'Controls how product categories appear in the navigation: root label, empty-category handling, product counts, and per-category exclusion.', 'drillnav-drilldown-navigation' ); ?></p>
+					<table class="form-table" role="presentation">
+						<?php do_settings_fields( 'drillnav-drilldown-navigation', 'drillnav_woo_display' ); ?>
+					</table>
+
+					<hr>
+
+					<h3>
 						<?php esc_html_e( 'WooCommerce Product Filters', 'drillnav-drilldown-navigation' ); ?>
 						<span class="drillnav-pro-badge-inline">PRO</span>
 					</h3>

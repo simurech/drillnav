@@ -615,6 +615,73 @@ class Admin {
 			)
 		);
 
+		// --- WooCommerce display section (Pro) ---
+		add_settings_section(
+			'drillnav_woo_display',
+			__( 'WooCommerce Display', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			'__return_false',
+			'drillnav-drilldown-navigation'
+		);
+
+		add_settings_field(
+			'woo_group_title',
+			__( 'Shop root label', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			array( $this, 'field_text_pro' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_woo_display',
+			array(
+				'key'         => 'woo_group_title',
+				'placeholder' => __( 'Shop', 'drillnav-drilldown-navigation' ),
+				'help'        => __( 'Label for the shop root link in back navigation. Leave empty for "Shop".', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
+		add_settings_field(
+			'woo_hide_empty',
+			__( 'Hide empty categories', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			array( $this, 'field_checkbox_pro' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_woo_display',
+			array(
+				'key'         => 'woo_hide_empty',
+				'label'       => __( 'Hide categories that contain no in-stock or backorderable products.', 'drillnav-drilldown-navigation' ),
+				'description' => __( 'Checks actual stock availability across the whole category subtree. Disable on very large shops if the first (uncached) page load feels slow.', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
+		add_settings_field(
+			'woo_show_uncategorized',
+			__( 'Show "Uncategorized"', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			array( $this, 'field_checkbox_pro' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_woo_display',
+			array(
+				'key'   => 'woo_show_uncategorized',
+				'label' => __( 'Include the default "Uncategorized" product category in the navigation.', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
+		add_settings_field(
+			'woo_show_count',
+			__( 'Show product counts', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			array( $this, 'field_checkbox_pro' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_woo_display',
+			array(
+				'key'   => 'woo_show_count',
+				'label' => __( 'Show the number of products next to each category name.', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
+		add_settings_field(
+			'woo_excluded_categories',
+			__( 'Exclude categories', 'drillnav-drilldown-navigation' ) . ' <span class="drillnav-pro-badge-inline">PRO</span>',
+			array( $this, 'field_woo_excluded_categories' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_woo_display',
+			array( 'key' => 'woo_excluded_categories' )
+		);
+
 		// --- WooCommerce Pro section (visible but locked without licence) ---
 		add_settings_section(
 			'drillnav_woo_filters',
@@ -1182,6 +1249,60 @@ class Admin {
 		if ( ! empty( $args['help'] ) ) {
 			printf( '<p class="description">%s</p>', esc_html( $args['help'] ) );
 		}
+	}
+
+	/**
+	 * Renders a scrollable, hierarchy-indented checkbox list of product
+	 * categories to exclude from the navigation.
+	 *
+	 * @param array<string,mixed> $args
+	 */
+	public function field_woo_excluded_categories( array $args ): void {
+		if ( ! $this->is_pro_active() ) {
+			printf(
+				'<label><input type="checkbox" disabled> %s</label>',
+				esc_html__( 'Select categories to hide', 'drillnav-drilldown-navigation' )
+			);
+			echo '<p class="description">' . esc_html__( 'Available in DrillNav Pro.', 'drillnav-drilldown-navigation' ) . '</p>';
+			return;
+		}
+
+		if ( ! taxonomy_exists( 'product_cat' ) ) {
+			echo '<p class="description">' . esc_html__( 'WooCommerce must be installed and active to use this feature.', 'drillnav-drilldown-navigation' ) . '</p>';
+			return;
+		}
+
+		$terms = get_terms(
+			array(
+				'taxonomy'   => 'product_cat',
+				'hide_empty' => false,
+				'orderby'    => 'name',
+			)
+		);
+
+		if ( is_wp_error( $terms ) || empty( $terms ) ) {
+			echo '<p class="description">' . esc_html__( 'No product categories found.', 'drillnav-drilldown-navigation' ) . '</p>';
+			return;
+		}
+
+		$saved = array_map( 'absint', (array) $this->settings->get( 'woo_excluded_categories' ) );
+
+		echo '<div style="max-height:220px;overflow-y:auto;border:1px solid #c3c4c7;border-radius:4px;padding:.5rem .75rem;background:#fff;max-width:25rem;">';
+		foreach ( $terms as $term ) {
+			if ( ! $term instanceof \WP_Term ) {
+				continue;
+			}
+			$depth = count( get_ancestors( $term->term_id, 'product_cat', 'taxonomy' ) );
+			printf(
+				'<label style="display:block;margin:2px 0;padding-left:%dpx;"><input type="checkbox" name="drillnav_settings[woo_excluded_categories][]" value="%d" %s> %s</label>',
+				(int) ( $depth * 18 ),
+				(int) $term->term_id,
+				checked( in_array( (int) $term->term_id, $saved, true ), true, false ),
+				esc_html( $term->name )
+			);
+		}
+		echo '</div>';
+		echo '<p class="description">' . esc_html__( 'Checked categories (including their subcategories via drill-down) are hidden from the navigation.', 'drillnav-drilldown-navigation' ) . '</p>';
 	}
 
 	/** @param array<string,mixed> $args */

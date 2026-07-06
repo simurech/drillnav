@@ -58,6 +58,13 @@
 	 * @param {Object}      item Item data from the REST response.
 	 */
 	function applyItemExtras( row, a, item ) {
+		if ( item.show_count && item.count !== undefined && item.count !== null ) {
+			const count = document.createElement( 'span' );
+			count.className   = 'drillnav__count';
+			count.textContent = '(' + parseInt( item.count, 10 ) + ')';
+			a.appendChild( count );
+		}
+
 		if ( item.icon ) {
 			const iconStr = String( item.icon );
 			const icon    = document.createElement( 'span' );

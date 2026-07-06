@@ -203,7 +203,8 @@ class Woocommerce {
 			);
 
 			if ( ! empty( $settings['show_count'] ) ) {
-				$item['count'] = $term->count;
+				$item['count']      = (int) $term->count;
+				$item['show_count'] = true; // Opt-in flag read by the template and JS.
 			}
 
 			$items[] = $item;
@@ -533,11 +534,11 @@ class Woocommerce {
 	private function get_woo_settings(): array {
 		$all = $this->settings->all();
 		return array(
-			'excluded_categories' => $all['woo_excluded_categories'] ?? array(),
-			'show_count'          => $all['woo_show_count'] ?? true,
-			'hide_empty'          => $all['woo_hide_empty'] ?? true,
-			'show_uncategorized'  => $all['woo_show_uncategorized'] ?? false,
-			'group_title'         => $all['woo_group_title'] ?? __( 'Shop', 'drillnav-drilldown-navigation' ),
+			'excluded_categories' => array_map( 'absint', (array) ( $all['woo_excluded_categories'] ?? array() ) ),
+			'show_count'          => ! empty( $all['woo_show_count'] ),
+			'hide_empty'          => ! empty( $all['woo_hide_empty'] ),
+			'show_uncategorized'  => ! empty( $all['woo_show_uncategorized'] ),
+			'group_title'         => (string) ( $all['woo_group_title'] ?? '' ),
 		);
 	}
 
@@ -551,11 +552,16 @@ class Woocommerce {
 	private function build_woo_ancestors( array $context, array $settings ): array {
 		$items = array();
 
+		$group_title = (string) apply_filters( 'drillnav_translate_string', $settings['group_title'], 'woo_group_title' );
+		if ( '' === $group_title ) {
+			$group_title = __( 'Shop', 'drillnav-drilldown-navigation' );
+		}
+
 		$shop_page_id = (int) wc_get_page_id( 'shop' );
 		if ( $shop_page_id > 0 ) {
 			$items[] = array(
 				'id'         => 0,
-				'title'      => $settings['group_title'],
+				'title'      => $group_title,
 				'url'        => get_permalink( $shop_page_id ) ?: get_post_type_archive_link( 'product' ),
 				'parent_id'  => -1,
 				'post_type'  => '',

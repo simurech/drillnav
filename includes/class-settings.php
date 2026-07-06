@@ -104,6 +104,13 @@ class Settings {
 			// WooCommerce Pro – product attribute filters.
 			// Each entry: ['taxonomy' => 'pa_brand', 'term_id' => 15, 'action' => 'exclude']
 			'woo_attribute_filters' => array(),
+
+			// WooCommerce Pro – category display options.
+			'woo_group_title'         => '',      // Empty = translated "Shop".
+			'woo_hide_empty'          => true,    // Hide categories without in-stock products.
+			'woo_show_uncategorized'  => false,   // Show the default "Uncategorized" category.
+			'woo_show_count'          => false,   // Show the product count next to category names.
+			'woo_excluded_categories' => array(), // product_cat term IDs to hide.
 		);
 	}
 
@@ -264,6 +271,15 @@ class Settings {
 			}
 		}
 		$clean['woo_attribute_filters'] = $clean_filters;
+
+		// WooCommerce Pro – category display options.
+		$clean['woo_group_title']        = sanitize_text_field( $raw['woo_group_title'] ?? '' );
+		$clean['woo_hide_empty']         = ! empty( $raw['woo_hide_empty'] );
+		$clean['woo_show_uncategorized'] = ! empty( $raw['woo_show_uncategorized'] );
+		$clean['woo_show_count']         = ! empty( $raw['woo_show_count'] );
+
+		$raw_excluded = is_array( $raw['woo_excluded_categories'] ?? null ) ? $raw['woo_excluded_categories'] : array();
+		$clean['woo_excluded_categories'] = array_values( array_filter( array_map( 'absint', $raw_excluded ) ) );
 
 		return $clean;
 	}

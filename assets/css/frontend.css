@@ -127,6 +127,13 @@
 	white-space:    nowrap;
 }
 
+.drillnav__count {
+	opacity:     0.6;
+	font-size:   0.85em;
+	margin-left: 0.35em;
+	white-space: nowrap;
+}
+
 .drillnav__badge--red    { background: #dc2626; color: #fff; }
 .drillnav__badge--green  { background: #16a34a; color: #fff; }
 .drillnav__badge--blue   { background: #2563eb; color: #fff; }

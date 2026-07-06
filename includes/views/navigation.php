@@ -191,6 +191,15 @@ $content_selector = $ajax_content ? (string) ( $settings['content_selector'] ?? 
 		}
 	};
 
+	// Helper: renders the optional product count after the link text.
+	// Only items that explicitly opt in via show_count render a count.
+	$render_count = static function( array $item ): void {
+		if ( empty( $item['show_count'] ) || ! isset( $item['count'] ) ) {
+			return;
+		}
+		printf( '<span class="drillnav__count">(%d)</span>', (int) $item['count'] );
+	};
+
 	// Helper: renders the optional badge after a link (inside the row div).
 	$render_badge = static function( array $item ): void {
 		if ( empty( $item['badge'] ) ) {
@@ -211,7 +220,7 @@ $content_selector = $ajax_content ? (string) ( $settings['content_selector'] ?? 
 	$tree         = $nav_data['tree'] ?? array();
 	$render_items = null;
 	$accordion_lazy = ! empty( $settings['accordion_lazy'] );
-	$render_items = function( array $items ) use ( &$render_items, $current_post_id, $layout, $render_extra_attrs, $accordion_lazy, $render_icon, $render_badge ): void {
+	$render_items = function( array $items ) use ( &$render_items, $current_post_id, $layout, $render_extra_attrs, $accordion_lazy, $render_icon, $render_badge, $render_count ): void {
 		foreach ( $items as $item ) {
 			$item_id      = (int) $item['id'];
 			$item_title   = (string) $item['title'];
@@ -240,6 +249,7 @@ $content_selector = $ajax_content ? (string) ( $settings['content_selector'] ?? 
 						<?php endif; ?>
 					><?php $render_icon( $item ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside helper. ?>
 						<?php echo esc_html( $item_title ); ?>
+						<?php $render_count( $item ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside helper. ?>
 					</a>
 					<?php $render_badge( $item ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside helper. ?>
 					<?php if ( $has_children ) : ?>
@@ -349,6 +359,7 @@ $content_selector = $ajax_content ? (string) ( $settings['content_selector'] ?? 
 						<?php endif; ?>
 					><?php $render_icon( $item ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside helper. ?>
 						<?php echo esc_html( $item_title ); ?>
+						<?php $render_count( $item ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside helper. ?>
 					</a>
 					<?php $render_badge( $item ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside helper. ?>
 					<?php if ( $has_children ) : ?>

@@ -119,9 +119,10 @@ class Multilingual {
 		$settings = get_option( 'drillnav_settings', array() );
 
 		$labels = array(
-			'home_label' => (string) ( $settings['home_label'] ?? '' ),
-			'nav_label'  => (string) ( $settings['nav_label'] ?? '' ),
-			'blog_label' => (string) ( $settings['blog_label'] ?? '' ),
+			'home_label'      => (string) ( $settings['home_label'] ?? '' ),
+			'nav_label'       => (string) ( $settings['nav_label'] ?? '' ),
+			'blog_label'      => (string) ( $settings['blog_label'] ?? '' ),
+			'woo_group_title' => (string) ( $settings['woo_group_title'] ?? '' ),
 		);
 
 		foreach ( $labels as $key => $value ) {
