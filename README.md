@@ -7,7 +7,7 @@
 [![Stable Tag](https://img.shields.io/badge/stable-1.7.1-blue.svg)](https://github.com/simurech/drillnav/releases)
 [![WordPress](https://img.shields.io/badge/WordPress-6.3%2B-21759b.svg)](https://wordpress.org/)
 [![PHP](https://img.shields.io/badge/PHP-8.1%2B-8892be.svg)](https://php.net/)
-[![License](https://img.shields.io/badge/License-GPL--2.0--or--later-green.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
+[![Lizenz](https://img.shields.io/badge/Lizenz-GPL--2.0--or--later-green.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
 
 > Kontextuelle Drill-Down-Navigation, die sich an die aktuelle Seite anpasst — ideal für tief verschachtelte WordPress-Seitenstrukturen. Ohne Konfigurationsaufwand.
 
