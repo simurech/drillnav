@@ -4,112 +4,112 @@
 
 # DrillNav – Smart Contextual Navigation for Deeply Nested Sites
 
-[![Stable Tag](https://img.shields.io/badge/stable-1.7.0-blue.svg)](https://github.com/simurech/drillnav/releases)
+[![Stable Tag](https://img.shields.io/badge/stable-1.7.1-blue.svg)](https://github.com/simurech/drillnav/releases)
 [![WordPress](https://img.shields.io/badge/WordPress-6.3%2B-21759b.svg)](https://wordpress.org/)
 [![PHP](https://img.shields.io/badge/PHP-8.1%2B-8892be.svg)](https://php.net/)
 [![License](https://img.shields.io/badge/License-GPL--2.0--or--later-green.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
 
-> Contextual drill-down navigation that adapts to the current page — perfect for deeply nested WordPress sites. Zero configuration required.
+> Kontextuelle Drill-Down-Navigation, die sich an die aktuelle Seite anpasst — ideal für tief verschachtelte WordPress-Seitenstrukturen. Ohne Konfigurationsaufwand.
 
-**→ Plugin on WordPress.org (Coming soon)** — full description, screenshots, FAQ, and installation guide.
-
----
-
-## What it does
-
-Standard WordPress navigation shows every page at once — overwhelming on sites with hundreds of nested pages. DrillNav shows only what's relevant **right now**:
-
-- **Ancestor path** — breadcrumb-style back navigation
-- **Current level** — siblings of the active page
-- **Drill-down** — click to explore child pages via REST API lazy-loading
-
-No manual configuration. Place the block, add the shortcode, or drop in the widget — DrillNav detects the hierarchy automatically.
+**→ Plugin auf WordPress.org (in Vorbereitung)** — vollständige Beschreibung, Screenshots, FAQ und Installationsanleitung.
 
 ---
 
-## Features
+## Was das Plugin macht
 
-| Feature | Free | Pro |
+Die Standard-WordPress-Navigation zeigt alle Seiten auf einmal — bei Websites mit hunderten verschachtelten Seiten unübersichtlich. DrillNav zeigt nur, was **gerade relevant** ist:
+
+- **Ancestor-Pfad** — Breadcrumb-artige Rückwärtsnavigation
+- **Aktuelle Ebene** — Geschwister der aktiven Seite
+- **Drill-Down** — Klick öffnet Unterseiten, per REST API lazy geladen
+
+Keine manuelle Konfiguration nötig. Block platzieren, Shortcode einfügen oder Widget hinzufügen — DrillNav erkennt die Hierarchie automatisch.
+
+---
+
+## Funktionen
+
+| Funktion | Free | Pro |
 |---|:---:|:---:|
-| Contextual drill-down navigation | ✓ | ✓ |
-| Gutenberg block with live preview | ✓ | ✓ |
-| Shortcode `[drillnav]` + sidebar widget | ✓ | ✓ |
-| List layout | ✓ | ✓ |
-| Horizontal layout | ✓ | ✓ |
-| Block variations (5 ready-made presets) | ✓ | ✓ |
-| Style presets: Default, Compact, Comfortable | ✓ | ✓ |
-| Colour schemes: Default, Light, Dark, Auto (OS) | ✓ | ✓ |
-| Mobile hamburger toggle (side drawer) | ✓ | ✓ |
-| RTL support | ✓ | ✓ |
-| WPML & Polylang compatibility | ✓ | ✓ |
-| Hover-preloading (instant drill-down) | ✓ | ✓ |
-| Live settings preview | ✓ | ✓ |
-| Admin settings in 7 organised tabs | ✓ | ✓ |
-| Native page builder widgets (Elementor, Beaver Builder, Divi) | ✓ | ✓ |
-| WCAG 2.1 AA accessible | ✓ | ✓ |
-| Accordion layout (full tree, expand/collapse) | — | ✓ |
-| Lazy-loading accordion (deeper levels via REST) | — | ✓ |
-| Cards style preset | — | ✓ |
-| Granular CSS overrides (9 custom properties) | — | ✓ |
-| Search / filter inside navigation | — | ✓ |
-| Search filter min-items threshold | — | ✓ |
-| Arrow icon selector (8 options) | — | ✓ |
-| Back button icon selector (7 options) | — | ✓ |
-| Configurable mobile breakpoint | — | ✓ |
-| Fullscreen menu overlay mode | — | ✓ |
-| WP nav menu as navigation source | — | ✓ |
-| Hybrid menus (WP menu + WooCommerce sub-categories) | — | ✓ |
-| General hierarchical taxonomy navigation | — | ✓ |
-| AJAX content loading (SPA-style, History API) | — | ✓ |
-| WooCommerce product category navigation | — | ✓ |
-| Attribute-based product filtering | — | ✓ |
-| Icon support (Dashicons, SVG, Emoji) | — | ✓ |
-| Highlight / Featured badges | — | ✓ |
-| Analytics & Event Tracking (GTM / DataLayer) | — | ✓ |
-| Off-canvas drawer: blur, logo, top-slide | — | ✓ |
+| Kontextuelle Drill-Down-Navigation | ✓ | ✓ |
+| Gutenberg-Block mit Live-Vorschau | ✓ | ✓ |
+| Shortcode `[drillnav]` + Sidebar-Widget | ✓ | ✓ |
+| List-Layout | ✓ | ✓ |
+| Horizontal-Layout | ✓ | ✓ |
+| Block-Variationen (5 vorgefertigte Presets) | ✓ | ✓ |
+| Style-Presets: Default, Compact, Comfortable | ✓ | ✓ |
+| Farbschemata: Default, Light, Dark, Auto (OS) | ✓ | ✓ |
+| Mobiler Hamburger-Toggle (Side-Drawer) | ✓ | ✓ |
+| RTL-Unterstützung | ✓ | ✓ |
+| WPML- & Polylang-Kompatibilität | ✓ | ✓ |
+| Hover-Preloading (sofortiger Drill-Down) | ✓ | ✓ |
+| Live-Vorschau der Einstellungen | ✓ | ✓ |
+| Admin-Einstellungen in 7 organisierten Tabs | ✓ | ✓ |
+| Native Page-Builder-Widgets (Elementor, Beaver Builder, Divi) | ✓ | ✓ |
+| WCAG 2.1 AA barrierefrei | ✓ | ✓ |
+| Accordion-Layout (voller Baum, ein-/ausklappbar) | — | ✓ |
+| Lazy-Loading-Accordion (tiefere Ebenen via REST) | — | ✓ |
+| Style-Preset „Cards" | — | ✓ |
+| Granulare CSS-Overrides (9 Custom Properties) | — | ✓ |
+| Suche/Filter innerhalb der Navigation | — | ✓ |
+| Mindestanzahl Einträge für Suchfilter | — | ✓ |
+| Pfeil-Icon-Auswahl (8 Optionen) | — | ✓ |
+| Zurück-Button-Icon-Auswahl (7 Optionen) | — | ✓ |
+| Konfigurierbarer mobiler Breakpoint | — | ✓ |
+| Vollbild-Menü-Overlay | — | ✓ |
+| WP-Menü als Navigationsquelle | — | ✓ |
+| Hybrid-Menüs (WP-Menü + WooCommerce-Unterkategorien) | — | ✓ |
+| Allgemeine hierarchische Taxonomie-Navigation | — | ✓ |
+| AJAX-Content-Loading (SPA-artig, History API) | — | ✓ |
+| WooCommerce-Produktkategorie-Navigation | — | ✓ |
+| Attribut-basierte Produktfilterung | — | ✓ |
+| Icon-Support (Dashicons, SVG, Emoji) | — | ✓ |
+| Highlight-/Featured-Badges | — | ✓ |
+| Analytics & Event-Tracking (GTM / DataLayer) | — | ✓ |
+| Off-Canvas-Drawer: Blur, Logo, Top-Slide | — | ✓ |
 
 ---
 
-## Requirements
+## Systemanforderungen
 
-| Component | Minimum | Recommended |
+| Komponente | Minimum | Empfohlen |
 |---|---|---|
-| WordPress | 6.3 | Latest |
-| PHP | 8.1 | Latest |
-| WooCommerce (Pro only) | 8.0 | Latest |
+| WordPress | 6.3 | Aktuellste Version |
+| PHP | 8.1 | Aktuellste Version |
+| WooCommerce (nur Pro) | 8.0 | Aktuellste Version |
 
 ---
 
 ## Installation
 
-**Via WordPress.org (recommended):**
-1. In the WordPress dashboard, go to **Plugins → Add New**.
-2. Search for **DrillNav** and install it.
+**Über WordPress.org (empfohlen):**
+1. Im WordPress-Dashboard zu **Plugins → Installieren** navigieren.
+2. Nach **DrillNav** suchen und installieren.
 
-**Manual install from GitHub:**
-1. Download the latest release `.zip` from the [Releases page](https://github.com/simurech/drillnav/releases).
-2. In WordPress, go to **Plugins → Add New → Upload Plugin**.
+**Manuelle Installation via GitHub:**
+1. Die neueste Release-`.zip` von der [Releases-Seite](https://github.com/simurech/drillnav/releases) herunterladen.
+2. In WordPress zu **Plugins → Installieren → Plugin hochladen** navigieren.
 
-**After activation:**
-1. Insert the **DrillNav block** in the editor, add `[drillnav]` to any page, or place the widget in a sidebar.
-2. Visit any page in your hierarchy — the navigation adapts automatically.
-3. Configure global defaults in **Settings → DrillNav**.
+**Nach der Aktivierung:**
+1. Den **DrillNav-Block** im Editor einfügen, `[drillnav]` auf einer Seite platzieren oder das Widget in eine Sidebar ziehen.
+2. Eine beliebige Seite der Hierarchie besuchen — die Navigation passt sich automatisch an.
+3. Globale Standardwerte unter **Einstellungen → DrillNav** konfigurieren.
 
 ---
 
-## Usage
+## Verwendung
 
-### Block (recommended)
+### Block (empfohlen)
 
-Search for **DrillNav** in the block inserter. Use the Inspector panel to configure each instance independently. Five block variations are included:
+Im Block-Inserter nach **DrillNav** suchen. Über das Inspector-Panel lässt sich jede Instanz einzeln konfigurieren. Fünf Block-Variationen sind enthalten:
 
-| Variation | Layout | Description |
+| Variation | Layout | Beschreibung |
 |---|---|---|
-| DrillNav (default) | List | Standard contextual navigation |
-| Horizontal Navigation | Horizontal | Items in a horizontal row |
-| Compact List | List | Reduced padding for tight sidebars |
-| Dark Navigation | List | Dark colour scheme |
-| DrillNav – Accordion (Pro) | Accordion | Full page tree, expandable |
+| DrillNav (Standard) | List | Standard-Kontextnavigation |
+| Horizontal Navigation | Horizontal | Elemente in einer horizontalen Zeile |
+| Compact List | List | Reduziertes Padding für schmale Sidebars |
+| Dark Navigation | List | Dunkles Farbschema |
+| DrillNav – Accordion (Pro) | Accordion | Vollständiger Seitenbaum, ausklappbar |
 
 ### Shortcode
 
@@ -117,68 +117,68 @@ Search for **DrillNav** in the block inserter. Use the Inspector panel to config
 [drillnav]
 ```
 
-All attributes are optional and override the global settings for that instance:
+Alle Attribute sind optional und überschreiben die globalen Einstellungen für diese Instanz:
 
-| Attribute | Default | Description |
+| Attribut | Standard | Beschreibung |
 |---|---|---|
-| `depth` | `0` | Max hierarchy depth (0 = unlimited) |
-| `show_home` | `yes` | Show home link as first back-navigation step |
-| `home_label` | site name | Custom label for the home link |
-| `post_type` | `page` | Hierarchical post type to navigate |
+| `depth` | `0` | Maximale Hierarchietiefe (0 = unbegrenzt) |
+| `show_home` | `yes` | Home-Link als ersten Rückwärtsnavigations-Schritt anzeigen |
+| `home_label` | Website-Name | Eigenes Label für den Home-Link |
+| `post_type` | `page` | Hierarchischer Post-Type für die Navigation |
 | `layout` | `list` | `list`, `horizontal`, `accordion` (Pro) |
 | `style_preset` | `default` | `default`, `compact`, `comfortable`, `cards` (Pro) |
-| `mobile_toggle` | `no` | Hamburger icon + side drawer on mobile (`yes` / `no`) |
-| `max_width` | — | Limit container width, e.g. `300px` or `60%` |
-| `multiple_back_buttons` | `no` | One back button per drilled level (`yes` / `no`) |
-| `search_filter` | `no` | Enable live text filter above navigation items (Pro) |
-| `accordion_lazy` | `no` | Lazy-load deeper accordion levels via REST (Pro) |
-| `menu_id` | `0` | Use a WP nav menu as navigation source (Pro) |
-| `ajax_content` | `no` | Load page content via AJAX on link click (Pro) |
-| `content_selector` | `main` | CSS selector for the content container (Pro) |
+| `mobile_toggle` | `no` | Hamburger-Icon + Side-Drawer auf Mobilgeräten (`yes` / `no`) |
+| `max_width` | — | Containerbreite begrenzen, z. B. `300px` oder `60%` |
+| `multiple_back_buttons` | `no` | Ein Zurück-Button pro durchlaufener Ebene (`yes` / `no`) |
+| `search_filter` | `no` | Live-Textfilter über den Navigationselementen aktivieren (Pro) |
+| `accordion_lazy` | `no` | Tiefere Accordion-Ebenen per REST lazy laden (Pro) |
+| `menu_id` | `0` | Ein WP-Menü als Navigationsquelle verwenden (Pro) |
+| `ajax_content` | `no` | Seiteninhalt per AJAX beim Klick laden (Pro) |
+| `content_selector` | `main` | CSS-Selektor für den Inhaltscontainer (Pro) |
 
-Example:
+Beispiel:
 ```
 [drillnav depth="3" layout="horizontal" style_preset="compact" mobile_toggle="yes"]
 ```
 
 ### Widget
 
-Go to **Appearance → Widgets** and add **DrillNav – Contextual Navigation** to any sidebar.
+Unter **Design → Widgets** das Widget **DrillNav – Contextual Navigation** zu einer Sidebar hinzufügen.
 
 ---
 
 ## Layouts
 
 ### List (Free)
-The default layout. Items stacked vertically, drill-down replaces the visible list.
+Das Standard-Layout. Elemente vertikal gestapelt, Drill-Down ersetzt die sichtbare Liste.
 
 ### Horizontal (Free)
-Items arranged in a row. Works great in headers and sticky bars.
+Elemente in einer Zeile angeordnet. Eignet sich gut für Header und Sticky-Bars.
 
 ### Accordion (Pro)
-The full page tree is server-side rendered with JS-powered expand/collapse. With lazy-loading enabled (Pro), deeper levels are fetched via REST on expand.
+Der vollständige Seitenbaum wird serverseitig gerendert, mit JS-gestütztem Ein-/Ausklappen. Bei aktiviertem Lazy-Loading (Pro) werden tiefere Ebenen erst beim Ausklappen per REST nachgeladen.
 
 ---
 
-## Developer Hooks
+## Entwickler-Hooks
 
 ```php
-// Filter the complete navigation data before rendering
+// Filter für die kompletten Navigationsdaten vor dem Rendering
 add_filter( 'drillnav_nav_items', function( $data, $args ) {
     return $data;
 }, 10, 2 );
 
-// Filter the resolved page context
+// Filter für den aufgelösten Seitenkontext
 add_filter( 'drillnav_current_context', function( $context ) {
     return $context;
 } );
 
-// Filter the children item list for a given parent
+// Filter für die Children-Liste eines bestimmten Elternelements
 add_filter( 'drillnav_children_items', function( $items, $parent_id, $args ) {
     return $items;
 }, 10, 3 );
 
-// Add CSS classes to a navigation item's <li>
+// CSS-Klassen zum <li> eines Navigationselements hinzufügen
 add_filter( 'drillnav_item_classes', function( $classes, $item, $layout ) {
     if ( $item['is_current'] ) {
         $classes[] = 'my-active-item';
@@ -186,13 +186,13 @@ add_filter( 'drillnav_item_classes', function( $classes, $item, $layout ) {
     return $classes;
 }, 10, 3 );
 
-// Add HTML attributes to a navigation item's <a>
+// HTML-Attribute zum <a> eines Navigationselements hinzufügen
 add_filter( 'drillnav_item_attrs', function( $attrs, $item, $layout ) {
     $attrs['data-post-id'] = $item['id'];
     return $attrs;
 }, 10, 3 );
 
-// Adjust cache TTL (default: 7 days)
+// Cache-TTL anpassen (Standard: 7 Tage)
 add_filter( 'drillnav_cache_duration', function( $seconds ) {
     return WEEK_IN_SECONDS * 2;
 } );
@@ -204,7 +204,7 @@ add_filter( 'drillnav_cache_duration', function( $seconds ) {
 
 ## CSS Custom Properties
 
-Override any token in your theme's stylesheet:
+Jeden Wert im Theme-Stylesheet überschreiben:
 
 ```css
 .drillnav {
@@ -224,36 +224,36 @@ Override any token in your theme's stylesheet:
 }
 ```
 
-Pro users can set all nine properties globally in **Settings → DrillNav → Appearance & Styling** or per block instance in the Inspector panel.
+Pro-Nutzer können alle neun Eigenschaften global unter **Einstellungen → DrillNav → Appearance & Styling** oder pro Block-Instanz im Inspector-Panel setzen.
 
 ---
 
-## Multilingual
+## Mehrsprachigkeit
 
-DrillNav works out of the box with **WPML** and **Polylang** (since v1.1.0):
+DrillNav funktioniert von Haus aus mit **WPML** und **Polylang** (seit v1.1.0):
 
-- Navigation tree always reflects the active language
-- Cache keys are language-aware (each language cached independently)
-- Custom labels (Home, Nav, Blog) register with the multilingual plugin's string translation interface
-- Three filter hooks for custom integrations: `drillnav_language`, `drillnav_translate_post_id`, `drillnav_translate_string`
-
----
-
-## RTL Support
-
-Full right-to-left layout support (since v1.4.0):
-
-- CSS logical properties (`padding-inline-start`, `inset-inline-start`) throughout
-- Slide animations are mirrored under `[dir="rtl"]`
-- Mobile side drawer opens from the right in RTL
-- Accordion indent uses `padding-inline-start`
-
-No JavaScript changes required — RTL is handled entirely in CSS.
+- Der Navigationsbaum spiegelt immer die aktive Sprache wider
+- Cache-Keys sind sprachbewusst (jede Sprache wird unabhängig gecacht)
+- Eigene Labels (Home, Nav, Blog) registrieren sich bei der String-Translation-Oberfläche des Mehrsprachigkeits-Plugins
+- Drei Filter-Hooks für eigene Integrationen: `drillnav_language`, `drillnav_translate_post_id`, `drillnav_translate_string`
 
 ---
 
-## License
+## RTL-Unterstützung
 
-**DrillNav** is licensed under the [GNU General Public License v2.0 or later](https://www.gnu.org/licenses/gpl-2.0.html).
+Vollständige Rechts-nach-links-Layout-Unterstützung (seit v1.4.0):
 
-**Author:** Simon Urech — [@simurech](https://github.com/simurech)
+- Durchgängig CSS Logical Properties (`padding-inline-start`, `inset-inline-start`)
+- Slide-Animationen werden unter `[dir="rtl"]` gespiegelt
+- Der mobile Side-Drawer öffnet in RTL von rechts
+- Accordion-Einrückung nutzt `padding-inline-start`
+
+Keine JavaScript-Änderungen nötig — RTL wird vollständig per CSS gehandhabt.
+
+---
+
+## Lizenz
+
+**DrillNav** steht unter der [GNU General Public License v2.0 oder später](https://www.gnu.org/licenses/gpl-2.0.html).
+
+**Autor:** Simon Urech — [@simurech](https://github.com/simurech)
