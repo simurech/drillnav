@@ -4,7 +4,7 @@ Tags:              navigation, contextual navigation, drilldown, page hierarchy,
 Requires at least: 6.3
 Tested up to:      7.0
 Requires PHP:      8.1
-Stable tag:        1.7.0
+Stable tag:        1.7.1
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -147,7 +147,18 @@ REST API: `GET /wp-json/drillnav/v1/children?post_id=123&post_type=page`
 
 = Privacy =
 
-DrillNav does not collect or transmit any personal data. No external connections are made. Fully GDPR-compliant.
+The free version of DrillNav does not collect or transmit any personal data and makes no external connections. Fully GDPR-compliant.
+
+= External Services =
+
+This plugin uses **Freemius**, a third-party platform for managing licenses, subscriptions, and plugin updates for the Pro version.
+
+During plugin activation, you can opt-in to data sharing with Freemius. Basic information about your website (WordPress version, PHP version, active plugins) is transmitted to Freemius to enable license validation and usage analysis. **Opt-in is completely optional.** All free core features work without opt-in.
+
+* Freemius Privacy Policy: https://freemius.com/privacy/
+* Freemius Terms of Service: https://freemius.com/terms/
+
+No data is sent to Freemius if you skip or decline the opt-in during activation.
 
 == Installation ==
 
@@ -228,6 +239,9 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 5. Settings page in WordPress admin
 
 == Changelog ==
+
+= 1.7.1 =
+* Update: Freemius SDK updated to 2.13.3
 
 = 1.7.0 =
 * New: WooCommerce display settings (Pro) – the previously hardcoded category display behaviour is now configurable in Settings → DrillNav → WooCommerce
@@ -347,6 +361,9 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 * WordPress Coding Standards compliant
 
 == Upgrade Notice ==
+
+= 1.7.1 =
+Maintenance release: updated Freemius SDK, no functional changes.
 
 = 1.7.0 =
 No upgrade steps required. New WooCommerce display settings default to the previous behaviour.
