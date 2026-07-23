@@ -4,7 +4,7 @@ Tags:              navigation, contextual navigation, drilldown, page hierarchy,
 Requires at least: 6.3
 Tested up to:      7.0
 Requires PHP:      8.1
-Stable tag:        1.7.1
+Stable tag:        1.7.2
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -239,6 +239,9 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 5. Settings page in WordPress admin
 
 == Changelog ==
+
+= 1.7.2 =
+* Update: Freemius SDK updated to 2.13.4
 
 = 1.7.1 =
 * Update: Freemius SDK updated to 2.13.3
