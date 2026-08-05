@@ -1,0 +1,11 @@
+.git
+.github
+.gitignore
+.distignore
+.claude
+CLAUDE.md
+README.md
+wp-org-review-reply.md
+build
+*.zip
+.DS_Store
