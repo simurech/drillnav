@@ -2,44 +2,52 @@ name: Build & Release ZIP
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
 
 permissions:
   contents: write
 
 jobs:
-  build:
-    name: Create Plugin ZIP
+  release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Version aus Plugin-Header lesen
+        id: version
+        run: |
+          VERSION=$(grep -m1 '^ \* Version:' drillnav-drilldown-navigation.php | sed 's/.*Version: *//' | tr -d '[:space:]')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Prüfen ob Tag bereits existiert
+        id: tag_check
+        run: |
+          if git rev-parse "${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Build Clean ZIP
+        if: steps.tag_check.outputs.exists == 'false'
         run: |
-          VERSION="${GITHUB_REF#refs/tags/v}"
+          VERSION="${{ steps.version.outputs.version }}"
           mkdir -p build/drillnav-drilldown-navigation
-
-          rsync -a ./ build/drillnav-drilldown-navigation/ \
-            --exclude='.git' \
-            --exclude='.github' \
-            --exclude='.gitignore' \
-            --exclude='.gitkeep' \
-            --exclude='.DS_Store' \
-            --exclude='build' \
-            --exclude='*.zip' \
-            --exclude='node_modules' \
-            --exclude='phpcs.xml' \
-            --exclude='assets/wp-org'
-
+          rsync -a --exclude-from='.distignore' ./ build/drillnav-drilldown-navigation/
           cd build
           zip -r "../drillnav-drilldown-navigation-${VERSION}.zip" drillnav-drilldown-navigation/
           echo "ASSET_NAME=drillnav-drilldown-navigation-${VERSION}.zip" >> "$GITHUB_ENV"
 
       - name: Create Release
+        if: steps.tag_check.outputs.exists == 'false'
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.version.outputs.tag }}
           files: ${{ env.ASSET_NAME }}
           generate_release_notes: true
           make_latest: true
