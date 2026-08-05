@@ -13,7 +13,7 @@ if ( ! function_exists( 'drillnav' ) ) {
 	return;
 }
 
-$args = array(
+$drillnav_args = array(
 	'depth'        => absint( $settings->depth ?? 0 ),
 	'show_home'    => ! empty( $settings->show_home ),
 	'layout'       => sanitize_key( $settings->layout ?? 'list' ),
@@ -22,4 +22,4 @@ $args = array(
 	'style_preset' => sanitize_key( $settings->style_preset ?? 'default' ),
 );
 
-echo drillnav()->render_navigation( $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+echo drillnav()->render_navigation( $drillnav_args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

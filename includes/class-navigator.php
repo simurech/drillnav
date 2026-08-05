@@ -310,7 +310,7 @@ class Navigator {
 			)
 		);
 
-		return array_values( array_unique( array_map( 'intval', wp_list_pluck( $children, 'post_parent' ) ) ) );
+		return array_values( array_unique( array_map( 'intval', $children ) ) );
 	}
 
 	/**

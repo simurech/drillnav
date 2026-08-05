@@ -4,7 +4,7 @@
 
 # DrillNav – Smart Contextual Navigation for Deeply Nested Sites
 
-[![Stable Tag](https://img.shields.io/badge/stable-1.7.1-blue.svg)](https://github.com/simurech/drillnav/releases)
+[![Stable Tag](https://img.shields.io/badge/stable-1.7.3-blue.svg)](https://github.com/simurech/drillnav/releases)
 [![WordPress](https://img.shields.io/badge/WordPress-6.3%2B-21759b.svg)](https://wordpress.org/)
 [![PHP](https://img.shields.io/badge/PHP-8.1%2B-8892be.svg)](https://php.net/)
 [![Lizenz](https://img.shields.io/badge/Lizenz-GPL--2.0--or--later-green.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
@@ -256,4 +256,4 @@ Keine JavaScript-Änderungen nötig — RTL wird vollständig per CSS gehandhabt
 
 **DrillNav** steht unter der [GNU General Public License v2.0 oder später](https://www.gnu.org/licenses/gpl-2.0.html).
 
-**Autor:** Simon Urech — [@simurech](https://github.com/simurech)
+**Autor:** Pulacha Labs — [@simurech](https://github.com/simurech)
