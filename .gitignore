@@ -12,7 +12,6 @@ wp-content/upgrade/
 wp-content/cache/
 wp-content/backup-db/
 wp-content/backups/
-*.log
 debug.log
 error_log
 
@@ -25,6 +24,7 @@ error_log
 composer.phar
 # package-lock.json
 # composer.lock
+# yarn.lock
 
 # -----------------------------------------------------------------------------
 # Build / Distribution
@@ -83,121 +83,85 @@ $RECYCLE.BIN/
 # -----------------------------------------------------------------------------
 # IDEs & Editoren
 # -----------------------------------------------------------------------------
-# JetBrains (PhpStorm, IntelliJ, WebStorm …)
 .idea/
 *.iml
 *.iws
 *.ipr
 out/
 .idea_modules/
-
-# Visual Studio Code
 .vscode/
 *.code-workspace
 .history/
-
-# Sublime Text
 *.sublime-project
 *.sublime-workspace
-
-# Vim / Neovim
 *.swp
 *.swo
 *.swn
-[._]*.s[a-v][a-z]
-[._]*.sw[a-p]
 Session.vim
 .netrwhist
 tags
-
-# Emacs
-*~
-\#*\#
-.\#*
-*.elc
 auto-save-list
 tramp
-
-# TextMate
 *.tmproj
 *.tmproject
 .tmignore
-
-# Eclipse
 .settings/
 .project
 .classpath
 .buildpath
 .externalToolBuilders/
 *.launch
-
-# NetBeans
 /nbproject/private/
 /nbbuild/
 /nbdist/
 /.nb-gradle/
-
-# Atom
 .atom/
-
-# Brackets
 .brackets.json
 
 # -----------------------------------------------------------------------------
 # KI-Assistenten & lokale Konfigurationsdateien
 # -----------------------------------------------------------------------------
-# Cursor
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+.anthropic/
 .cursor/
 .cursor-rules/
 .cursor-tasks/
 .cursorignore
 .cursorindexingignore
-
-# GitHub Copilot
-.copilot/
-.github/copilot-instructions.md
-
-# Claude / Anthropic
-.claude/
-.anthropic/
-CLAUDE.md
-CLAUDE.local.md
-
-# Gemini / Google
-.gemini/
-GEMINI.md
-.google-gemini/
-
-# ChatGPT / OpenAI
-.chatgpt/
-.openai/
-.openai-context/
-
-# Aider
+.cursorrules
+.windsurf/
+.windsurfrules
+.continue/
+.clinerules/
+.roo/
+.roorules
 .aider*
 .aider.conf.yml
 .aider.model.settings.yml
 .aider.model.metadata.json
-
-# Codeium / Windsurf
 .codeium/
-.windsurf/
-
-# DeepSeek
+.amazonq/
+.copilot/
+copilot-instructions.md
+.github/copilot-instructions.md
+AGENTS.md
+.cody/
+.zed/
+.gemini/
+GEMINI.md
+.google-gemini/
+.chatgpt/
+.openai/
+.openai-context/
 .deepseek/
-
-# Continue
-.continue/
-
-# Tabnine
 .tabnine/
 .tabnine_root
-
-# LLM-Cache (allgemein)
 .llm-cache/
 .ai-cache/
 
-# Lokale KI-Kontextdateien & interne Planungsdokumente
+# Plugin-spezifische interne Dokumente (bei Bedarf pro Repo ergänzen)
 AI-KONTEXT.md
 PROJEKT-KONTEXT.md
 MASSNAHMENPLAN.md
@@ -205,10 +169,12 @@ WPORG-REVIEW-PLAN.md
 ROADMAP-INTERN.md
 TODO-INTERN.md
 wp-org-review-reply.md
+/plans/
 
 # -----------------------------------------------------------------------------
 # Translation-Artefakte
 # -----------------------------------------------------------------------------
+messages.mo
 languages/messages.mo
 languages/*.po~
 
@@ -236,9 +202,13 @@ phpcs.xml.dist
 .yarn/
 .pnp.*
 .yarn-integrity
+
+# -----------------------------------------------------------------------------
+# Environment
+# -----------------------------------------------------------------------------
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
 
 # -----------------------------------------------------------------------------
 # Testing
@@ -256,7 +226,5 @@ phpcs.xml.dist
 *.cert
 *.p12
 *.pfx
-.env*
-!.env.example
 secrets.json
 credentials.json
