@@ -15,3 +15,7 @@ jobs:
 
       - name: Run Plugin Check
         uses: wordpress/plugin-check-action@v1
+        with:
+          slug: drillnav-drilldown-navigation
+          exclude-directories: .github
+          exclude-files: .gitignore

@@ -196,6 +196,7 @@ class Block {
 
 		$GLOBALS['post'] = $post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		setup_postdata( $post );
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- invoking WordPress core's own filter, not defining a new one.
 		$content = apply_filters( 'the_content', get_the_content( null, false, $post ) );
 		wp_reset_postdata();
 

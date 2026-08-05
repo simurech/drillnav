@@ -57,6 +57,7 @@ class Multilingual {
 	 */
 	public function get_language( string $lang ): string {
 		if ( $this->is_wpml() ) {
+			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- invoking WPML's own filter, not defining a new one.
 			return (string) apply_filters( 'wpml_current_language', null );
 		}
 		if ( $this->is_polylang() ) {
@@ -77,6 +78,7 @@ class Multilingual {
 			return $post_id;
 		}
 		if ( $this->is_wpml() ) {
+			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- invoking WPML's own filter, not defining a new one.
 			return (int) apply_filters( 'wpml_object_id', $post_id, $post_type, true );
 		}
 		if ( $this->is_polylang() ) {
@@ -100,6 +102,7 @@ class Multilingual {
 			return $value;
 		}
 		if ( $this->is_wpml() ) {
+			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- invoking WPML's own filter, not defining a new one.
 			return (string) apply_filters( 'wpml_translate_single_string', $value, 'drillnav', $key );
 		}
 		if ( $this->is_polylang() && function_exists( 'pll__' ) ) {
@@ -130,6 +133,7 @@ class Multilingual {
 				continue;
 			}
 			if ( $this->is_wpml() ) {
+				// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- invoking WPML's own action, not defining a new one.
 				do_action( 'wpml_register_single_string', 'drillnav', $key, $value );
 			}
 			if ( $this->is_polylang() && function_exists( 'pll_register_string' ) ) {
