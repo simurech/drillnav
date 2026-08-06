@@ -233,8 +233,21 @@
 	border-radius: 4px;
 }
 
+/* Demo sub-items are collapsed by default so List/Horizontal previews stay
+   flat; Accordion forces them open (static demo, not interactive — the
+   preview nav is aria-hidden and its controls are tabindex="-1"). */
+.drillnav-preview-stage .drillnav__sublist {
+	overflow:   hidden;
+	max-height: 0;
+}
+
 .drillnav-preview-stage .drillnav--layout-accordion .drillnav__sublist {
 	max-height: 300px !important;
+}
+
+.drillnav-preview-stage .drillnav--layout-accordion .drillnav__expand-btn .drillnav__arrow {
+	display:   inline-block;
+	transform: rotate(90deg);
 }
 
 /* Beta badge */

@@ -294,12 +294,13 @@ class Admin {
 			'drillnav-drilldown-navigation',
 			'drillnav_appearance',
 			array(
-				'key'     => 'layout',
-				'options' => array(
+				'key'         => 'layout',
+				'options'     => array(
 					'list'       => __( 'List (default)', 'drillnav-drilldown-navigation' ),
 					'horizontal' => __( 'Horizontal', 'drillnav-drilldown-navigation' ),
 					'accordion'  => __( 'Accordion (Pro)', 'drillnav-drilldown-navigation' ),
 				),
+				'pro_options' => array( 'accordion' ),
 			)
 		);
 
@@ -323,14 +324,15 @@ class Admin {
 			'drillnav-drilldown-navigation',
 			'drillnav_appearance',
 			array(
-				'key'     => 'style_preset',
-				'options' => array(
+				'key'         => 'style_preset',
+				'options'     => array(
 					'default'     => __( 'Default', 'drillnav-drilldown-navigation' ),
 					'compact'     => __( 'Compact', 'drillnav-drilldown-navigation' ),
 					'comfortable' => __( 'Comfortable', 'drillnav-drilldown-navigation' ),
 					'cards'       => __( 'Cards (Pro)', 'drillnav-drilldown-navigation' ),
 				),
-				'help'    => __( 'Controls spacing and visual density. "Cards" requires DrillNav Pro.', 'drillnav-drilldown-navigation' ),
+				'pro_options' => array( 'cards' ),
+				'help'        => __( 'Controls spacing and visual density. "Cards" requires DrillNav Pro.', 'drillnav-drilldown-navigation' ),
 			)
 		);
 
@@ -928,6 +930,7 @@ class Admin {
 				'clearing'   => __( 'Clearing…', 'drillnav-drilldown-navigation' ),
 				'cleared'    => __( 'Cache cleared successfully.', 'drillnav-drilldown-navigation' ),
 				'error'      => __( 'Could not clear cache. Please try again.', 'drillnav-drilldown-navigation' ),
+				'isPro'      => $this->is_pro_active(),
 			)
 		);
 	}
@@ -1056,20 +1059,30 @@ class Admin {
 
 	/** @param array<string,mixed> $args */
 	public function field_select( array $args ): void {
-		$value   = (string) $this->settings->get( $args['key'] );
-		$id      = 'drillnav_' . $args['key'];
-		$options = $args['options'] ?? array();
+		$value       = (string) $this->settings->get( $args['key'] );
+		$id          = 'drillnav_' . $args['key'];
+		$options     = $args['options'] ?? array();
+		$pro_options = $args['pro_options'] ?? array();
+		$is_pro      = $this->is_pro_active();
 
 		printf( '<select id="%s" name="drillnav_settings[%s]">', esc_attr( $id ), esc_attr( $args['key'] ) );
 		foreach ( $options as $opt_value => $opt_label ) {
+			$locked = ! $is_pro && in_array( (string) $opt_value, $pro_options, true );
 			printf(
-				'<option value="%s" %s>%s</option>',
+				'<option value="%s" %s %s>%s</option>',
 				esc_attr( (string) $opt_value ),
 				selected( $value, (string) $opt_value, false ),
+				$locked ? 'disabled' : '',
 				esc_html( (string) $opt_label )
 			);
 		}
 		echo '</select>';
+		if ( ! $is_pro && $pro_options ) {
+			printf(
+				'<p class="description">%s</p>',
+				esc_html__( 'Options marked "(Pro)" require an active DrillNav Pro license and cannot be selected here.', 'drillnav-drilldown-navigation' )
+			);
+		}
 	}
 
 	/** @param array<string,mixed> $args */

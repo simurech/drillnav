@@ -100,11 +100,18 @@
 
 	const preview = document.getElementById( 'drillnav-settings-preview' );
 	if ( preview ) {
+		const isPro = !! ( window.drillnavAdmin && drillnavAdmin.isPro );
+		const PRO_LAYOUT_VALUES = [ 'accordion' ];
+		const PRO_PRESET_VALUES = [ 'cards' ];
+
 		const SCHEME_PREFIX = 'drillnav--scheme-';
 		const LAYOUT_PREFIX = 'drillnav--layout-';
 		const PRESET_PREFIX = 'drillnav--preset-';
 
-		function applyClass( prefix, value ) {
+		function applyClass( prefix, value, proValues ) {
+			if ( proValues && ! isPro && proValues.indexOf( value ) !== -1 ) {
+				return; // Server-side disables these <option>s for non-Pro users; ignore defensively.
+			}
 			preview.classList.forEach( function ( cls ) {
 				if ( cls.startsWith( prefix ) ) {
 					preview.classList.remove( cls );
@@ -123,28 +130,62 @@
 			}
 		}
 
-		const schemeSelect  = document.getElementById( 'drillnav_color_scheme' );
-		const layoutSelect  = document.getElementById( 'drillnav_layout' );
-		const presetSelect  = document.getElementById( 'drillnav_style_preset' );
-		const maxWidthInput = document.getElementById( 'drillnav_max_width' );
-		const showBackCheck = document.getElementById( 'drillnav_show_back_button' );
-		const backWrap      = preview.querySelector( '.drillnav__back-wrap' );
+		const schemeSelect   = document.getElementById( 'drillnav_color_scheme' );
+		const layoutSelect   = document.getElementById( 'drillnav_layout' );
+		const presetSelect   = document.getElementById( 'drillnav_style_preset' );
+		const maxWidthInput  = document.getElementById( 'drillnav_max_width' );
+		const showBackCheck  = document.getElementById( 'drillnav_show_back_button' );
+		const multiBackCheck = document.getElementById( 'drillnav_multiple_back_buttons' );
+		const searchCheck    = document.getElementById( 'drillnav_search_filter' );
+		const backWrap       = preview.querySelector( '.drillnav__back-wrap' );
+		const backDemo       = document.getElementById( 'drillnav-preview-back-demo' );
+		const searchDemo     = document.getElementById( 'drillnav-preview-search' );
 
 		if ( schemeSelect ) {
 			schemeSelect.addEventListener( 'change', function () { applyClass( SCHEME_PREFIX, schemeSelect.value ); } );
 		}
 		if ( layoutSelect ) {
-			layoutSelect.addEventListener( 'change', function () { applyClass( LAYOUT_PREFIX, layoutSelect.value ); } );
+			layoutSelect.addEventListener( 'change', function () { applyClass( LAYOUT_PREFIX, layoutSelect.value, PRO_LAYOUT_VALUES ); } );
 		}
 		if ( presetSelect ) {
-			presetSelect.addEventListener( 'change', function () { applyClass( PRESET_PREFIX, presetSelect.value ); } );
+			presetSelect.addEventListener( 'change', function () { applyClass( PRESET_PREFIX, presetSelect.value, PRO_PRESET_VALUES ); } );
 		}
 		if ( maxWidthInput ) {
 			maxWidthInput.addEventListener( 'input', function () { applyProp( '--drillnav-max-width', maxWidthInput.value.trim() ); } );
 		}
 		if ( showBackCheck && backWrap ) {
-			showBackCheck.addEventListener( 'change', function () { backWrap.hidden = ! showBackCheck.checked; } );
+			showBackCheck.addEventListener( 'change', function () {
+				backWrap.hidden = ! showBackCheck.checked;
+				if ( ! showBackCheck.checked && multiBackCheck ) {
+					multiBackCheck.checked = false;
+					if ( backDemo ) {
+						backDemo.hidden = true;
+					}
+				}
+			} );
 		}
+		if ( multiBackCheck && backDemo ) {
+			multiBackCheck.addEventListener( 'change', function () {
+				backDemo.hidden = ! multiBackCheck.checked || ! ( showBackCheck && showBackCheck.checked );
+			} );
+		}
+		if ( searchCheck && searchDemo ) {
+			searchCheck.addEventListener( 'change', function () {
+				searchDemo.hidden = ! isPro || ! searchCheck.checked;
+			} );
+		}
+
+		// Expand/back icon radios only render enabled for Pro users; harmless no-op otherwise.
+		document.querySelectorAll( 'input[name="drillnav_settings[expand_icon]"]' ).forEach( function ( radio ) {
+			radio.addEventListener( 'change', function () {
+				preview.querySelectorAll( '.drillnav__arrow' ).forEach( function ( el ) { el.textContent = radio.value; } );
+			} );
+		} );
+		document.querySelectorAll( 'input[name="drillnav_settings[back_icon]"]' ).forEach( function ( radio ) {
+			radio.addEventListener( 'change', function () {
+				preview.querySelectorAll( '.drillnav__back-arrow' ).forEach( function ( el ) { el.textContent = radio.value; } );
+			} );
+		} );
 
 		var customPropsMap = {
 			drillnav_custom_font_size:        '--drillnav-font-size',

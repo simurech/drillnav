@@ -27,11 +27,28 @@ $preview_opts = get_option( 'drillnav_settings', \DrillNav\Settings::defaults() 
 if ( ! is_array( $preview_opts ) ) {
 	$preview_opts = \DrillNav\Settings::defaults();
 }
-$pv_scheme    = sanitize_key( (string) ( $preview_opts['color_scheme'] ?? 'default' ) );
-$pv_layout    = sanitize_key( (string) ( $preview_opts['layout'] ?? 'list' ) );
-$pv_preset    = sanitize_key( (string) ( $preview_opts['style_preset'] ?? 'default' ) );
-$pv_show_back = ! empty( $preview_opts['show_back_button'] );
-$pv_classes   = array( 'drillnav' );
+$pv_scheme = sanitize_key( (string) ( $preview_opts['color_scheme'] ?? 'default' ) );
+
+// Pro layouts/presets fall back to their free default when no license is
+// active — mirrors the gating in includes/views/navigation.php so the
+// preview never shows a state the real frontend would refuse to render.
+$pv_layout = sanitize_key( (string) ( $preview_opts['layout'] ?? 'list' ) );
+if ( 'accordion' === $pv_layout && ! $is_pro_active ) {
+	$pv_layout = 'list';
+}
+$pv_preset = sanitize_key( (string) ( $preview_opts['style_preset'] ?? 'default' ) );
+if ( 'cards' === $pv_preset && ! $is_pro_active ) {
+	$pv_preset = 'default';
+}
+
+$pv_show_back     = ! empty( $preview_opts['show_back_button'] );
+$pv_multi_back    = $pv_show_back && ! empty( $preview_opts['multiple_back_buttons'] );
+$pv_search_filter = $is_pro_active && ! empty( $preview_opts['search_filter'] );
+$pv_expand_icon   = $is_pro_active ? (string) ( $preview_opts['expand_icon'] ?? '' ) : '';
+$pv_expand_icon   = '' !== $pv_expand_icon ? $pv_expand_icon : '›';
+$pv_back_icon     = $is_pro_active ? (string) ( $preview_opts['back_icon'] ?? '' ) : '';
+$pv_back_icon     = '' !== $pv_back_icon ? $pv_back_icon : '←';
+$pv_classes       = array( 'drillnav' );
 if ( 'default' !== $pv_scheme ) {
 	$pv_classes[] = 'drillnav--scheme-' . $pv_scheme;
 }
@@ -342,7 +359,7 @@ $pv_style_attr = $pv_style_parts ? ' style="' . implode( ';', $pv_style_parts ) 
 		<div class="drillnav-preview-panel">
 			<div class="drillnav-preview-panel__inner">
 				<p class="drillnav-preview-panel__label"><?php esc_html_e( 'Live preview', 'drillnav-drilldown-navigation' ); ?></p>
-				<p class="description" style="margin-bottom:.75rem;font-size:.8em"><?php esc_html_e( 'Updates instantly as you change colour scheme, layout, style preset, and custom CSS values.', 'drillnav-drilldown-navigation' ); ?></p>
+				<p class="description" style="margin-bottom:.75rem;font-size:.8em"><?php esc_html_e( 'Updates instantly as you change appearance and behavior settings. This is a static mock-up with placeholder items, not the real navigation tree — some settings (e.g. mobile breakpoint, drawer effect) only become visible on the actual site.', 'drillnav-drilldown-navigation' ); ?></p>
 				<div class="drillnav-preview-stage">
 					<nav
 						class="<?php echo esc_attr( implode( ' ', $pv_classes ) ); ?>"
@@ -351,9 +368,16 @@ $pv_style_attr = $pv_style_parts ? ' style="' . implode( ';', $pv_style_parts ) 
 						aria-label="preview"
 						<?php echo $pv_style_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above. ?>
 					>
+						<div class="drillnav__search"<?php echo $pv_search_filter ? '' : ' hidden'; ?> id="drillnav-preview-search">
+							<input type="search" class="drillnav__search-input" placeholder="<?php esc_attr_e( 'Filter…', 'drillnav-drilldown-navigation' ); ?>" tabindex="-1" readonly>
+						</div>
 						<div class="drillnav__back-wrap"<?php echo $pv_show_back ? '' : ' hidden'; ?>>
 							<a href="#" class="drillnav__back-btn" tabindex="-1">
-								<span class="drillnav__back-arrow" aria-hidden="true">←</span>
+								<span class="drillnav__back-arrow" aria-hidden="true"><?php echo esc_html( $pv_back_icon ); ?></span>
+								<span class="drillnav__back-label"><?php esc_html_e( 'Home', 'drillnav-drilldown-navigation' ); ?></span>
+							</a>
+							<a href="#" class="drillnav__back-btn" tabindex="-1" id="drillnav-preview-back-demo"<?php echo $pv_multi_back ? '' : ' hidden'; ?>>
+								<span class="drillnav__back-arrow" aria-hidden="true"><?php echo esc_html( $pv_back_icon ); ?></span>
 								<span class="drillnav__back-label"><?php esc_html_e( 'Parent page', 'drillnav-drilldown-navigation' ); ?></span>
 							</a>
 						</div>
@@ -362,14 +386,33 @@ $pv_style_attr = $pv_style_parts ? ' style="' . implode( ';', $pv_style_parts ) 
 								<li class="drillnav__item drillnav__item--has-children" role="listitem">
 									<div class="drillnav__row">
 										<a href="#" class="drillnav__link" tabindex="-1"><?php esc_html_e( 'Services', 'drillnav-drilldown-navigation' ); ?></a>
-										<button type="button" class="drillnav__expand-btn" tabindex="-1" aria-label="<?php esc_attr_e( 'Show sub-pages of Services', 'drillnav-drilldown-navigation' ); ?>"><span class="drillnav__arrow" aria-hidden="true">›</span></button>
+										<button type="button" class="drillnav__expand-btn" tabindex="-1" aria-label="<?php esc_attr_e( 'Show sub-pages of Services', 'drillnav-drilldown-navigation' ); ?>"><span class="drillnav__arrow" aria-hidden="true"><?php echo esc_html( $pv_expand_icon ); ?></span></button>
 									</div>
+									<ul class="drillnav__sublist" role="list">
+										<li class="drillnav__item" role="listitem">
+											<div class="drillnav__row">
+												<a href="#" class="drillnav__link" tabindex="-1"><?php esc_html_e( 'Consulting', 'drillnav-drilldown-navigation' ); ?></a>
+											</div>
+										</li>
+										<li class="drillnav__item" role="listitem">
+											<div class="drillnav__row">
+												<a href="#" class="drillnav__link" tabindex="-1"><?php esc_html_e( 'Support', 'drillnav-drilldown-navigation' ); ?></a>
+											</div>
+										</li>
+									</ul>
 								</li>
 								<li class="drillnav__item drillnav__item--current drillnav__item--has-children" role="listitem">
 									<div class="drillnav__row">
 										<a href="#" class="drillnav__link" aria-current="page" tabindex="-1"><?php esc_html_e( 'About Us', 'drillnav-drilldown-navigation' ); ?></a>
-										<button type="button" class="drillnav__expand-btn" tabindex="-1"><span class="drillnav__arrow" aria-hidden="true">›</span></button>
+										<button type="button" class="drillnav__expand-btn" tabindex="-1"><span class="drillnav__arrow" aria-hidden="true"><?php echo esc_html( $pv_expand_icon ); ?></span></button>
 									</div>
+									<ul class="drillnav__sublist" role="list">
+										<li class="drillnav__item" role="listitem">
+											<div class="drillnav__row">
+												<a href="#" class="drillnav__link" tabindex="-1"><?php esc_html_e( 'Team', 'drillnav-drilldown-navigation' ); ?></a>
+											</div>
+										</li>
+									</ul>
 								</li>
 								<li class="drillnav__item" role="listitem">
 									<div class="drillnav__row">
