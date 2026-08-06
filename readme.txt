@@ -4,7 +4,7 @@ Tags:              navigation, contextual navigation, drilldown, page hierarchy,
 Requires at least: 6.3
 Tested up to:      7.0
 Requires PHP:      8.1
-Stable tag:        1.7.3
+Stable tag:        1.7.4
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -240,6 +240,10 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 
 == Changelog ==
 
+= 1.7.4 =
+* Fix: The settings page live preview let "Accordion" and "Cards" (Pro layout/style options) be selected and previewed without an active Pro license; those options are now disabled for free installs, matching the frontend
+* Fix: The live preview did not update for several appearance/behavior settings (multiple back buttons, search filter, expand/back icons); the preview now reflects all of these instantly
+
 = 1.7.3 =
 * Fix: Sub-page detection in the list/horizontal layout was broken – navigation items never showed the expand arrow or a working drill-down, even when a page had children
 * Fix: Coding standards cleanup in the Beaver Builder module template
@@ -368,6 +372,9 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 * WordPress Coding Standards compliant
 
 == Upgrade Notice ==
+
+= 1.7.4 =
+Settings page fix: the live preview no longer previews Pro-only options without a license and now updates for all appearance/behavior settings.
 
 = 1.7.3 =
 Recommended update: fixes broken sub-page drill-down in the list/horizontal layout.
