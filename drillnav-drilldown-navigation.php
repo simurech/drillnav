@@ -3,7 +3,7 @@
  * Plugin Name:       DrillNav – Smart Contextual Navigation for Deeply Nested Sites
  * Plugin URI:        https://pulacha-labs.ch/plugins/drillnav/
  * Description:       Contextual drill-down navigation that adapts to the current page. Perfect for deeply nested WordPress site hierarchies. WooCommerce category navigation available in DrillNav Pro.
- * Version:           1.7.6
+ * Version:           1.7.7
  * Requires at least: 6.3
  * Tested up to:      7.1
  * Requires PHP:      8.1
@@ -32,7 +32,7 @@ if ( function_exists( 'drillnav_fs' ) ) {
 } else {
 
 	// Plugin constants.
-	define( 'DRILLNAV_VERSION', '1.7.6' );
+	define( 'DRILLNAV_VERSION', '1.7.7' );
 	define( 'DRILLNAV_PLUGIN_FILE', __FILE__ );
 	define( 'DRILLNAV_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 	define( 'DRILLNAV_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -40,7 +40,7 @@ if ( function_exists( 'drillnav_fs' ) ) {
 
 	if ( ! function_exists( 'drillnav_fs' ) ) {
 		/**
-		 * Returns the Freemius SDK instance (or a no-op stub when the SDK is absent).
+		 * Returns the Freemius SDK instance.
 		 *
 		 * Placed directly in the main file per Freemius documentation so activation
 		 * and deactivation hooks are registered at the earliest possible point.
@@ -54,19 +54,8 @@ if ( function_exists( 'drillnav_fs' ) ) {
 			global $drillnav_fs;
 
 			if ( ! isset( $drillnav_fs ) ) {
-				$sdk = dirname( __FILE__ ) . '/vendor/freemius/start.php';
-
-				if ( ! file_exists( $sdk ) ) {
-					// SDK absent – safe no-op so the plugin loads without errors.
-					$drillnav_fs = new class() { // phpcs:ignore Generic.Files.OneObjectStructurePerFile
-						public function is_paying(): bool { return false; }
-						public function is_trial(): bool { return false; }
-						public function __call( string $name, array $args ): mixed { return null; }
-					};
-					return $drillnav_fs;
-				}
-
-				require_once $sdk;
+				// Include Freemius SDK.
+				require_once dirname( __FILE__ ) . '/vendor/freemius/start.php';
 
 				$drillnav_fs = fs_dynamic_init(
 					array(
