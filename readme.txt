@@ -3,8 +3,8 @@ Contributors:      simon61
 Tags:              navigation, contextual navigation, drilldown, page hierarchy, multilingual
 Requires at least: 6.3
 Tested up to:      7.1
-Requires PHP:      8.1
-Stable tag:        1.7.7
+Requires PHP:      8.3
+Stable tag:        1.7.8
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -240,6 +240,9 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 
 == Changelog ==
 
+= 1.7.8 =
+* Update: Minimum PHP version raised to 8.3 (older PHP versions no longer receive security fixes)
+
 = 1.7.7 =
 * Fix: Simplified the Freemius SDK loading so the SDK version is detected correctly
 
@@ -381,6 +384,9 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 * WordPress Coding Standards compliant
 
 == Upgrade Notice ==
+
+= 1.7.8 =
+Requires PHP 8.3 or higher. Sites on older PHP versions keep the current version until PHP is updated.
 
 = 1.7.7 =
 Maintenance release: simplified Freemius SDK loading, no functional changes.
