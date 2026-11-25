@@ -127,16 +127,30 @@ jobs:
         with:
           name: builds
 
-      # GitHub CLI statt Fremd-Action. Das Vorgänger-Tag wird explizit übergeben:
-      # ohne previous_tag_name liefert GitHubs Release-Notes-Endpunkt hier HTTP 502.
+      # Release Notes = Changelog-Eintrag dieser Version aus der readme.txt
+      # (GitHubs automatische Release Notes liefern für dieses Repo HTTP 502).
+      - name: Release Notes aus readme.txt
+        if: steps.tag_check.outputs.exists == 'false'
+        run: |
+          VERSION="${{ needs.build.outputs.version }}"
+          awk -v v="= $VERSION =" '
+            $0 == v { found = 1; next }
+            found && /^= / { exit }
+            found && /^== / { exit }
+            found { print }
+          ' readme.txt | sed '/^[[:space:]]*$/d' > release-notes.md
+          test -s release-notes.md || { echo "::error::Kein Changelog-Eintrag für $VERSION in readme.txt"; exit 1; }
+          cat release-notes.md
+
       - name: Release erstellen
         if: steps.tag_check.outputs.exists == 'false'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG="v${{ needs.build.outputs.version }}"
-          PREV=$(git describe --tags --abbrev=0 2>/dev/null || true)
-          NOTES_ARGS="--generate-notes"
-          if [ -n "$PREV" ]; then NOTES_ARGS="$NOTES_ARGS --notes-start-tag $PREV"; fi
+          # Liegengebliebenen Entwurf (z. B. aus einem abgebrochenen Lauf) entfernen.
+          if gh release view "$TAG" --json isDraft -q .isDraft 2>/dev/null | grep -q true; then
+            gh release delete "$TAG" --yes
+          fi
           gh release create "$TAG" "$SLUG-${{ needs.build.outputs.version }}.zip" \
-            --target "$GITHUB_SHA" --title "$TAG" --latest $NOTES_ARGS
+            --target "$GITHUB_SHA" --title "$TAG" --latest --notes-file release-notes.md
