@@ -1,53 +1,137 @@
-name: Build & Release ZIP
+name: Build, Check & Release
+
+# Ablauf:
+#  1. build   – baut das Pro-ZIP (für den Upload bei Freemius) und eine Simulation
+#               der von Freemius generierten Free-Version (für WordPress.org).
+#  2. check   – offizieller WordPress Plugin Check auf BEIDEN Varianten, jeweils
+#               auf dem gebauten Inhalt (nicht auf dem Repo).
+#  3. release – nur auf main und nur wenn beide Checks grün sind: Tag vX.Y.Z
+#               (Version aus dem Plugin-Header) anlegen und Pro-ZIP als Release
+#               veröffentlichen. Existiert der Tag schon, passiert nichts.
 
 on:
   push:
     branches:
       - main
+  pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: write
 
+env:
+  SLUG: drillnav-drilldown-navigation
+
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v5
 
       - name: Version aus Plugin-Header lesen
         id: version
         run: |
-          VERSION=$(grep -m1 '^ \* Version:' drillnav-drilldown-navigation.php | sed 's/.*Version: *//' | tr -d '[:space:]')
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+          VERSION=$(grep -m1 '^ \* Version:' "$SLUG.php" | sed 's/.*Version: *//' | tr -d '[:space:]')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Pro-Build (Freemius-Upload)
+        run: |
+          mkdir -p "build/premium/$SLUG"
+          rsync -a --exclude-from='.distignore' ./ "build/premium/$SLUG/"
+          # Keine versteckten Dateien oder Entwicklerdateien im Paket.
+          if find "build/premium/$SLUG" \( -name '.*' -o -name 'CLAUDE.md' -o -name '*.zip' \) | grep -q .; then
+            echo "::error::Unerlaubte Dateien im Build gefunden"
+            find "build/premium/$SLUG" \( -name '.*' -o -name 'CLAUDE.md' -o -name '*.zip' \)
+            exit 1
+          fi
+
+      - name: Free-Version simulieren (wie von Freemius generiert)
+        run: |
+          mkdir -p build/free
+          cp -R "build/premium/$SLUG" "build/free/$SLUG"
+          cd "build/free/$SLUG"
+          # Pro-only-Dateien aus dem @fs_premium_only-Header entfernen.
+          PREMIUM_FILES=$(grep -m1 '@fs_premium_only' "$SLUG.php" | sed 's/.*@fs_premium_only *//' | tr ',' '\n' | sed 's/^ *\///; s/ *$//')
+          for f in $PREMIUM_FILES; do
+            test -f "$f" || { echo "::error::Pro-Datei $f nicht gefunden"; exit 1; }
+            rm "$f"
+          done
+          # Freemius setzt is_premium auf false und entfernt den Gatekeeper.
+          sed -i "s/'is_premium'          => true/'is_premium'          => false/" "$SLUG.php"
+          sed -i "/wp_org_gatekeeper/d" "$SLUG.php"
+          grep -q "'is_premium'          => false" "$SLUG.php" || { echo "::error::is_premium nicht ersetzt"; exit 1; }
+
+      - name: PHP-Syntax prüfen
+        run: |
+          php -v | head -1
+          find build -name '*.php' -not -path '*/vendor/*' -print0 | xargs -0 -n1 php -l > /dev/null
+
+      - name: Pro-ZIP erstellen
+        run: |
+          cd build/premium
+          zip -qr "../../$SLUG-${{ steps.version.outputs.version }}.zip" "$SLUG"
+
+      - name: Artefakte hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: builds
+          path: |
+            build/
+            ${{ env.SLUG }}-${{ steps.version.outputs.version }}.zip
+          retention-days: 7
+
+  check:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [premium, free]
+    steps:
+      - name: Artefakte laden
+        uses: actions/download-artifact@v4
+        with:
+          name: builds
+
+      - name: WordPress Plugin Check (${{ matrix.variant }})
+        uses: wordpress/plugin-check-action@v1
+        with:
+          build-dir: build/${{ matrix.variant }}/${{ env.SLUG }}
+          slug: ${{ env.SLUG }}
+
+  release:
+    needs: [build, check]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Prüfen ob Tag bereits existiert
         id: tag_check
         run: |
-          if git rev-parse "${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
-            echo "exists=true" >> $GITHUB_OUTPUT
+          if git rev-parse "v${{ needs.build.outputs.version }}" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
           else
-            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Build Clean ZIP
+      - name: Artefakte laden
         if: steps.tag_check.outputs.exists == 'false'
-        run: |
-          VERSION="${{ steps.version.outputs.version }}"
-          mkdir -p build/drillnav-drilldown-navigation
-          rsync -a --exclude-from='.distignore' ./ build/drillnav-drilldown-navigation/
-          cd build
-          zip -r "../drillnav-drilldown-navigation-${VERSION}.zip" drillnav-drilldown-navigation/
-          echo "ASSET_NAME=drillnav-drilldown-navigation-${VERSION}.zip" >> "$GITHUB_ENV"
+        uses: actions/download-artifact@v4
+        with:
+          name: builds
 
-      - name: Create Release
+      - name: Release erstellen
         if: steps.tag_check.outputs.exists == 'false'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.version.outputs.tag }}
-          files: ${{ env.ASSET_NAME }}
+          tag_name: v${{ needs.build.outputs.version }}
+          files: ${{ env.SLUG }}-${{ needs.build.outputs.version }}.zip
           generate_release_notes: true
           make_latest: true
