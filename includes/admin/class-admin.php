@@ -215,6 +215,37 @@ class Admin {
 		);
 
 		add_settings_field(
+			'root_id',
+			__( 'Start from', 'drillnav-drilldown-navigation' ),
+			array( $this, 'field_root_page' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_general',
+			array( 'key' => 'root_id', 'help' => __( 'Limit the navigation to one section of the page tree. "Current top-level section" shows only the area the visitor is in.', 'drillnav-drilldown-navigation' ) )
+		);
+
+		add_settings_field(
+			'exclude_ids',
+			__( 'Hide pages', 'drillnav-drilldown-navigation' ),
+			array( $this, 'field_id_list' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_general',
+			array(
+				'key'         => 'exclude_ids',
+				'placeholder' => '12, 34',
+				'help'        => __( 'Comma-separated page IDs hidden from the navigation, including their sub-pages. Individual pages can also be hidden via the "DrillNav" box in the page editor.', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
+		add_settings_field(
+			'nav_title',
+			__( 'Heading', 'drillnav-drilldown-navigation' ),
+			array( $this, 'field_text' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_general',
+			array( 'key' => 'nav_title', 'help' => __( 'Optional heading shown above the navigation. Leave empty for no heading.', 'drillnav-drilldown-navigation' ) )
+		);
+
+		add_settings_field(
 			'post_types',
 			__( 'Post types', 'drillnav-drilldown-navigation' ),
 			array( $this, 'field_post_types' ),
@@ -601,6 +632,18 @@ class Admin {
 			array(
 				'key'   => 'blog_hide_empty',
 				'label' => __( 'Do not show categories that have no published posts.', 'drillnav-drilldown-navigation' ),
+			)
+		);
+
+		add_settings_field(
+			'blog_show_count',
+			__( 'Show post count', 'drillnav-drilldown-navigation' ),
+			array( $this, 'field_checkbox' ),
+			'drillnav-drilldown-navigation',
+			'drillnav_blog',
+			array(
+				'key'   => 'blog_show_count',
+				'label' => __( 'Show the number of posts next to category names.', 'drillnav-drilldown-navigation' ),
 			)
 		);
 
@@ -1031,6 +1074,61 @@ class Admin {
 		printf(
 			'<input type="text" id="%s" name="drillnav_settings[%s]" value="%s" placeholder="%s" class="regular-text">',
 			esc_attr( $id ),
+			esc_attr( $args['key'] ),
+			esc_attr( $value ),
+			esc_attr( $args['placeholder'] ?? '' )
+		);
+		if ( ! empty( $args['help'] ) ) {
+			printf( '<p class="description">%s</p>', esc_html( $args['help'] ) );
+		}
+	}
+
+	/**
+	 * Renders the section start select (whole tree / auto / specific page).
+	 *
+	 * @param array<string,mixed> $args
+	 */
+	public function field_root_page( array $args ): void {
+		$value = (int) $this->settings->get( $args['key'] );
+		$name  = 'drillnav_settings[' . $args['key'] . ']';
+		$pages = get_pages(
+			array(
+				'sort_column' => 'menu_order,post_title',
+				'post_status' => 'publish',
+			)
+		);
+		echo '<select id="drillnav_' . esc_attr( $args['key'] ) . '" name="' . esc_attr( $name ) . '">';
+		printf( '<option value="0"%s>%s</option>', selected( $value, 0, false ), esc_html__( 'Whole page hierarchy', 'drillnav-drilldown-navigation' ) );
+		printf( '<option value="-1"%s>%s</option>', selected( $value, -1, false ), esc_html__( 'Current top-level section (automatic)', 'drillnav-drilldown-navigation' ) );
+		if ( $pages ) {
+			echo '<optgroup label="' . esc_attr__( 'Sub-pages of', 'drillnav-drilldown-navigation' ) . '">';
+			foreach ( $pages as $page ) {
+				$level = count( get_post_ancestors( $page ) );
+				printf(
+					'<option value="%d"%s>%s%s</option>',
+					(int) $page->ID,
+					selected( $value, (int) $page->ID, false ),
+					esc_html( str_repeat( '— ', $level ) ),
+					esc_html( get_the_title( $page ) ?: '#' . $page->ID )
+				);
+			}
+			echo '</optgroup>';
+		}
+		echo '</select>';
+		if ( ! empty( $args['help'] ) ) {
+			printf( '<p class="description">%s</p>', esc_html( $args['help'] ) );
+		}
+	}
+
+	/**
+	 * Renders a comma-separated ID list input.
+	 *
+	 * @param array<string,mixed> $args
+	 */
+	public function field_id_list( array $args ): void {
+		$value = implode( ', ', array_map( 'intval', (array) $this->settings->get( $args['key'] ) ) );
+		printf(
+			'<input type="text" id="drillnav_%1$s" name="drillnav_settings[%1$s]" value="%2$s" placeholder="%3$s" class="regular-text">',
 			esc_attr( $args['key'] ),
 			esc_attr( $value ),
 			esc_attr( $args['placeholder'] ?? '' )

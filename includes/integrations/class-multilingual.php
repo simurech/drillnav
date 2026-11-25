@@ -124,6 +124,7 @@ class Multilingual {
 		$labels = array(
 			'home_label'      => (string) ( $settings['home_label'] ?? '' ),
 			'nav_label'       => (string) ( $settings['nav_label'] ?? '' ),
+			'nav_title'       => (string) ( $settings['nav_title'] ?? '' ),
 			'blog_label'      => (string) ( $settings['blog_label'] ?? '' ),
 			'woo_group_title' => (string) ( $settings['woo_group_title'] ?? '' ),
 		);

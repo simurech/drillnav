@@ -4,7 +4,7 @@ Tags:              navigation, contextual navigation, drilldown, page hierarchy,
 Requires at least: 6.3
 Tested up to:      7.1
 Requires PHP:      8.3
-Stable tag:        1.7.9
+Stable tag:        1.8.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,6 +29,10 @@ No configuration required. Place the block, add the shortcode, or drop in the wi
 * **Shortcode** `[drillnav]` and **sidebar widget** for classic themes
 * **Native page builder widgets** – dedicated modules for Elementor, Beaver Builder, and Divi
 * **Unlimited depth** – works with any number of hierarchy levels
+* **Section navigation** – start the navigation at a specific page or automatically at the current top-level section
+* **Hide pages** – exclude individual pages (incl. their sub-pages) via a checkbox in the page editor or an ID list
+* **Optional heading** above the navigation, globally or per block/shortcode
+* **Blog category navigation** with optional post counts
 * **Three layouts** – List (default), Horizontal, Accordion (Pro)
 * **Style presets** – Default, Compact, Comfortable, Cards (Pro)
 * **Mobile hamburger toggle** – optional side-drawer mode for themes without an off-canvas menu
@@ -72,6 +76,7 @@ No configuration required. Place the block, add the shortcode, or drop in the wi
 * Granular CSS overrides (9 custom properties settable globally and per block instance)
 * Icon support – assign Dashicons, SVG, or emoji to individual navigation items
 * Highlight / Featured badges – mark items with a custom label (e.g. "New", "Sale")
+* Custom navigation label per page – use a shorter title in the navigation than on the page
 * Off-canvas drawer enhancements – glassmorphism blur, slide-from-right animation
 * Arrow icon selector (8 options) and back button icon selector (7 options)
 * Fullscreen menu overlay mode
@@ -136,6 +141,11 @@ add_filter( 'drillnav_item_attrs', function( $attrs, $item, $layout ) {
     $attrs['data-post-id'] = $item['id'];
     return $attrs;
 }, 10, 3 );
+
+// Change the HTML tag of the navigation heading (default: h2)
+add_filter( 'drillnav_title_tag', function( $tag ) {
+    return 'h3';
+} );
 
 // Adjust cache duration (default: 7 days)
 add_filter( 'drillnav_cache_duration', function( $seconds ) {
@@ -239,6 +249,15 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 5. Settings page in WordPress admin
 
 == Changelog ==
+
+= 1.8.0 =
+* New: Section navigation – start the navigation at a specific page or automatically at the current top-level section (setting, block option, shortcode `root`)
+* New: Hide pages from the navigation, including their sub-pages – via a "DrillNav" box in the page editor or a list of page IDs (setting, block option, shortcode `exclude`)
+* New: Optional heading above the navigation (setting, block option, shortcode `title`)
+* New: Post counts next to blog category names (optional)
+* New (Pro): Custom navigation label per page
+* New: Filter `drillnav_title_tag` to change the heading tag
+* Improvement: Changes to icons, badges and labels in the page editor are visible immediately
 
 = 1.7.9 =
 * Fix: Block settings for colours, spacing, typography, alignment and additional CSS classes are now applied on the frontend
@@ -402,6 +421,9 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 * WordPress Coding Standards compliant
 
 == Upgrade Notice ==
+
+= 1.8.0 =
+New: section navigation, hiding pages from the navigation, optional heading and blog post counts.
 
 = 1.7.9 =
 Bugfix, security and performance release: block style settings now work on the frontend, accordion arrows are back and special characters in titles display correctly.

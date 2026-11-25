@@ -234,6 +234,22 @@ $content_selector = $ajax_content ? (string) ( $settings['content_selector'] ?? 
 	};
 	?>
 
+	<?php
+	$nav_title = (string) ( $settings['nav_title'] ?? '' );
+	if ( '' !== $nav_title ) :
+		/**
+		 * Filters the HTML tag of the navigation heading.
+		 *
+		 * @param string $tag Default 'h2'.
+		 */
+		$title_tag = (string) apply_filters( 'drillnav_title_tag', 'h2' );
+		if ( ! in_array( $title_tag, array( 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div' ), true ) ) {
+			$title_tag = 'h2';
+		}
+		printf( '<%1$s class="drillnav__title">%2$s</%1$s>', tag_escape( $title_tag ), esc_html( $nav_title ) );
+	endif;
+	?>
+
 	<?php if ( 'accordion' === $layout ) : ?>
 	<?php
 	$tree         = $nav_data['tree'] ?? array();

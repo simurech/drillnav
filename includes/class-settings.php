@@ -31,6 +31,9 @@ class Settings {
 			'show_home'          => true,
 			'home_label'         => '',   // Empty = use blogname.
 			'depth'              => 0,    // 0 = unlimited.
+			'root_id'            => 0,    // 0 = whole hierarchy, -1 = current top-level section, >0 = page ID.
+			'exclude_ids'        => array(), // Page IDs hidden from the navigation (incl. their sub-pages).
+			'nav_title'          => '',   // Optional heading above the navigation.
 
 			// Appearance.
 			'max_width'              => '',    // Empty = no max-width constraint.
@@ -58,6 +61,7 @@ class Settings {
 			'blog_posts_per_page' => 10,    // 0 = no limit. Applied per category/tag.
 			'blog_hide_empty'    => true,   // Hide categories with no published posts.
 			'blog_label'         => '',     // Empty = auto-detect from posts page title.
+			'blog_show_count'    => false,  // Show the post count next to category names.
 
 			// Customize (Pro) – granular CSS overrides.
 			'custom_font_size'        => '',
@@ -163,6 +167,9 @@ class Settings {
 		$clean['show_home']          = ! empty( $raw['show_home'] );
 		$clean['home_label']         = sanitize_text_field( $raw['home_label'] ?? '' );
 		$clean['depth']              = absint( $raw['depth'] ?? 0 );
+		$clean['root_id']            = max( -1, (int) ( $raw['root_id'] ?? 0 ) );
+		$clean['exclude_ids']        = self::id_list( $raw['exclude_ids'] ?? array() );
+		$clean['nav_title']          = sanitize_text_field( $raw['nav_title'] ?? '' );
 
 		$clean['max_width']             = self::css_value( (string) ( $raw['max_width'] ?? '' ) );
 		$clean['show_back_button']      = ! empty( $raw['show_back_button'] );
@@ -202,6 +209,7 @@ class Settings {
 		$clean['blog_posts_per_page'] = absint( $raw['blog_posts_per_page'] ?? 10 );
 		$clean['blog_hide_empty']     = ! empty( $raw['blog_hide_empty'] );
 		$clean['blog_label']          = sanitize_text_field( $raw['blog_label'] ?? '' );
+		$clean['blog_show_count']     = ! empty( $raw['blog_show_count'] );
 
 		// Customize (Pro) – granular CSS overrides.
 		foreach ( array(
@@ -282,6 +290,23 @@ class Settings {
 		$clean['woo_excluded_categories'] = array_values( array_filter( array_map( 'absint', $raw_excluded ) ) );
 
 		return $clean;
+	}
+
+	/**
+	 * Normalises a list of post IDs given as array or comma/space separated
+	 * string ("12, 34 56") into a unique list of positive integers.
+	 *
+	 * @param mixed $value
+	 * @return int[]
+	 */
+	public static function id_list( $value ): array {
+		if ( is_string( $value ) || is_int( $value ) ) {
+			$value = preg_split( '/[\s,;]+/', (string) $value );
+		}
+		if ( ! is_array( $value ) ) {
+			return array();
+		}
+		return array_values( array_unique( array_filter( array_map( 'absint', $value ) ) ) );
 	}
 
 	/**

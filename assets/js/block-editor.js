@@ -88,7 +88,21 @@
 				menuId,
 				ajaxContent,
 				contentSelector,
+				title,
+				rootId,
+				excludeIds,
 			} = attributes;
+
+			// Section mode select: undefined = global setting, 0 = whole
+			// hierarchy, -1 = current top-level section, >0 = specific page.
+			let rootMode = 'global';
+			if ( 0 === rootId ) {
+				rootMode = 'all';
+			} else if ( -1 === rootId ) {
+				rootMode = 'auto';
+			} else if ( typeof rootId === 'number' && rootId > 0 ) {
+				rootMode = 'page';
+			}
 
 			// Fetch WP nav menus for the Navigation Source selector (Pro).
 			const [ menus, setMenus ] = useState( [] );
@@ -138,6 +152,48 @@
 							min:      0,
 							max:      10,
 							onChange: ( val ) => setAttributes( { depth: val } ),
+						} )
+					),
+					el( PanelRow, null,
+						el( TextControl, {
+							label:    __( 'Heading', 'drillnav-drilldown-navigation' ),
+							help:     __( 'Optional heading above the navigation. Leave empty to use the global setting.', 'drillnav-drilldown-navigation' ),
+							value:    title,
+							onChange: ( val ) => setAttributes( { title: val } ),
+						} )
+					),
+					el( PanelRow, null,
+						el( SelectControl, {
+							label:    __( 'Start from', 'drillnav-drilldown-navigation' ),
+							value:    rootMode,
+							options:  [
+								{ label: __( 'Global setting', 'drillnav-drilldown-navigation' ), value: 'global' },
+								{ label: __( 'Whole page hierarchy', 'drillnav-drilldown-navigation' ), value: 'all' },
+								{ label: __( 'Current top-level section', 'drillnav-drilldown-navigation' ), value: 'auto' },
+								{ label: __( 'Specific page', 'drillnav-drilldown-navigation' ), value: 'page' },
+							],
+							onChange: ( val ) => {
+								const map = { global: undefined, all: 0, auto: -1, page: 1 };
+								setAttributes( { rootId: map[ val ] } );
+							},
+						} )
+					),
+					'page' === rootMode && el( PanelRow, null,
+						el( TextControl, {
+							label:    __( 'Start page ID', 'drillnav-drilldown-navigation' ),
+							help:     __( 'Only the sub-pages of this page are shown.', 'drillnav-drilldown-navigation' ),
+							type:     'number',
+							min:      1,
+							value:    rootId,
+							onChange: ( val ) => setAttributes( { rootId: Math.max( 1, parseInt( val, 10 ) || 1 ) } ),
+						} )
+					),
+					el( PanelRow, null,
+						el( TextControl, {
+							label:    __( 'Hide pages (IDs)', 'drillnav-drilldown-navigation' ),
+							help:     __( 'Comma-separated page IDs, incl. their sub-pages. Replaces the global list; leave empty to use it.', 'drillnav-drilldown-navigation' ),
+							value:    excludeIds,
+							onChange: ( val ) => setAttributes( { excludeIds: val } ),
 						} )
 					),
 				),

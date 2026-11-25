@@ -44,8 +44,12 @@
 	// Note: the drillnav REST endpoints are public, so no nonce is sent.
 	// A nonce baked into page-cached HTML would expire and make WordPress
 	// reject the request entirely (403).
-	async function fetchChildren( postId, postType ) {
-		const url = restUrl( 'children', { post_id: postId, post_type: postType } );
+	async function fetchChildren( postId, postType, exclude ) {
+		const params = { post_id: postId, post_type: postType };
+		if ( exclude && exclude.length ) {
+			params.exclude = exclude.join( ',' );
+		}
+		const url = restUrl( 'children', params );
 
 		const res = await fetch( url, { credentials: 'same-origin' } );
 
@@ -220,6 +224,7 @@
 			this.ajaxContent         = !! root.dataset.drillnavAjaxContent;
 			this.contentSelector     = root.dataset.drillnavContentSelector || 'main';
 			this.menuChildren        = ( this.data && this.data.menuChildren ) || null;
+			this.excludeIds          = ( this.data && this.data.settings && this.data.settings.exclude_ids ) || [];
 
 			this.panel = document.getElementById( this.instanceId + '-panel' );
 			if ( ! this.panel ) {
@@ -318,7 +323,8 @@
 						key,
 						fetchChildren(
 							parseInt( btn.dataset.drillnavItemId, 10 ),
-							btn.dataset.drillnavItemType || 'page'
+							btn.dataset.drillnavItemType || 'page',
+							this.excludeIds
 						).catch( () => null )
 					);
 				}
@@ -373,10 +379,10 @@
 					if ( preloaded !== undefined ) {
 						children = await preloaded;
 						if ( children === null ) {
-							children = await fetchChildren( postId, postType );
+							children = await fetchChildren( postId, postType, this.excludeIds );
 						}
 					} else {
-						children = await fetchChildren( postId, postType );
+						children = await fetchChildren( postId, postType, this.excludeIds );
 					}
 				} catch ( err ) {
 					// eslint-disable-next-line no-console
@@ -757,7 +763,7 @@
 				const preloaded = this.preloadCache.get( cacheKey );
 				const children  = preloaded !== undefined
 					? await preloaded
-					: await fetchChildren( postId, postType );
+					: await fetchChildren( postId, postType, this.excludeIds );
 				return children;
 			} catch {
 				return null;

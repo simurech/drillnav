@@ -150,6 +150,14 @@
 		if ( presetSelect ) {
 			presetSelect.addEventListener( 'change', function () { applyClass( PRESET_PREFIX, presetSelect.value, PRO_PRESET_VALUES ); } );
 		}
+		const titleInput   = document.getElementById( 'drillnav_nav_title' );
+		const titlePreview = document.getElementById( 'drillnav-preview-title' );
+		if ( titleInput && titlePreview ) {
+			titleInput.addEventListener( 'input', function () {
+				titlePreview.textContent = titleInput.value.trim();
+				titlePreview.hidden      = titlePreview.textContent === '';
+			} );
+		}
 		if ( maxWidthInput ) {
 			maxWidthInput.addEventListener( 'input', function () { applyProp( '--drillnav-max-width', maxWidthInput.value.trim() ); } );
 		}

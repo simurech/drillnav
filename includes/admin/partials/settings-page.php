@@ -368,6 +368,8 @@ $pv_style_attr = $pv_style_parts ? ' style="' . implode( ';', $pv_style_parts ) 
 						aria-label="preview"
 						<?php echo $pv_style_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above. ?>
 					>
+						<?php $pv_nav_title = (string) ( $preview_opts['nav_title'] ?? '' ); ?>
+						<h2 class="drillnav__title" id="drillnav-preview-title"<?php echo '' === $pv_nav_title ? ' hidden' : ''; ?>><?php echo esc_html( $pv_nav_title ); ?></h2>
 						<div class="drillnav__search"<?php echo $pv_search_filter ? '' : ' hidden'; ?> id="drillnav-preview-search">
 							<input type="search" class="drillnav__search-input" placeholder="<?php esc_attr_e( 'Filter…', 'drillnav-drilldown-navigation' ); ?>" tabindex="-1" readonly>
 						</div>

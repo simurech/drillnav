@@ -144,6 +144,8 @@ class Shortcode {
 				'menu_id'               => '',
 				'ajax_content'          => '',
 				'content_selector'      => '',
+				'root'                  => '',
+				'exclude'               => '',
 			),
 			$atts,
 			'drillnav'
@@ -203,6 +205,16 @@ class Shortcode {
 		}
 		if ( '' !== $atts['ajax_content'] ) {
 			$args['ajax_content'] = in_array( strtolower( $atts['ajax_content'] ), array( 'yes', '1', 'true' ), true );
+		}
+		if ( '' !== $atts['title'] ) {
+			$args['nav_title'] = sanitize_text_field( $atts['title'] );
+		}
+		if ( '' !== $atts['root'] ) {
+			$root = strtolower( trim( $atts['root'] ) );
+			$args['root_id'] = 'auto' === $root ? -1 : ( 'all' === $root ? 0 : absint( $root ) );
+		}
+		if ( '' !== $atts['exclude'] ) {
+			$args['exclude_ids'] = Settings::id_list( $atts['exclude'] );
 		}
 		if ( '' !== $atts['content_selector'] ) {
 			$args['content_selector'] = sanitize_text_field( $atts['content_selector'] );

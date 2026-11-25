@@ -188,6 +188,11 @@ class Block {
 						'default'           => 'page',
 						'sanitize_callback' => 'sanitize_key',
 					),
+					'exclude'   => array(
+						'type'              => 'string',
+						'default'           => '',
+						'sanitize_callback' => 'sanitize_text_field',
+					),
 				),
 			)
 		);
@@ -251,8 +256,15 @@ class Block {
 		// Hierarchical, publicly accessible post type → post children.
 		$pto = get_post_type_object( $post_type );
 		if ( $pto && $pto->hierarchical && $pto->public ) {
+			$child_args = array( 'post_type' => $post_type );
+			// Instance-specific exclusions (block/shortcode); without the
+			// parameter the global setting applies.
+			$exclude = (string) $request->get_param( 'exclude' );
+			if ( '' !== $exclude ) {
+				$child_args['exclude_ids'] = Settings::id_list( $exclude );
+			}
 			return rest_ensure_response(
-				$this->navigator->get_children( $post_id, array( 'post_type' => $post_type ) )
+				$this->navigator->get_children( $post_id, $child_args )
 			);
 		}
 
@@ -423,6 +435,15 @@ class Block {
 		}
 		if ( isset( $attributes['ajaxContent'] ) ) {
 			$args['ajax_content'] = (bool) $attributes['ajaxContent'];
+		}
+		if ( isset( $attributes['title'] ) && '' !== $attributes['title'] ) {
+			$args['nav_title'] = sanitize_text_field( (string) $attributes['title'] );
+		}
+		if ( isset( $attributes['rootId'] ) && is_numeric( $attributes['rootId'] ) ) {
+			$args['root_id'] = max( -1, (int) $attributes['rootId'] );
+		}
+		if ( isset( $attributes['excludeIds'] ) && '' !== trim( (string) $attributes['excludeIds'] ) ) {
+			$args['exclude_ids'] = Settings::id_list( (string) $attributes['excludeIds'] );
 		}
 		if ( isset( $attributes['contentSelector'] ) && '' !== $attributes['contentSelector'] ) {
 			$args['content_selector'] = sanitize_text_field( (string) $attributes['contentSelector'] );

@@ -246,7 +246,7 @@ class Blog {
 	public function get_categories( int $parent_id, array $blog_settings ): array {
 		$hide_empty = ! empty( $blog_settings['hide_empty'] );
 		$lang       = (string) apply_filters( 'drillnav_language', '' );
-		$cache_key  = 'blog_cats_' . $parent_id . '_' . (int) $hide_empty . '_' . $lang;
+		$cache_key  = 'blog_cats_' . $parent_id . '_' . (int) $hide_empty . (int) ! empty( $blog_settings['show_count'] ) . '_' . $lang;
 
 		$cached = $this->cache->get( $cache_key );
 		if ( false !== $cached ) {
@@ -286,6 +286,7 @@ class Blog {
 				'is_current'   => false,
 				'has_children' => $has_children || ( $blog_settings['show_posts'] && $term->count > 0 ),
 				'count'        => (int) $term->count,
+				'show_count'   => ! empty( $blog_settings['show_count'] ),
 			);
 		}
 
@@ -524,6 +525,7 @@ class Blog {
 			'posts_per_page' => (int) ( $all['blog_posts_per_page'] ?? 10 ),
 			'hide_empty'     => ! empty( $all['blog_hide_empty'] ),
 			'blog_label'     => (string) ( $all['blog_label'] ?? '' ),
+			'show_count'     => ! empty( $all['blog_show_count'] ),
 		);
 	}
 }

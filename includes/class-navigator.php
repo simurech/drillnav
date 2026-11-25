@@ -61,8 +61,15 @@ class Navigator {
 				'menu_id'                 => (int) ( $this->settings->get( 'menu_id' ) ?? 0 ),
 				'ajax_content'            => (bool) ( $this->settings->get( 'ajax_content' ) ?? false ),
 				'content_selector'        => (string) ( $this->settings->get( 'content_selector' ) ?? 'main' ),
+				'root_id'                 => (int) ( $this->settings->get( 'root_id' ) ?? 0 ),
+				'exclude_ids'             => (array) ( $this->settings->get( 'exclude_ids' ) ?? array() ),
+				'nav_title'               => (string) ( $this->settings->get( 'nav_title' ) ?? '' ),
 			)
 		);
+
+		$args['root_id']     = max( -1, (int) $args['root_id'] );
+		$args['exclude_ids'] = Settings::id_list( $args['exclude_ids'] );
+		sort( $args['exclude_ids'] );
 
 		$ctx     = $this->context->get();
 		$post_id = (int) $ctx['post_id'];
@@ -88,6 +95,10 @@ class Navigator {
 		if ( ! empty( $args['ajax_content'] ) && ! $is_pro ) {
 			$args['ajax_content'] = false;
 		}
+
+		// Section navigation: resolve the effective root page ("auto" = the
+		// top-level ancestor of the current page).
+		$args['root_id'] = $this->resolve_root_id( $args, $ctx );
 
 		$data = array(
 			'post_id'         => $post_id,
@@ -120,6 +131,9 @@ class Navigator {
 				'accordion_lazy'          => $args['accordion_lazy'],
 				'ajax_content'            => $args['ajax_content'],
 				'content_selector'        => $args['content_selector'],
+				'nav_title'               => (string) apply_filters( 'drillnav_translate_string', $args['nav_title'], 'nav_title' ),
+				// Passed back to the REST endpoint when drilling down.
+				'exclude_ids'             => $args['exclude_ids'],
 				// Global-only settings (no per-instance override).
 				'search_filter_min_items' => (int) ( $this->settings->get( 'search_filter_min_items' ) ?? 5 ),
 				'expand_icon'             => (string) ( $this->settings->get( 'expand_icon' ) ?: '›' ),
@@ -157,6 +171,7 @@ class Navigator {
 	 */
 	private function attach_tree( array $data, array $args ): array {
 		if ( 'accordion' === ( $args['layout'] ?? '' ) && ! isset( $data['tree'] ) ) {
+			$args['root_id'] = $this->resolve_root_id( $args, $this->context->get() );
 			$data['tree'] = $this->get_tree( $args );
 		}
 		return $data;
@@ -179,6 +194,8 @@ class Navigator {
 					(string) ( $args['post_type'] ?? 'page' ),
 					(int) ( $args['depth'] ?? 0 ),
 					! empty( $args['accordion_lazy'] ),
+					(int) ( $args['root_id'] ?? 0 ),
+					$this->get_excluded_ids( $args ),
 					$lang,
 				)
 			)
@@ -186,7 +203,8 @@ class Navigator {
 
 		$tree = $this->cache->get( $cache_key );
 		if ( false === $tree ) {
-			$tree = $this->mark_current_in_tree( $this->get_subtree( 0, $args ), 0 );
+			$root = max( 0, (int) ( $args['root_id'] ?? 0 ) );
+			$tree = $this->mark_current_in_tree( $this->get_subtree( $root, $args ), 0 );
 			$this->cache->set( $cache_key, $tree );
 		}
 
@@ -219,7 +237,24 @@ class Navigator {
 	 * @return array<int,array<string,mixed>>
 	 */
 	private function get_ancestor_items( array $ctx, array $args ): array {
-		$items = array();
+		$items   = array();
+		$root_id = (int) ( $args['root_id'] ?? 0 );
+
+		if ( $root_id > 0 ) {
+			// Section mode: the path starts at the section root page; pages
+			// above it (and the home link) are not part of the navigation.
+			$position = array_search( $root_id, array_map( 'intval', $ctx['ancestors'] ), true );
+			if ( false === $position ) {
+				return array();
+			}
+			foreach ( array_slice( $ctx['ancestors'], (int) $position ) as $ancestor_id ) {
+				$post = get_post( $ancestor_id );
+				if ( $post ) {
+					$items[] = $this->post_to_item( $post );
+				}
+			}
+			return $items;
+		}
 
 		if ( $args['show_home'] ) {
 			$items[] = $this->make_home_item( $args['home_label'] );
@@ -247,6 +282,16 @@ class Navigator {
 	private function get_current_level_items( array $ctx, array $args ): array {
 		$post_id   = (int) $ctx['post_id'];
 		$parent_id = (int) $ctx['parent_id'];
+		$root_id   = (int) ( $args['root_id'] ?? 0 );
+
+		if ( $root_id > 0 ) {
+			$in_section = in_array( $root_id, array_map( 'intval', $ctx['ancestors'] ), true );
+			if ( ! $in_section ) {
+				// Root page itself, or a page outside the section: show the
+				// first level of the section.
+				return $this->get_children( $root_id, $args );
+			}
+		}
 
 		if ( $post_id <= 0 ) {
 			// Front page or non-singular: show top-level pages.
@@ -274,13 +319,16 @@ class Navigator {
 		$args = wp_parse_args(
 			$args,
 			array(
-				'post_type' => $this->settings->get( 'post_types' )[0] ?? 'page',
-				'depth'     => 0,
+				'post_type'   => $this->settings->get( 'post_types' )[0] ?? 'page',
+				'depth'       => 0,
+				'exclude_ids' => (array) ( $this->settings->get( 'exclude_ids' ) ?? array() ),
 			)
 		);
 
+		$excluded  = $this->get_excluded_ids( $args );
 		$lang      = (string) apply_filters( 'drillnav_language', '' );
-		$cache_key = 'children_' . $args['post_type'] . '_' . $parent_id . '_' . $lang;
+		$cache_key = 'children_' . $args['post_type'] . '_' . $parent_id . '_' . $lang
+			. ( $excluded ? '_x' . md5( implode( ',', $excluded ) ) : '' );
 		$cached    = $this->cache->get( $cache_key );
 		if ( false !== $cached ) {
 			return $this->mark_current_items( (array) $cached );
@@ -298,6 +346,9 @@ class Navigator {
 			'no_found_rows'    => true,
 			'suppress_filters' => false,
 		);
+		if ( $excluded ) {
+			$query_args['post__not_in'] = $excluded;
+		}
 
 		$posts = get_posts( $query_args );
 		$items = array_map( fn( $p ) => $this->post_to_item( $p ), $posts );
@@ -306,7 +357,8 @@ class Navigator {
 		// single batch query instead of one query per item.
 		$parents_with_children = $this->parents_with_children(
 			array_map( static fn( $item ) => (int) $item['id'], $items ),
-			$post_type
+			$post_type,
+			$excluded
 		);
 		foreach ( $items as &$item ) {
 			$item['has_children'] = in_array( (int) $item['id'], $parents_with_children, true );
@@ -352,9 +404,10 @@ class Navigator {
 	 *
 	 * @param int[]  $ids       Candidate parent IDs.
 	 * @param string $post_type
+	 * @param int[]  $excluded  Post IDs hidden from the navigation.
 	 * @return int[]
 	 */
-	private function parents_with_children( array $ids, string $post_type ): array {
+	private function parents_with_children( array $ids, string $post_type, array $excluded = array() ): array {
 		$ids = array_values( array_filter( array_map( 'intval', $ids ) ) );
 		if ( empty( $ids ) ) {
 			return array();
@@ -369,10 +422,76 @@ class Navigator {
 				'fields'           => 'id=>parent',
 				'no_found_rows'    => true,
 				'suppress_filters' => false,
+				'post__not_in'     => $excluded,
 			)
 		);
 
 		return array_values( array_unique( array_map( 'intval', $children ) ) );
+	}
+
+	/**
+	 * Resolves the section root page for the navigation.
+	 *
+	 * @param array<string,mixed> $args
+	 * @param array<string,mixed> $ctx
+	 * @return int 0 = whole hierarchy.
+	 */
+	private function resolve_root_id( array $args, array $ctx ): int {
+		$root_id = (int) ( $args['root_id'] ?? 0 );
+
+		if ( -1 === $root_id ) {
+			// Auto: top-level ancestor of the current page (or the page itself).
+			$ancestors = array_map( 'intval', $ctx['ancestors'] ?? array() );
+			$root_id   = $ancestors[0] ?? (int) ( $ctx['post_id'] ?? 0 );
+			return max( 0, $root_id );
+		}
+
+		if ( $root_id <= 0 ) {
+			return 0;
+		}
+
+		$post_type = (string) ( $args['post_type'] ?? 'page' );
+		$root_id   = (int) apply_filters( 'drillnav_translate_post_id', $root_id, $post_type );
+		$root      = get_post( $root_id );
+
+		return ( $root && $root->post_type === $post_type && 'publish' === $root->post_status ) ? $root_id : 0;
+	}
+
+	/**
+	 * Returns all post IDs hidden from the navigation: the IDs configured in
+	 * the settings / block / shortcode plus pages flagged via the
+	 * "Hide from navigation" checkbox. Sub-pages of hidden pages disappear
+	 * automatically because the navigation never descends into them.
+	 *
+	 * @param array<string,mixed> $args
+	 * @return int[] Sorted list of IDs.
+	 */
+	private function get_excluded_ids( array $args ): array {
+		$ids = Settings::id_list( $args['exclude_ids'] ?? array() );
+
+		$flagged = $this->cache->get( 'excluded_meta_ids' );
+		if ( false === $flagged ) {
+			$flagged = get_posts(
+				array(
+					'post_type'        => 'any',
+					'post_status'      => 'any',
+					'posts_per_page'   => -1,
+					'fields'           => 'ids',
+					'no_found_rows'    => true,
+					'suppress_filters' => true,
+					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+					'meta_key'         => Admin\PageMeta::META_EXCLUDE,
+					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+					'meta_value'       => '1',
+				)
+			);
+			$flagged = array_map( 'intval', (array) $flagged );
+			$this->cache->set( 'excluded_meta_ids', $flagged );
+		}
+
+		$ids = array_values( array_unique( array_merge( $ids, (array) $flagged ) ) );
+		sort( $ids );
+		return $ids;
 	}
 
 	/**

@@ -103,6 +103,10 @@ final class Plugin {
 		if ( is_admin() ) {
 			$admin = new Admin\Admin( $this->settings, $this->cache );
 			$admin->register( $this->loader );
+
+			// Per-page "Hide from navigation" box (Pro adds more fields to it).
+			$page_meta = new Admin\PageMeta( $this->cache );
+			$page_meta->register( $this->loader );
 		}
 
 		// Blog / Posts integration – active whenever posts are enabled.

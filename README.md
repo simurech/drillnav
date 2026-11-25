@@ -4,7 +4,7 @@
 
 # DrillNav – Smart Contextual Navigation for Deeply Nested Sites
 
-[![Stable Tag](https://img.shields.io/badge/stable-1.7.9-blue.svg)](https://github.com/simurech/drillnav/releases)
+[![Stable Tag](https://img.shields.io/badge/stable-1.8.0-blue.svg)](https://github.com/simurech/drillnav/releases)
 [![WordPress](https://img.shields.io/badge/WordPress-6.3%2B-21759b.svg)](https://wordpress.org/)
 [![PHP](https://img.shields.io/badge/PHP-8.3%2B-8892be.svg)](https://php.net/)
 [![Lizenz](https://img.shields.io/badge/Lizenz-GPL--2.0--or--later-green.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
@@ -47,6 +47,10 @@ Keine manuelle Konfiguration nötig. Block platzieren, Shortcode einfügen oder 
 | Admin-Einstellungen in 7 organisierten Tabs | ✓ | ✓ |
 | Native Page-Builder-Widgets (Elementor, Beaver Builder, Divi) | ✓ | ✓ |
 | WCAG 2.1 AA barrierefrei | ✓ | ✓ |
+| Bereichsnavigation (Start ab Seite oder automatisch ab Hauptbereich) | ✓ | ✓ |
+| Seiten ausblenden (Checkbox im Editor oder ID-Liste) | ✓ | ✓ |
+| Optionale Überschrift über der Navigation | ✓ | ✓ |
+| Beitragszähler in der Blog-Kategorie-Navigation | ✓ | ✓ |
 | Accordion-Layout (voller Baum, ein-/ausklappbar) | — | ✓ |
 | Lazy-Loading-Accordion (tiefere Ebenen via REST) | — | ✓ |
 | Style-Preset „Cards" | — | ✓ |
@@ -65,6 +69,7 @@ Keine manuelle Konfiguration nötig. Block platzieren, Shortcode einfügen oder 
 | Attribut-basierte Produktfilterung | — | ✓ |
 | Icon-Support (Dashicons, SVG, Emoji) | — | ✓ |
 | Highlight-/Featured-Badges | — | ✓ |
+| Eigener Navigationstitel pro Seite | — | ✓ |
 | Analytics & Event-Tracking (GTM / DataLayer) | — | ✓ |
 | Off-Canvas-Drawer: Blur, Logo, Top-Slide | — | ✓ |
 
@@ -125,6 +130,9 @@ Alle Attribute sind optional und überschreiben die globalen Einstellungen für 
 | `show_home` | `yes` | Home-Link als ersten Rückwärtsnavigations-Schritt anzeigen |
 | `home_label` | Website-Name | Eigenes Label für den Home-Link |
 | `post_type` | `page` | Hierarchischer Post-Type für die Navigation |
+| `title` | — | Überschrift über der Navigation |
+| `root` | — | Startseite: Seiten-ID, `auto` (aktueller Hauptbereich) oder `all` (ganze Hierarchie) |
+| `exclude` | — | Komma-getrennte Seiten-IDs, die (inkl. Unterseiten) ausgeblendet werden |
 | `layout` | `list` | `list`, `horizontal`, `accordion` (Pro) |
 | `style_preset` | `default` | `default`, `compact`, `comfortable`, `cards` (Pro) |
 | `mobile_toggle` | `no` | Hamburger-Icon + Side-Drawer auf Mobilgeräten (`yes` / `no`) |

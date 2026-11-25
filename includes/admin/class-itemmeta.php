@@ -22,6 +22,7 @@ use DrillNav\Loader;
 class ItemMeta {
 
 	private const META_ICON         = '_drillnav_icon';
+	private const META_NAV_LABEL    = '_drillnav_nav_label';
 	private const META_BADGE_TEXT   = '_drillnav_badge_text';
 	private const META_BADGE_COLOR  = '_drillnav_badge_color';
 	private const BADGE_COLORS      = array( 'red', 'green', 'blue', 'orange', 'gray' );
@@ -32,25 +33,11 @@ class ItemMeta {
 	 * @param Loader $loader
 	 */
 	public function register( Loader $loader ): void {
-		$loader->add_action( 'add_meta_boxes',             array( $this, 'add_meta_boxes' ) );
+		// Fields are rendered inside the shared DrillNav box (Admin\PageMeta).
+		$loader->add_action( 'drillnav_page_meta_box_fields', array( $this, 'render_meta_box' ) );
 		$loader->add_action( 'save_post',                  array( $this, 'save_meta' ) );
 		$loader->add_filter( 'drillnav_nav_items',         array( $this, 'enrich_nav_items' ), 10, 2 );
 		$loader->add_filter( 'drillnav_children_items',    array( $this, 'enrich_children_items' ), 10, 3 );
-	}
-
-	/** Adds the DrillNav meta box to all public hierarchical post type edit screens. */
-	public function add_meta_boxes(): void {
-		$types = get_post_types( array( 'hierarchical' => true, 'public' => true ), 'names' );
-		foreach ( $types as $type ) {
-			add_meta_box(
-				'drillnav_item_meta',
-				__( 'DrillNav', 'drillnav-drilldown-navigation' ),
-				array( $this, 'render_meta_box' ),
-				$type,
-				'side',
-				'low'
-			);
-		}
 	}
 
 	/**
@@ -61,11 +48,27 @@ class ItemMeta {
 	public function render_meta_box( \WP_Post $post ): void {
 		wp_nonce_field( 'drillnav_save_item_meta_' . $post->ID, 'drillnav_item_meta_nonce' );
 
+		$nav_label   = (string) ( get_post_meta( $post->ID, self::META_NAV_LABEL, true ) ?: '' );
 		$icon        = (string) ( get_post_meta( $post->ID, self::META_ICON, true ) ?: '' );
 		$badge_text  = (string) ( get_post_meta( $post->ID, self::META_BADGE_TEXT, true ) ?: '' );
 		$badge_color = (string) ( get_post_meta( $post->ID, self::META_BADGE_COLOR, true ) ?: 'red' );
 		?>
 		<p style="margin-top:.5rem;">
+			<label for="drillnav_nav_label" style="font-weight:600;"><?php esc_html_e( 'Navigation label', 'drillnav-drilldown-navigation' ); ?></label><br>
+			<input
+				type="text"
+				id="drillnav_nav_label"
+				name="drillnav_nav_label"
+				value="<?php echo esc_attr( $nav_label ); ?>"
+				placeholder="<?php echo esc_attr( get_the_title( $post->ID ) ); ?>"
+				class="widefat"
+				style="margin-top:.25rem;"
+			>
+			<span style="font-size:11px;color:#757575;">
+				<?php esc_html_e( 'Shorter title used in the navigation. Leave empty to use the page title.', 'drillnav-drilldown-navigation' ); ?>
+			</span>
+		</p>
+		<p>
 			<label for="drillnav_icon" style="font-weight:600;"><?php esc_html_e( 'Icon', 'drillnav-drilldown-navigation' ); ?></label><br>
 			<input
 				type="text"
@@ -165,11 +168,16 @@ class ItemMeta {
 			return;
 		}
 
+		update_post_meta( $post_id, self::META_NAV_LABEL, sanitize_text_field( wp_unslash( $_POST['drillnav_nav_label'] ?? '' ) ) );
 		update_post_meta( $post_id, self::META_ICON, sanitize_text_field( wp_unslash( $_POST['drillnav_icon'] ?? '' ) ) );
 		update_post_meta( $post_id, self::META_BADGE_TEXT, sanitize_text_field( wp_unslash( $_POST['drillnav_badge_text'] ?? '' ) ) );
 
 		$color = sanitize_key( wp_unslash( $_POST['drillnav_badge_color'] ?? 'red' ) );
 		update_post_meta( $post_id, self::META_BADGE_COLOR, in_array( $color, self::BADGE_COLORS, true ) ? $color : 'red' );
+
+		// Meta boxes are saved after the post-save cache flush in the block
+		// editor, so cached items would keep the old label/icon/badge.
+		\drillnav()->cache->flush();
 	}
 
 	/* ------------------------------------------------------------------
@@ -246,7 +254,12 @@ class ItemMeta {
 			return $item;
 		}
 
+		$nav_label  = (string) ( get_post_meta( $id, self::META_NAV_LABEL, true ) ?: '' );
 		$icon       = (string) ( get_post_meta( $id, self::META_ICON, true ) ?: '' );
+
+		if ( '' !== $nav_label ) {
+			$item['title'] = $nav_label;
+		}
 		$badge_text = (string) ( get_post_meta( $id, self::META_BADGE_TEXT, true ) ?: '' );
 
 		if ( '' !== $icon ) {
