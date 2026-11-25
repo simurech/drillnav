@@ -4,7 +4,7 @@ Tags:              navigation, contextual navigation, drilldown, page hierarchy,
 Requires at least: 6.3
 Tested up to:      7.1
 Requires PHP:      8.3
-Stable tag:        1.8.1
+Stable tag:        1.8.2
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -242,13 +242,19 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 
 == Screenshots ==
 
-1. DrillNav block in the Gutenberg editor with inspector controls
-2. Frontend navigation on a page with multiple hierarchy levels
-3. Drill-down into sub-pages with animated transition
-4. Breadcrumb and back-button navigation
-5. Settings page in WordPress admin
+1. Contextual sidebar navigation on a deeply nested page – only the current level, with a back link to the parent
+2. One level deeper: the navigation follows the visitor and always shows the relevant section
+3. Layouts and styles: List, Horizontal, Dark colour scheme and Cards (Pro)
+4. Accordion layout (Pro) with the path to the current page expanded automatically
+5. Optional mobile drawer with heading and keyboard-accessible focus handling
+6. Settings page with live preview
 
 == Changelog ==
+
+= 1.8.2 =
+* Fix: Accordion sub-levels no longer show list bullets in themes without a CSS reset
+* Fix: Mobile drawer text stays readable when the navigation is placed in a dark header
+* Fix: Mobile drawer with the "Auto" colour scheme now uses the dark background in dark mode
 
 = 1.8.1 =
 * Fix: Hidden pages now respect the current language on multilingual sites (WPML/Polylang)
@@ -425,6 +431,9 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 * WordPress Coding Standards compliant
 
 == Upgrade Notice ==
+
+= 1.8.2 =
+Display fixes for the accordion layout and the mobile drawer.
 
 = 1.8.1 =
 Maintenance release: language-aware page hiding and code standards compliance.

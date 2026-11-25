@@ -348,6 +348,12 @@
 	padding:    0;
 }
 
+/* Accordion sub-levels: same reset, padding is set by the layout rule. */
+.drillnav .drillnav__sublist {
+	list-style: none;
+	margin:     0;
+}
+
 /* =========================================================================
    Row (link + expand button)
    ========================================================================= */
@@ -609,6 +615,18 @@
 
 	.drillnav--drawer-nav.drillnav--scheme-dark {
 		background-color: #1e1e2e;
+	}
+
+	.drillnav--drawer-nav.drillnav--scheme-auto {
+		background-color: var(--drillnav-color-bg);
+	}
+
+	/* Default scheme inherits the text colour from the theme – the drawer
+	   panel is white, so light text (e.g. from a dark header) must not leak in. */
+	.drillnav--drawer-nav:not(.drillnav--scheme-light):not(.drillnav--scheme-dark):not(.drillnav--scheme-auto) {
+		--drillnav-color-text: #1a1a1a;
+		--drillnav-color-link: #1a1a1a;
+		color:                 #1a1a1a;
 	}
 
 	.drillnav-drawer-wrap.is-open .drillnav--drawer-nav {
