@@ -149,13 +149,7 @@ jobs:
         run: |
           TAG="v${{ needs.build.outputs.version }}"
           ZIP="$SLUG-${{ needs.build.outputs.version }}.zip"
-          if gh release view "$TAG" --json isDraft -q .isDraft 2>/dev/null | grep -q true; then
-            # Liegengebliebenen Entwurf (z. B. aus einem abgebrochenen Lauf)
-            # weiterverwenden und veröffentlichen.
-            gh release upload "$TAG" "$ZIP" --clobber
-            gh release edit "$TAG" --target "$GITHUB_SHA" --title "$TAG" \
-              --notes-file release-notes.md --draft=false --latest
-          else
-            gh release create "$TAG" "$ZIP" \
-              --target "$GITHUB_SHA" --title "$TAG" --latest --notes-file release-notes.md
-          fi
+          # Entwürfe mit gleichem Tag-Namen stören nicht: ein neues, veröffentlichtes
+          # Release wird daneben angelegt und erzeugt den Git-Tag.
+          gh release create "$TAG" "$ZIP" \
+            --target "$GITHUB_SHA" --title "$TAG" --latest --notes-file release-notes.md
