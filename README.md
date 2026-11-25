@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="assets/wp-org/icons/icon-256x256.png" alt="DrillNav" width="128">
+  <img src="assets/wp-org/icon-256x256.png" alt="DrillNav" width="128">
 </p>
 
 # DrillNav – Smart Contextual Navigation for Deeply Nested Sites
 
-[![Stable Tag](https://img.shields.io/badge/stable-1.8.1-blue.svg)](https://github.com/simurech/drillnav/releases)
+[![Stable Tag](https://img.shields.io/badge/stable-1.8.2-blue.svg)](https://github.com/simurech/drillnav/releases)
 [![WordPress](https://img.shields.io/badge/WordPress-6.3%2B-21759b.svg)](https://wordpress.org/)
 [![PHP](https://img.shields.io/badge/PHP-8.3%2B-8892be.svg)](https://php.net/)
 [![Lizenz](https://img.shields.io/badge/Lizenz-GPL--2.0--or--later-green.svg)](https://www.gnu.org/licenses/gpl-2.0.html)

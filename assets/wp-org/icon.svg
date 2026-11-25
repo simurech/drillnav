@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ecfc9a"/>
+      <stop offset="1" stop-color="#d4ee5c"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" fill="url(#bg)"/>
+  <!-- Ebene 1 (hinten) -->
+  <rect x="30" y="34" width="150" height="172" rx="14" fill="#1d2327" opacity="0.18"/>
+  <!-- Ebene 2 (vorne, gedrillt) -->
+  <rect x="62" y="56" width="164" height="172" rx="14" fill="#1d2327"/>
+  <!-- Zurück-Zeile -->
+  <path d="M94 86 l-10 10 l10 10" fill="none" stroke="#e3f97a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="106" y="91" width="70" height="10" rx="5" fill="#e3f97a"/>
+  <line x1="80" y1="122" x2="208" y2="122" stroke="#ffffff" stroke-opacity="0.15" stroke-width="2"/>
+  <!-- Einträge -->
+  <rect x="80" y="140" width="86" height="10" rx="5" fill="#ffffff" opacity="0.85"/>
+  <path d="M196 137 l8 8 l-8 8" fill="none" stroke="#ffffff" stroke-opacity="0.85" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="74" y="164" width="140" height="26" rx="7" fill="#e3f97a"/>
+  <rect x="84" y="172" width="72" height="10" rx="5" fill="#1d2327"/>
+  <path d="M196 169 l8 8 l-8 8" fill="none" stroke="#1d2327" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="80" y="204" width="98" height="10" rx="5" fill="#ffffff" opacity="0.85"/>
+</svg>
