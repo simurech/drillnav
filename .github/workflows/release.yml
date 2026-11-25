@@ -127,11 +127,16 @@ jobs:
         with:
           name: builds
 
+      # GitHub CLI statt Fremd-Action. Das Vorgänger-Tag wird explizit übergeben:
+      # ohne previous_tag_name liefert GitHubs Release-Notes-Endpunkt hier HTTP 502.
       - name: Release erstellen
         if: steps.tag_check.outputs.exists == 'false'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ needs.build.outputs.version }}
-          files: ${{ env.SLUG }}-${{ needs.build.outputs.version }}.zip
-          generate_release_notes: true
-          make_latest: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v${{ needs.build.outputs.version }}"
+          PREV=$(git describe --tags --abbrev=0 2>/dev/null || true)
+          NOTES_ARGS="--generate-notes"
+          if [ -n "$PREV" ]; then NOTES_ARGS="$NOTES_ARGS --notes-start-tag $PREV"; fi
+          gh release create "$TAG" "$SLUG-${{ needs.build.outputs.version }}.zip" \
+            --target "$GITHUB_SHA" --title "$TAG" --latest $NOTES_ARGS
