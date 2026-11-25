@@ -347,7 +347,8 @@ class Navigator {
 			'suppress_filters' => false,
 		);
 		if ( $excluded ) {
-			$query_args['post__not_in'] = $excluded;
+			// Small, cached ID list; results are cached as well.
+			$query_args['post__not_in'] = $excluded; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
 		}
 
 		$posts = get_posts( $query_args );
@@ -422,7 +423,7 @@ class Navigator {
 				'fields'           => 'id=>parent',
 				'no_found_rows'    => true,
 				'suppress_filters' => false,
-				'post__not_in'     => $excluded,
+				'post__not_in'     => $excluded, // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in -- small, cached ID list.
 			)
 		);
 
@@ -469,7 +470,9 @@ class Navigator {
 	private function get_excluded_ids( array $args ): array {
 		$ids = Settings::id_list( $args['exclude_ids'] ?? array() );
 
-		$flagged = $this->cache->get( 'excluded_meta_ids' );
+		$lang      = (string) apply_filters( 'drillnav_language', '' );
+		$cache_key = 'excluded_meta_ids_' . $lang;
+		$flagged   = $this->cache->get( $cache_key );
 		if ( false === $flagged ) {
 			$flagged = get_posts(
 				array(
@@ -478,7 +481,7 @@ class Navigator {
 					'posts_per_page'   => -1,
 					'fields'           => 'ids',
 					'no_found_rows'    => true,
-					'suppress_filters' => true,
+					'suppress_filters' => false,
 					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 					'meta_key'         => Admin\PageMeta::META_EXCLUDE,
 					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
@@ -486,7 +489,7 @@ class Navigator {
 				)
 			);
 			$flagged = array_map( 'intval', (array) $flagged );
-			$this->cache->set( 'excluded_meta_ids', $flagged );
+			$this->cache->set( $cache_key, $flagged );
 		}
 
 		$ids = array_values( array_unique( array_merge( $ids, (array) $flagged ) ) );

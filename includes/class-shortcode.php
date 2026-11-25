@@ -145,7 +145,7 @@ class Shortcode {
 				'ajax_content'          => '',
 				'content_selector'      => '',
 				'root'                  => '',
-				'exclude'               => '',
+				'exclude'               => '', // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude -- shortcode attribute, not a query arg.
 			),
 			$atts,
 			'drillnav'

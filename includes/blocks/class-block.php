@@ -188,7 +188,7 @@ class Block {
 						'default'           => 'page',
 						'sanitize_callback' => 'sanitize_key',
 					),
-					'exclude'   => array(
+					'exclude'   => array( // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude -- REST argument, not a query arg.
 						'type'              => 'string',
 						'default'           => '',
 						'sanitize_callback' => 'sanitize_text_field',

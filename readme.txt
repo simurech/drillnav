@@ -4,7 +4,7 @@ Tags:              navigation, contextual navigation, drilldown, page hierarchy,
 Requires at least: 6.3
 Tested up to:      7.1
 Requires PHP:      8.3
-Stable tag:        1.8.0
+Stable tag:        1.8.1
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -250,6 +250,10 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 
 == Changelog ==
 
+= 1.8.1 =
+* Fix: Hidden pages now respect the current language on multilingual sites (WPML/Polylang)
+* Maintenance: Code standards compliance for the WordPress.org Plugin Check
+
 = 1.8.0 =
 * New: Section navigation – start the navigation at a specific page or automatically at the current top-level section (setting, block option, shortcode `root`)
 * New: Hide pages from the navigation, including their sub-pages – via a "DrillNav" box in the page editor or a list of page IDs (setting, block option, shortcode `exclude`)
@@ -421,6 +425,9 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 * WordPress Coding Standards compliant
 
 == Upgrade Notice ==
+
+= 1.8.1 =
+Maintenance release: language-aware page hiding and code standards compliance.
 
 = 1.8.0 =
 New: section navigation, hiding pages from the navigation, optional heading and blog post counts.
