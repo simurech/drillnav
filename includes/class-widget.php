@@ -63,7 +63,7 @@ class Widget extends \WP_Widget {
 		if ( isset( $instance['show_home'] ) ) {
 			$nav_args['show_home'] = (bool) $instance['show_home'];
 		}
-		if ( ! empty( $instance['post_type'] ) && post_type_exists( $instance['post_type'] ) ) {
+		if ( ! empty( $instance['post_type'] ) && in_array( $instance['post_type'], $this->settings->get_hierarchical_post_types(), true ) ) {
 			$nav_args['post_type'] = sanitize_key( $instance['post_type'] );
 		}
 
@@ -187,7 +187,7 @@ class Widget extends \WP_Widget {
 		if ( $this->settings->get( 'load_a11y_css' ) ) {
 			wp_enqueue_style( 'drillnav-a11y' );
 		}
-		if ( function_exists( 'drillnav_fs' ) && drillnav_fs()->is__premium_only() ) {
+		if ( \DrillNav\Plugin::is_pro() ) {
 			wp_enqueue_style( 'dashicons' ); // Per-item icon support (Pro).
 		}
 		wp_enqueue_script( 'drillnav-frontend' );

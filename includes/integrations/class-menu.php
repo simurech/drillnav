@@ -69,6 +69,17 @@ class Menu {
 
 		$current_item = $this->find_current_item( $menu_items, (int) $data['post_id'] );
 
+		$current_id = $current_item ? (int) $current_item->ID : 0;
+
+		// Menu item IDs are not post IDs, so the REST children endpoint cannot
+		// resolve them. All sub-levels are shipped with the page instead.
+		$data['menu_children'] = $this->build_children_map( $menu_items, $current_id );
+
+		// Accordion layout: build tree from menu structure if not already set.
+		if ( 'accordion' === ( $args['layout'] ?? '' ) && ! isset( $data['tree'] ) ) {
+			$data['tree'] = $this->build_menu_tree( $menu_items, 0, $current_id );
+		}
+
 		if ( ! $current_item ) {
 			// No matching item – show top-level menu items.
 			$data['ancestors']     = array();
@@ -90,11 +101,6 @@ class Menu {
 
 		$data['children']     = $children;
 		$data['has_children'] = ! empty( $children );
-
-		// Accordion layout: build tree from menu structure if not already set.
-		if ( 'accordion' === ( $args['layout'] ?? '' ) && ! isset( $data['tree'] ) ) {
-			$data['tree'] = $this->build_menu_tree( $menu_items, 0 );
-		}
 
 		return $data;
 	}
@@ -169,10 +175,34 @@ class Menu {
 				'url'          => $item->url,
 				'is_current'   => ( (int) $item->ID === $current_id ),
 				'has_children' => $has_children,
-				'post_type'    => $item->object,
+				// Marks the ID as a menu item ID for the frontend script.
+				'post_type'    => 'nav_menu_item',
+				'object'       => $item->object,
 			);
 		}
 		return $result;
+	}
+
+	/**
+	 * Maps every menu item ID with sub-items to its child items (menu
+	 * children, or WooCommerce sub-categories in Hybrid mode).
+	 *
+	 * @param \WP_Post[] $all_items
+	 * @param int        $current_id Current menu item ID (0 = none).
+	 * @return array<int,array<int,array<string,mixed>>>
+	 */
+	private function build_children_map( array $all_items, int $current_id ): array {
+		$map = array();
+		foreach ( $all_items as $item ) {
+			$children = $this->items_at_parent( $all_items, (int) $item->ID, $current_id );
+			if ( empty( $children ) && $this->is_woo_category_item( $item ) ) {
+				$children = $this->get_woo_children( (int) $item->object_id );
+			}
+			if ( ! empty( $children ) ) {
+				$map[ (int) $item->ID ] = $children;
+			}
+		}
+		return $map;
 	}
 
 	/**
@@ -196,7 +226,8 @@ class Menu {
 					'url'          => $item->url,
 					'is_current'   => false,
 					'has_children' => true,
-					'post_type'    => $item->object,
+					'post_type'    => 'nav_menu_item',
+					'object'       => $item->object,
 				)
 			);
 			$current = (int) $item->menu_item_parent;
@@ -209,22 +240,24 @@ class Menu {
 	 *
 	 * @param \WP_Post[] $all_items
 	 * @param int        $parent_id
+	 * @param int        $current_id Current menu item ID (0 = none).
 	 * @return array<int,array<string,mixed>>
 	 */
-	private function build_menu_tree( array $all_items, int $parent_id ): array {
+	private function build_menu_tree( array $all_items, int $parent_id, int $current_id = 0 ): array {
 		$result = array();
 		foreach ( $all_items as $item ) {
 			if ( (int) $item->menu_item_parent !== $parent_id ) {
 				continue;
 			}
-			$children = $this->build_menu_tree( $all_items, (int) $item->ID );
+			$children = $this->build_menu_tree( $all_items, (int) $item->ID, $current_id );
 			$result[] = array(
 				'id'           => (int) $item->ID,
 				'title'        => $item->title,
 				'url'          => $item->url,
-				'is_current'   => false,
+				'is_current'   => (int) $item->ID === $current_id,
 				'has_children' => ! empty( $children ),
-				'post_type'    => $item->object,
+				'post_type'    => 'nav_menu_item',
+				'object'       => $item->object,
 				'children'     => $children,
 			);
 		}

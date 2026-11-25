@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: DrillNav – Smart Contextual Navigation for Deeply Nested Sites 1.7.2\n"
+"Project-Id-Version: DrillNav – Smart Contextual Navigation for Deeply Nested Sites 1.7.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/drillnav-drilldown-navigation\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-04T16:47:23+00:00\n"
+"POT-Creation-Date: 2026-11-25T11:12:04+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: drillnav-drilldown-navigation\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #. Plugin URI of the plugin
 #: drillnav-drilldown-navigation.php
-msgid "https://github.com/simurech/drillnav"
+msgid "https://pulacha-labs.ch/plugins/drillnav/"
 msgstr ""
 
 #. Description of the plugin
@@ -40,13 +40,13 @@ msgid "https://pulacha-labs.ch/"
 msgstr ""
 
 #: includes/admin/class-admin.php:47
-#: includes/admin/partials/settings-page.php:69
+#: includes/admin/partials/settings-page.php:86
 msgid "DrillNav Settings"
 msgstr ""
 
 #: includes/admin/class-admin.php:48
 #: includes/admin/class-itemmeta.php:47
-#: includes/admin/partials/settings-page.php:106
+#: includes/admin/partials/settings-page.php:123
 #: includes/integrations/pagebuilders/class-beaverbuilder.php:121
 #: includes/integrations/pagebuilders/class-divi.php:58
 #: includes/integrations/pagebuilders/class-elementor.php:50
@@ -119,26 +119,27 @@ msgid "Attributes"
 msgstr ""
 
 #: includes/admin/class-admin.php:100
-#: includes/admin/class-admin.php:1353
-#: includes/admin/partials/settings-page.php:275
+#: includes/admin/class-admin.php:1366
+#: includes/admin/partials/settings-page.php:292
 msgid "Attribute"
 msgstr ""
 
 #: includes/admin/class-admin.php:100
-#: includes/admin/class-admin.php:328
-#: includes/admin/partials/settings-page.php:276
-#: includes/admin/partials/settings-page.php:300
+#: includes/admin/class-admin.php:329
+#: includes/admin/partials/settings-page.php:293
+#: includes/admin/partials/settings-page.php:317
 #: includes/integrations/pagebuilders/class-beaverbuilder.php:87
 #: includes/integrations/pagebuilders/class-beaverbuilder.php:98
 #: includes/integrations/pagebuilders/class-divi.php:132
 #: includes/integrations/pagebuilders/class-elementor.php:145
+#: assets/js/block-editor.js:203
 msgid "Default"
 msgstr ""
 
 #: includes/admin/class-admin.php:100
 #: includes/admin/class-admin.php:124
-#: includes/admin/partials/settings-page.php:277
-#: includes/admin/partials/settings-page.php:322
+#: includes/admin/partials/settings-page.php:294
+#: includes/admin/partials/settings-page.php:339
 msgid "Description"
 msgstr ""
 
@@ -168,7 +169,7 @@ msgstr ""
 
 #: includes/admin/class-admin.php:118
 #: includes/admin/class-admin.php:120
-#: includes/admin/partials/settings-page.php:268
+#: includes/admin/partials/settings-page.php:285
 msgid "Developer reference"
 msgstr ""
 
@@ -177,7 +178,7 @@ msgid "PHP Filter hooks"
 msgstr ""
 
 #: includes/admin/class-admin.php:124
-#: includes/admin/partials/settings-page.php:321
+#: includes/admin/partials/settings-page.php:338
 msgid "Hook"
 msgstr ""
 
@@ -258,8 +259,9 @@ msgid "Upgrade to Pro"
 msgstr ""
 
 #: includes/admin/class-admin.php:185
-#: includes/admin/partials/settings-page.php:80
+#: includes/admin/partials/settings-page.php:97
 #: includes/integrations/pagebuilders/class-beaverbuilder.php:39
+#: assets/js/block-editor.js:115
 msgid "General"
 msgstr ""
 
@@ -268,6 +270,7 @@ msgstr ""
 #: includes/integrations/pagebuilders/class-beaverbuilder.php:55
 #: includes/integrations/pagebuilders/class-divi.php:85
 #: includes/integrations/pagebuilders/class-elementor.php:86
+#: assets/js/block-editor.js:120
 msgid "Show home link"
 msgstr ""
 
@@ -276,10 +279,12 @@ msgid "Include a link to the site home as the first back-navigation step."
 msgstr ""
 
 #: includes/admin/class-admin.php:201
+#: assets/js/block-editor.js:128
 msgid "Home label"
 msgstr ""
 
 #: includes/admin/class-admin.php:205
+#: assets/js/block-editor.js:129
 msgid "Leave empty to use the site name."
 msgstr ""
 
@@ -330,6 +335,7 @@ msgid "Appearance"
 msgstr ""
 
 #: includes/admin/class-admin.php:261
+#: assets/js/block-editor.js:279
 msgid "Max width"
 msgstr ""
 
@@ -345,6 +351,7 @@ msgstr ""
 #: includes/integrations/pagebuilders/class-beaverbuilder.php:84
 #: includes/integrations/pagebuilders/class-divi.php:117
 #: includes/integrations/pagebuilders/class-elementor.php:126
+#: assets/js/block-editor.js:266
 msgid "Colour scheme"
 msgstr ""
 
@@ -374,6 +381,7 @@ msgstr ""
 #: includes/integrations/pagebuilders/class-beaverbuilder.php:64
 #: includes/integrations/pagebuilders/class-divi.php:95
 #: includes/integrations/pagebuilders/class-elementor.php:98
+#: assets/js/block-editor.js:148
 msgid "Layout"
 msgstr ""
 
@@ -381,6 +389,7 @@ msgstr ""
 #: includes/integrations/pagebuilders/class-beaverbuilder.php:67
 #: includes/integrations/pagebuilders/class-divi.php:98
 #: includes/integrations/pagebuilders/class-elementor.php:102
+#: assets/js/block-editor.js:156
 msgid "List (default)"
 msgstr ""
 
@@ -388,6 +397,7 @@ msgstr ""
 #: includes/integrations/pagebuilders/class-beaverbuilder.php:68
 #: includes/integrations/pagebuilders/class-divi.php:99
 #: includes/integrations/pagebuilders/class-elementor.php:103
+#: assets/js/block-editor.js:157
 msgid "Horizontal"
 msgstr ""
 
@@ -395,548 +405,583 @@ msgstr ""
 #: includes/integrations/pagebuilders/class-beaverbuilder.php:69
 #: includes/integrations/pagebuilders/class-divi.php:100
 #: includes/integrations/pagebuilders/class-elementor.php:104
+#: assets/js/block-editor.js:158
 msgid "Accordion (Pro)"
 msgstr ""
 
-#: includes/admin/class-admin.php:308
+#: includes/admin/class-admin.php:309
 msgid "Lazy-load Accordion"
 msgstr ""
 
-#: includes/admin/class-admin.php:314
+#: includes/admin/class-admin.php:315
 msgid "Load accordion child levels on demand via REST API."
 msgstr ""
 
-#: includes/admin/class-admin.php:315
+#: includes/admin/class-admin.php:316
 msgid "Only applies when Layout is Accordion. Reduces initial page weight on large trees."
 msgstr ""
 
-#: includes/admin/class-admin.php:321
+#: includes/admin/class-admin.php:322
 #: includes/integrations/pagebuilders/class-beaverbuilder.php:95
 #: includes/integrations/pagebuilders/class-divi.php:129
 #: includes/integrations/pagebuilders/class-elementor.php:141
+#: assets/js/block-editor.js:195
 msgid "Style preset"
 msgstr ""
 
-#: includes/admin/class-admin.php:329
+#: includes/admin/class-admin.php:330
 #: includes/integrations/pagebuilders/class-beaverbuilder.php:99
 #: includes/integrations/pagebuilders/class-divi.php:133
 #: includes/integrations/pagebuilders/class-elementor.php:146
+#: assets/js/block-editor.js:204
 msgid "Compact"
 msgstr ""
 
-#: includes/admin/class-admin.php:330
+#: includes/admin/class-admin.php:331
 #: includes/integrations/pagebuilders/class-beaverbuilder.php:100
 #: includes/integrations/pagebuilders/class-divi.php:134
 #: includes/integrations/pagebuilders/class-elementor.php:147
+#: assets/js/block-editor.js:205
 msgid "Comfortable"
 msgstr ""
 
-#: includes/admin/class-admin.php:331
+#: includes/admin/class-admin.php:332
 #: includes/integrations/pagebuilders/class-beaverbuilder.php:101
 #: includes/integrations/pagebuilders/class-divi.php:135
 #: includes/integrations/pagebuilders/class-elementor.php:148
+#: assets/js/block-editor.js:206
 msgid "Cards (Pro)"
 msgstr ""
 
-#: includes/admin/class-admin.php:333
+#: includes/admin/class-admin.php:335
 msgid "Controls spacing and visual density. \"Cards\" requires DrillNav Pro."
 msgstr ""
 
-#: includes/admin/class-admin.php:339
+#: includes/admin/class-admin.php:341
+#: assets/js/block-editor.js:304
 msgid "Search / Filter"
 msgstr ""
 
-#: includes/admin/class-admin.php:345
+#: includes/admin/class-admin.php:347
 msgid "Show a live text filter above navigation items."
 msgstr ""
 
-#: includes/admin/class-admin.php:346
+#: includes/admin/class-admin.php:348
 msgid "Available for List and Horizontal layouts only."
 msgstr ""
 
-#: includes/admin/class-admin.php:352
+#: includes/admin/class-admin.php:354
 msgid "Search filter min. items"
 msgstr ""
 
-#: includes/admin/class-admin.php:360
+#: includes/admin/class-admin.php:362
 msgid "Only show the search field when the current level has at least this many items. 0 = always show. Default: 5."
 msgstr ""
 
-#: includes/admin/class-admin.php:367
-#: includes/admin/partials/settings-page.php:82
+#: includes/admin/class-admin.php:369
+#: includes/admin/partials/settings-page.php:99
 msgid "Behavior"
 msgstr ""
 
-#: includes/admin/class-admin.php:374
+#: includes/admin/class-admin.php:376
+#: assets/js/block-editor.js:239
 msgid "Show back button"
 msgstr ""
 
-#: includes/admin/class-admin.php:378
+#: includes/admin/class-admin.php:380
 msgid "Display a back-navigation link above the item list."
 msgstr ""
 
-#: includes/admin/class-admin.php:383
+#: includes/admin/class-admin.php:385
+#: assets/js/block-editor.js:246
 msgid "Multiple back buttons"
 msgstr ""
 
-#: includes/admin/class-admin.php:387
+#: includes/admin/class-admin.php:389
 msgid "Show one back button per drilled level (oldest first). Click any to jump directly to that level."
 msgstr ""
 
-#: includes/admin/class-admin.php:392
+#: includes/admin/class-admin.php:394
+#: assets/js/block-editor.js:296
 msgid "Mobile hamburger toggle"
 msgstr ""
 
-#: includes/admin/class-admin.php:398
+#: includes/admin/class-admin.php:400
 msgid "On mobile (≤768 px) hide the navigation behind a hamburger icon that opens a side drawer."
 msgstr ""
 
-#: includes/admin/class-admin.php:404
+#: includes/admin/class-admin.php:406
 #: includes/integrations/pagebuilders/class-beaverbuilder.php:74
 #: includes/integrations/pagebuilders/class-divi.php:106
 #: includes/integrations/pagebuilders/class-elementor.php:112
+#: assets/js/block-editor.js:254
 msgid "Animation"
 msgstr ""
 
-#: includes/admin/class-admin.php:411
+#: includes/admin/class-admin.php:413
+#: assets/js/block-editor.js:257
 msgid "Slide (default)"
 msgstr ""
 
-#: includes/admin/class-admin.php:412
+#: includes/admin/class-admin.php:414
 #: includes/integrations/pagebuilders/class-beaverbuilder.php:78
 #: includes/integrations/pagebuilders/class-divi.php:110
 #: includes/integrations/pagebuilders/class-elementor.php:117
+#: assets/js/block-editor.js:258
 msgid "Fade"
 msgstr ""
 
-#: includes/admin/class-admin.php:413
+#: includes/admin/class-admin.php:415
 #: includes/integrations/pagebuilders/class-beaverbuilder.php:79
 #: includes/integrations/pagebuilders/class-divi.php:111
 #: includes/integrations/pagebuilders/class-elementor.php:118
+#: assets/js/block-editor.js:259
 msgid "None"
 msgstr ""
 
-#: includes/admin/class-admin.php:420
+#: includes/admin/class-admin.php:422
 msgid "Drawer effect"
 msgstr ""
 
-#: includes/admin/class-admin.php:427
+#: includes/admin/class-admin.php:429
 msgid "Default (solid background)"
 msgstr ""
 
-#: includes/admin/class-admin.php:428
+#: includes/admin/class-admin.php:430
 msgid "Glassmorphism (blur + transparency)"
 msgstr ""
 
-#: includes/admin/class-admin.php:430
-#: includes/admin/class-admin.php:461
+#: includes/admin/class-admin.php:432
+#: includes/admin/class-admin.php:463
 msgid "Only applies when Mobile hamburger toggle is enabled."
 msgstr ""
 
-#: includes/admin/class-admin.php:436
+#: includes/admin/class-admin.php:438
 msgid "Drawer position"
 msgstr ""
 
-#: includes/admin/class-admin.php:443
+#: includes/admin/class-admin.php:445
 msgid "Slide in from left (default)"
 msgstr ""
 
-#: includes/admin/class-admin.php:444
+#: includes/admin/class-admin.php:446
 msgid "Slide in from right"
 msgstr ""
 
-#: includes/admin/class-admin.php:451
+#: includes/admin/class-admin.php:453
 msgid "Mobile toggle type"
 msgstr ""
 
-#: includes/admin/class-admin.php:458
+#: includes/admin/class-admin.php:460
 msgid "Side drawer (default)"
 msgstr ""
 
-#: includes/admin/class-admin.php:459
+#: includes/admin/class-admin.php:461
 msgid "Fullscreen overlay"
 msgstr ""
 
-#: includes/admin/class-admin.php:467
+#: includes/admin/class-admin.php:469
 msgid "Mobile breakpoint"
 msgstr ""
 
-#: includes/admin/class-admin.php:475
+#: includes/admin/class-admin.php:477
 msgid "Viewport width in pixels at which the navigation switches to mobile mode (hamburger toggle). Default: 768."
 msgstr ""
 
-#: includes/admin/class-admin.php:481
+#: includes/admin/class-admin.php:483
 msgid "Expand arrow icon"
 msgstr ""
 
-#: includes/admin/class-admin.php:488
+#: includes/admin/class-admin.php:490
 msgid "Icon shown on items that have child pages."
 msgstr ""
 
-#: includes/admin/class-admin.php:494
+#: includes/admin/class-admin.php:496
 msgid "Back button icon"
 msgstr ""
 
-#: includes/admin/class-admin.php:501
+#: includes/admin/class-admin.php:503
 msgid "Icon shown on the back navigation button."
 msgstr ""
 
-#: includes/admin/class-admin.php:507
+#: includes/admin/class-admin.php:509
+#: assets/js/block-editor.js:442
 msgid "AJAX content loading"
 msgstr ""
 
-#: includes/admin/class-admin.php:513
+#: includes/admin/class-admin.php:515
 msgid "Replace page content on navigation click without a full page reload."
 msgstr ""
 
-#: includes/admin/class-admin.php:514
+#: includes/admin/class-admin.php:516
 msgid "Enables SPA-style navigation. Uses the History API and a REST endpoint to load content into the configured content selector."
 msgstr ""
 
-#: includes/admin/class-admin.php:520
+#: includes/admin/class-admin.php:522
+#: assets/js/block-editor.js:450
 msgid "Content selector"
 msgstr ""
 
-#: includes/admin/class-admin.php:527
+#: includes/admin/class-admin.php:529
 msgid "CSS selector for the element whose content will be replaced (e.g. main, #content, .entry-content). Only relevant when AJAX content loading is enabled."
 msgstr ""
 
-#: includes/admin/class-admin.php:534
-#: includes/admin/partials/settings-page.php:246
+#: includes/admin/class-admin.php:536
+#: includes/admin/partials/settings-page.php:263
 msgid "Performance"
 msgstr ""
 
-#: includes/admin/class-admin.php:541
+#: includes/admin/class-admin.php:543
 msgid "Load plugin CSS"
 msgstr ""
 
-#: includes/admin/class-admin.php:545
+#: includes/admin/class-admin.php:547
 msgid "Disable if your theme provides its own DrillNav styles."
 msgstr ""
 
-#: includes/admin/class-admin.php:550
+#: includes/admin/class-admin.php:552
 msgid "Load accessibility CSS"
 msgstr ""
 
-#: includes/admin/class-admin.php:554
+#: includes/admin/class-admin.php:556
 msgid "Provides WCAG-compliant focus styles. Disable only if you supply equivalent styles."
 msgstr ""
 
-#: includes/admin/class-admin.php:560
+#: includes/admin/class-admin.php:562
 msgid "Blog &amp; Posts"
 msgstr ""
 
-#: includes/admin/class-admin.php:562
-#: includes/admin/partials/settings-page.php:119
+#: includes/admin/class-admin.php:564
+#: includes/admin/partials/settings-page.php:136
 msgid "Controls how DrillNav behaves on the blog index, category archives, tag archives, and single post pages."
 msgstr ""
 
-#: includes/admin/class-admin.php:569
+#: includes/admin/class-admin.php:571
 msgid "Show posts as navigation items"
 msgstr ""
 
-#: includes/admin/class-admin.php:575
+#: includes/admin/class-admin.php:577
 msgid "When enabled, individual posts appear as leaf items inside their category in the navigation."
 msgstr ""
 
-#: includes/admin/class-admin.php:581
+#: includes/admin/class-admin.php:583
 msgid "Max. posts shown per category"
 msgstr ""
 
-#: includes/admin/class-admin.php:589
+#: includes/admin/class-admin.php:591
 msgid "0 = show all posts (may be slow for large categories). Only relevant when \"Show posts\" is enabled."
 msgstr ""
 
-#: includes/admin/class-admin.php:595
-#: includes/admin/class-admin.php:641
+#: includes/admin/class-admin.php:597
+#: includes/admin/class-admin.php:643
 msgid "Hide empty categories"
 msgstr ""
 
-#: includes/admin/class-admin.php:601
+#: includes/admin/class-admin.php:603
 msgid "Do not show categories that have no published posts."
 msgstr ""
 
-#: includes/admin/class-admin.php:607
+#: includes/admin/class-admin.php:609
 msgid "Blog root label"
 msgstr ""
 
-#: includes/admin/class-admin.php:613
+#: includes/admin/class-admin.php:615
 msgid "Auto (uses Posts page title)"
 msgstr ""
 
-#: includes/admin/class-admin.php:614
+#: includes/admin/class-admin.php:616
 msgid "Label for the blog root link in back navigation. Leave empty to auto-detect from the Posts page title set in Settings > Reading."
 msgstr ""
 
-#: includes/admin/class-admin.php:621
+#: includes/admin/class-admin.php:623
 msgid "WooCommerce Display"
 msgstr ""
 
-#: includes/admin/class-admin.php:628
+#: includes/admin/class-admin.php:630
 msgid "Shop root label"
 msgstr ""
 
-#: includes/admin/class-admin.php:634
+#: includes/admin/class-admin.php:636
 #: includes/integrations/class-woocommerce.php:557
 msgid "Shop"
 msgstr ""
 
-#: includes/admin/class-admin.php:635
+#: includes/admin/class-admin.php:637
 msgid "Label for the shop root link in back navigation. Leave empty for \"Shop\"."
 msgstr ""
 
-#: includes/admin/class-admin.php:647
+#: includes/admin/class-admin.php:649
 msgid "Hide categories that contain no in-stock or backorderable products."
 msgstr ""
 
-#: includes/admin/class-admin.php:648
+#: includes/admin/class-admin.php:650
 msgid "Checks actual stock availability across the whole category subtree. Disable on very large shops if the first (uncached) page load feels slow."
 msgstr ""
 
-#: includes/admin/class-admin.php:654
+#: includes/admin/class-admin.php:656
 msgid "Show \"Uncategorized\""
 msgstr ""
 
-#: includes/admin/class-admin.php:660
+#: includes/admin/class-admin.php:662
 msgid "Include the default \"Uncategorized\" product category in the navigation."
 msgstr ""
 
-#: includes/admin/class-admin.php:666
+#: includes/admin/class-admin.php:668
 msgid "Show product counts"
 msgstr ""
 
-#: includes/admin/class-admin.php:672
+#: includes/admin/class-admin.php:674
 msgid "Show the number of products next to each category name."
 msgstr ""
 
-#: includes/admin/class-admin.php:678
+#: includes/admin/class-admin.php:680
 msgid "Exclude categories"
 msgstr ""
 
-#: includes/admin/class-admin.php:688
-#: includes/admin/partials/settings-page.php:180
+#: includes/admin/class-admin.php:690
+#: includes/admin/partials/settings-page.php:197
 msgid "WooCommerce Product Filters"
 msgstr ""
 
-#: includes/admin/class-admin.php:691
-#: includes/admin/partials/settings-page.php:184
+#: includes/admin/class-admin.php:693
+#: includes/admin/partials/settings-page.php:201
 msgid "Define attribute-based filter rules. Categories are hidden when none of their products pass the active rules."
 msgstr ""
 
 #. translators: %s: link to Pro upgrade page
-#: includes/admin/class-admin.php:696
-#: includes/admin/partials/settings-page.php:190
+#: includes/admin/class-admin.php:698
+#: includes/admin/partials/settings-page.php:207
 #, php-format
 msgid "Available in %s. Filter product categories by attribute value – e.g. show only categories that carry products of a specific brand."
 msgstr ""
 
-#: includes/admin/class-admin.php:697
-#: includes/admin/class-admin.php:726
-#: includes/admin/partials/settings-page.php:146
-#: includes/admin/partials/settings-page.php:191
-#: includes/admin/partials/settings-page.php:211
+#: includes/admin/class-admin.php:699
+#: includes/admin/class-admin.php:728
+#: includes/admin/partials/settings-page.php:163
+#: includes/admin/partials/settings-page.php:208
+#: includes/admin/partials/settings-page.php:228
+#: assets/js/block-editor.js:170
+#: assets/js/block-editor.js:218
+#: assets/js/block-editor.js:404
+#: assets/js/block-editor.js:465
+#: assets/js/block-editor.js:499
 msgid "DrillNav Pro"
 msgstr ""
 
-#: includes/admin/class-admin.php:707
+#: includes/admin/class-admin.php:709
 msgid "Attribute filter rules"
 msgstr ""
 
-#: includes/admin/class-admin.php:717
-#: includes/admin/partials/settings-page.php:135
+#: includes/admin/class-admin.php:719
+#: includes/admin/partials/settings-page.php:152
+#: assets/js/block-editor.js:317
 msgid "Customize"
 msgstr ""
 
-#: includes/admin/class-admin.php:720
-#: includes/admin/partials/settings-page.php:139
+#: includes/admin/class-admin.php:722
+#: includes/admin/partials/settings-page.php:156
 msgid "Override individual CSS custom properties globally. Values set here apply to all navigation instances unless overridden per block."
 msgstr ""
 
 #. translators: %s: link to Pro upgrade page
-#: includes/admin/class-admin.php:725
-#: includes/admin/partials/settings-page.php:145
+#: includes/admin/class-admin.php:727
+#: includes/admin/partials/settings-page.php:162
 #, php-format
 msgid "Granular styling options are available in %s."
 msgstr ""
 
-#: includes/admin/class-admin.php:736
+#: includes/admin/class-admin.php:738
+#: assets/js/block-editor.js:326
 msgid "Font size"
 msgstr ""
 
-#: includes/admin/class-admin.php:740
+#: includes/admin/class-admin.php:742
+#: assets/js/block-editor.js:334
 msgid "Padding top/bottom"
 msgstr ""
 
-#: includes/admin/class-admin.php:744
+#: includes/admin/class-admin.php:746
+#: assets/js/block-editor.js:342
 msgid "Padding left/right"
 msgstr ""
 
-#: includes/admin/class-admin.php:748
+#: includes/admin/class-admin.php:750
+#: assets/js/block-editor.js:350
 msgid "Border radius"
 msgstr ""
 
-#: includes/admin/class-admin.php:752
+#: includes/admin/class-admin.php:754
+#: assets/js/block-editor.js:358
 msgid "Transition speed"
 msgstr ""
 
-#: includes/admin/class-admin.php:756
+#: includes/admin/class-admin.php:758
+#: assets/js/block-editor.js:366
 msgid "Link colour"
 msgstr ""
 
-#: includes/admin/class-admin.php:760
+#: includes/admin/class-admin.php:762
+#: assets/js/block-editor.js:374
 msgid "Current item background"
 msgstr ""
 
-#: includes/admin/class-admin.php:764
+#: includes/admin/class-admin.php:766
+#: assets/js/block-editor.js:382
 msgid "Hover background"
 msgstr ""
 
-#: includes/admin/class-admin.php:768
+#: includes/admin/class-admin.php:770
+#: assets/js/block-editor.js:390
 msgid "Arrow colour"
 msgstr ""
 
-#: includes/admin/class-admin.php:790
+#: includes/admin/class-admin.php:792
 msgid "Analytics & Event Tracking"
 msgstr ""
 
-#: includes/admin/class-admin.php:797
+#: includes/admin/class-admin.php:799
 msgid "Enable tracking"
 msgstr ""
 
-#: includes/admin/class-admin.php:803
+#: includes/admin/class-admin.php:805
 msgid "Push navigation events to window.dataLayer (Google Tag Manager)."
 msgstr ""
 
-#: includes/admin/class-admin.php:809
+#: includes/admin/class-admin.php:811
 msgid "Drill-down event"
 msgstr ""
 
-#: includes/admin/class-admin.php:815
+#: includes/admin/class-admin.php:817
 msgid "Back event"
 msgstr ""
 
-#: includes/admin/class-admin.php:821
+#: includes/admin/class-admin.php:823
 msgid "Accordion expand event"
 msgstr ""
 
-#: includes/admin/class-admin.php:852
-#: includes/admin/class-admin.php:867
+#: includes/admin/class-admin.php:854
+#: includes/admin/class-admin.php:869
 msgid "Enabled"
 msgstr ""
 
-#: includes/admin/class-admin.php:855
-#: includes/admin/class-admin.php:1149
-#: includes/admin/class-admin.php:1203
-#: includes/admin/class-admin.php:1225
-#: includes/admin/class-admin.php:1266
+#: includes/admin/class-admin.php:857
+#: includes/admin/class-admin.php:1162
+#: includes/admin/class-admin.php:1216
+#: includes/admin/class-admin.php:1238
+#: includes/admin/class-admin.php:1279
 msgid "Available in DrillNav Pro."
 msgstr ""
 
-#: includes/admin/class-admin.php:871
+#: includes/admin/class-admin.php:873
 msgid "GTM event name pushed to window.dataLayer."
 msgstr ""
 
-#: includes/admin/class-admin.php:927
-#: includes/admin/partials/settings-page.php:261
+#: includes/admin/class-admin.php:929
+#: includes/admin/partials/settings-page.php:278
 msgid "Clear cache"
 msgstr ""
 
-#: includes/admin/class-admin.php:928
+#: includes/admin/class-admin.php:930
 msgid "Clearing…"
 msgstr ""
 
-#: includes/admin/class-admin.php:929
+#: includes/admin/class-admin.php:931
 msgid "Cache cleared successfully."
 msgstr ""
 
-#: includes/admin/class-admin.php:930
+#: includes/admin/class-admin.php:932
 msgid "Could not clear cache. Please try again."
 msgstr ""
 
-#: includes/admin/class-admin.php:983
+#: includes/admin/class-admin.php:986
 msgid "DrillNav is active!"
 msgstr ""
 
-#: includes/admin/class-admin.php:984
+#: includes/admin/class-admin.php:987
 msgid "Add the DrillNav block in the editor, use the"
 msgstr ""
 
-#: includes/admin/class-admin.php:986
+#: includes/admin/class-admin.php:989
 msgid "shortcode, or place the DrillNav widget in a sidebar."
 msgstr ""
 
-#: includes/admin/class-admin.php:988
+#: includes/admin/class-admin.php:991
 msgid "Open settings →"
 msgstr ""
 
-#: includes/admin/class-admin.php:1224
-#: includes/admin/class-admin.php:1236
+#: includes/admin/class-admin.php:1083
+msgid "Options marked \"(Pro)\" require an active DrillNav Pro license and cannot be selected here."
+msgstr ""
+
+#: includes/admin/class-admin.php:1237
+#: includes/admin/class-admin.php:1249
+#: assets/js/block-editor.js:434
 msgid "— Page hierarchy (default) —"
 msgstr ""
 
-#: includes/admin/class-admin.php:1264
+#: includes/admin/class-admin.php:1277
 msgid "Select categories to hide"
 msgstr ""
 
-#: includes/admin/class-admin.php:1271
-#: includes/admin/class-admin.php:1321
+#: includes/admin/class-admin.php:1284
+#: includes/admin/class-admin.php:1334
 msgid "WooCommerce must be installed and active to use this feature."
 msgstr ""
 
-#: includes/admin/class-admin.php:1284
+#: includes/admin/class-admin.php:1297
 msgid "No product categories found."
 msgstr ""
 
-#: includes/admin/class-admin.php:1305
+#: includes/admin/class-admin.php:1318
 msgid "Checked categories (including their subcategories via drill-down) are hidden from the navigation."
 msgstr ""
 
-#: includes/admin/class-admin.php:1314
-#: includes/admin/class-admin.php:1378
+#: includes/admin/class-admin.php:1327
+#: includes/admin/class-admin.php:1391
 msgid "+ Add rule"
 msgstr ""
 
-#: includes/admin/class-admin.php:1344
-#: includes/admin/class-admin.php:1365
+#: includes/admin/class-admin.php:1357
+#: includes/admin/class-admin.php:1378
 msgid "No rules yet. Click \"+ Add rule\" to create one."
 msgstr ""
 
-#: includes/admin/class-admin.php:1354
+#: includes/admin/class-admin.php:1367
 msgid "Term / Value"
 msgstr ""
 
-#: includes/admin/class-admin.php:1355
+#: includes/admin/class-admin.php:1368
 msgid "Action"
 msgstr ""
 
-#: includes/admin/class-admin.php:1383
+#: includes/admin/class-admin.php:1396
 msgid "A category is shown only when at least one of its products (including subcategory products) passes all active rules."
 msgstr ""
 
-#: includes/admin/class-admin.php:1392
-#: includes/admin/class-admin.php:1446
+#: includes/admin/class-admin.php:1405
+#: includes/admin/class-admin.php:1459
 msgid "— Select attribute —"
 msgstr ""
 
-#: includes/admin/class-admin.php:1403
-#: includes/admin/class-admin.php:1404
-#: includes/admin/class-admin.php:1460
-#: includes/admin/class-admin.php:1461
+#: includes/admin/class-admin.php:1416
+#: includes/admin/class-admin.php:1417
+#: includes/admin/class-admin.php:1473
+#: includes/admin/class-admin.php:1474
 msgid "— Select term —"
 msgstr ""
 
-#: includes/admin/class-admin.php:1410
-#: includes/admin/class-admin.php:1479
+#: includes/admin/class-admin.php:1423
+#: includes/admin/class-admin.php:1492
 msgid "Exclude categories without this term"
 msgstr ""
 
-#: includes/admin/class-admin.php:1411
-#: includes/admin/class-admin.php:1480
+#: includes/admin/class-admin.php:1424
+#: includes/admin/class-admin.php:1493
 msgid "Include only categories with this term"
 msgstr ""
 
-#: includes/admin/class-admin.php:1417
-#: includes/admin/class-admin.php:1486
+#: includes/admin/class-admin.php:1430
+#: includes/admin/class-admin.php:1499
 msgid "Remove rule"
 msgstr ""
 
@@ -988,237 +1033,261 @@ msgstr ""
 msgid "Preview:"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:79
+#: includes/admin/partials/settings-page.php:96
 msgid "Settings sections"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:81
+#: includes/admin/partials/settings-page.php:98
 msgid "Appearance & Styling"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:84
+#: includes/admin/partials/settings-page.php:101
+#: assets/js/block-editor.js:482
 msgid "WooCommerce"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:88
+#: includes/admin/partials/settings-page.php:105
 msgid "Tracking"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:91
+#: includes/admin/partials/settings-page.php:108
 msgid "Advanced"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:101
+#: includes/admin/partials/settings-page.php:118
 msgid "Quick start"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:103
+#: includes/admin/partials/settings-page.php:120
 msgid "Open any page in the block editor."
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:105
+#: includes/admin/partials/settings-page.php:122
 msgid "Search for the"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:107
+#: includes/admin/partials/settings-page.php:124
 msgid "block and insert it."
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:109
+#: includes/admin/partials/settings-page.php:126
 msgid "The block automatically adapts to the current page hierarchy – no manual configuration required."
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:111
+#: includes/admin/partials/settings-page.php:128
 msgid "Alternatively, use the shortcode:"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:118
+#: includes/admin/partials/settings-page.php:135
 msgid "Blog & Posts"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:124
-#: includes/admin/partials/settings-page.php:155
-#: includes/admin/partials/settings-page.php:163
-#: includes/admin/partials/settings-page.php:199
-#: includes/admin/partials/settings-page.php:222
-#: includes/admin/partials/settings-page.php:251
+#: includes/admin/partials/settings-page.php:141
+#: includes/admin/partials/settings-page.php:172
+#: includes/admin/partials/settings-page.php:180
+#: includes/admin/partials/settings-page.php:216
+#: includes/admin/partials/settings-page.php:239
+#: includes/admin/partials/settings-page.php:268
 msgid "Save settings"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:169
+#: includes/admin/partials/settings-page.php:186
+#: assets/js/block-editor.js:234
 msgid "Display"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:172
+#: includes/admin/partials/settings-page.php:189
 msgid "Controls how product categories appear in the navigation: root label, empty-category handling, product counts, and per-category exclusion."
 msgstr ""
 
 #. translators: %s: link to Pro upgrade page
-#: includes/admin/partials/settings-page.php:210
+#: includes/admin/partials/settings-page.php:227
 #, php-format
 msgid "Analytics & Event Tracking is available in %s. Push navigation events to window.dataLayer for Google Tag Manager with per-event control."
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:224
+#: includes/admin/partials/settings-page.php:241
 msgid "DataLayer event structure"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:225
+#: includes/admin/partials/settings-page.php:242
 msgid "Example of the object pushed on each navigation event:"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:236
+#: includes/admin/partials/settings-page.php:253
 msgid "Upgrade to Pro →"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:255
+#: includes/admin/partials/settings-page.php:272
 msgid "Cache"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:257
+#: includes/admin/partials/settings-page.php:274
 msgid "DrillNav caches navigation data for 7 days. The cache is automatically cleared when pages are added, edited, or deleted. Use the button below to clear it manually if needed."
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:270
+#: includes/admin/partials/settings-page.php:287
 msgid "Shortcode"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:271
+#: includes/admin/partials/settings-page.php:288
 msgid "Place the navigation anywhere using the shortcode. All attributes are optional."
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:281
+#: includes/admin/partials/settings-page.php:298
 #: includes/integrations/pagebuilders/class-beaverbuilder.php:46
+#: assets/js/block-editor.js:136
 msgid "Max depth (0 = unlimited)"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:282
+#: includes/admin/partials/settings-page.php:299
 msgid "Show home link as first back-navigation step (yes / no)"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:283
+#: includes/admin/partials/settings-page.php:300
 msgid "site name"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:283
+#: includes/admin/partials/settings-page.php:300
 msgid "Label for the home link"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:284
+#: includes/admin/partials/settings-page.php:301
 msgid "Hierarchical post type to navigate"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:285
+#: includes/admin/partials/settings-page.php:302
 msgid "Show a hamburger icon on mobile that opens a navigation drawer (yes / no)"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:286
+#: includes/admin/partials/settings-page.php:303
 msgid "Limit the width of the navigation container, e.g. 300px or 60%."
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:287
+#: includes/admin/partials/settings-page.php:304
 msgid "Show one back button per drilled level (yes / no)"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:288
+#: includes/admin/partials/settings-page.php:305
 msgid "Display layout: list, horizontal, accordion (Pro)"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:289
+#: includes/admin/partials/settings-page.php:306
 msgid "Style preset: default, compact, comfortable, or cards (Pro)"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:294
+#: includes/admin/partials/settings-page.php:311
 msgid "CSS custom properties"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:295
+#: includes/admin/partials/settings-page.php:312
 msgid "Override these on the .drillnav selector in your theme to match your design."
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:299
+#: includes/admin/partials/settings-page.php:316
 msgid "Property"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:317
+#: includes/admin/partials/settings-page.php:334
 msgid "Filter hooks"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:326
+#: includes/admin/partials/settings-page.php:343
 msgid "Filters the complete navigation data array before caching and output."
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:327
+#: includes/admin/partials/settings-page.php:344
 msgid "Filters the list of child items for a given parent post."
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:328
+#: includes/admin/partials/settings-page.php:345
 msgid "Filters the resolved page context (post ID, ancestors, post type)."
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:329
+#: includes/admin/partials/settings-page.php:346
 msgid "Filters the transient cache TTL in seconds (default: 604800 = 7 days)."
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:330
+#: includes/admin/partials/settings-page.php:347
 msgid "Filters the CSS class array on each navigation item's &lt;li&gt; element. Arguments: $classes (string[]), $item (array), $layout (string)."
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:331
+#: includes/admin/partials/settings-page.php:348
 msgid "Adds custom HTML attributes to the item's &lt;a&gt; element. Return an associative array of attribute name → value. Arguments: $attrs (array), $item (array), $layout (string)."
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:344
+#: includes/admin/partials/settings-page.php:361
 msgid "Live preview"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:345
-msgid "Updates instantly as you change colour scheme, layout, style preset, and custom CSS values."
+#: includes/admin/partials/settings-page.php:362
+msgid "Updates instantly as you change appearance and behavior settings. This is a static mock-up with placeholder items, not the real navigation tree — some settings (e.g. mobile breakpoint, drawer effect) only become visible on the actual site."
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:357
-msgid "Parent page"
+#: includes/admin/partials/settings-page.php:372
+#: includes/views/navigation.php:319
+msgid "Filter…"
 msgstr ""
 
-#: includes/admin/partials/settings-page.php:364
-msgid "Services"
-msgstr ""
-
-#: includes/admin/partials/settings-page.php:365
-msgid "Show sub-pages of Services"
-msgstr ""
-
-#: includes/admin/partials/settings-page.php:370
-msgid "About Us"
-msgstr ""
-
-#: includes/admin/partials/settings-page.php:376
-msgid "Portfolio"
+#: includes/admin/partials/settings-page.php:377
+msgid "Home"
 msgstr ""
 
 #: includes/admin/partials/settings-page.php:381
+msgid "Parent page"
+msgstr ""
+
+#: includes/admin/partials/settings-page.php:388
+msgid "Services"
+msgstr ""
+
+#: includes/admin/partials/settings-page.php:389
+msgid "Show sub-pages of Services"
+msgstr ""
+
+#: includes/admin/partials/settings-page.php:394
+msgid "Consulting"
+msgstr ""
+
+#: includes/admin/partials/settings-page.php:399
+msgid "Support"
+msgstr ""
+
+#: includes/admin/partials/settings-page.php:406
+msgid "About Us"
+msgstr ""
+
+#: includes/admin/partials/settings-page.php:412
+msgid "Team"
+msgstr ""
+
+#: includes/admin/partials/settings-page.php:419
+msgid "Portfolio"
+msgstr ""
+
+#: includes/admin/partials/settings-page.php:424
 msgid "Contact"
 msgstr ""
 
-#: includes/blocks/class-block.php:255
+#: includes/blocks/class-block.php:280
 msgid "Post type not supported."
 msgstr ""
 
-#: includes/class-shortcode.php:108
+#: includes/class-shortcode.php:110
 msgid "Back"
 msgstr ""
 
 #. translators: %s: parent page title
-#: includes/class-shortcode.php:110
-#: includes/views/navigation.php:316
+#: includes/class-shortcode.php:112
+#: includes/views/navigation.php:335
 #, php-format
 msgid "Back to %s"
 msgstr ""
 
 #. translators: %s: page title
-#: includes/class-shortcode.php:112
-#: includes/views/navigation.php:261
-#: includes/views/navigation.php:371
+#: includes/class-shortcode.php:114
+#: includes/views/navigation.php:280
+#: includes/views/navigation.php:390
 #, php-format
 msgid "Show sub-pages of %s"
 msgstr ""
@@ -1274,12 +1343,14 @@ msgstr ""
 #: includes/integrations/pagebuilders/class-beaverbuilder.php:89
 #: includes/integrations/pagebuilders/class-divi.php:122
 #: includes/integrations/pagebuilders/class-elementor.php:132
+#: assets/js/block-editor.js:271
 msgid "Light"
 msgstr ""
 
 #: includes/integrations/pagebuilders/class-beaverbuilder.php:90
 #: includes/integrations/pagebuilders/class-divi.php:123
 #: includes/integrations/pagebuilders/class-elementor.php:133
+#: assets/js/block-editor.js:272
 msgid "Dark"
 msgstr ""
 
@@ -1303,20 +1374,155 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: includes/views/navigation.php:140
+#: includes/views/navigation.php:161
 msgid "Open navigation menu"
 msgstr ""
 
-#: includes/views/navigation.php:300
-msgid "Filter…"
-msgstr ""
-
-#: includes/views/navigation.php:301
+#: includes/views/navigation.php:320
 msgid "Filter navigation items"
 msgstr ""
 
-#: includes/views/navigation.php:304
+#: includes/views/navigation.php:323
 msgid "Clear filter"
+msgstr ""
+
+#: assets/js/block-editor.js:121
+msgid "Adds a link to the site home as the first back-navigation step."
+msgstr ""
+
+#: assets/js/block-editor.js:153
+msgid "Display layout"
+msgstr ""
+
+#: assets/js/block-editor.js:169
+msgid "This layout requires "
+msgstr ""
+
+#: assets/js/block-editor.js:177
+#: assets/js/block-editor.js:225
+msgid "Upgrade →"
+msgstr ""
+
+#: assets/js/block-editor.js:183
+msgid "Lazy-load levels"
+msgstr ""
+
+#: assets/js/block-editor.js:184
+msgid "Load child levels on demand instead of server-side rendering the full tree."
+msgstr ""
+
+#: assets/js/block-editor.js:200
+msgid "Preset"
+msgstr ""
+
+#: assets/js/block-editor.js:217
+msgid "The Cards preset requires "
+msgstr ""
+
+#: assets/js/block-editor.js:247
+msgid "Shows one back button per drilled level (oldest first). Click any to jump directly to that level."
+msgstr ""
+
+#: assets/js/block-editor.js:269
+msgid "Default (inherits from theme)"
+msgstr ""
+
+#: assets/js/block-editor.js:270
+msgid "Auto (follows OS preference)"
+msgstr ""
+
+#: assets/js/block-editor.js:280
+msgid "e.g. 300px or 60%. Leave empty for full width."
+msgstr ""
+
+#: assets/js/block-editor.js:291
+msgid "Mobile"
+msgstr ""
+
+#: assets/js/block-editor.js:297
+msgid "On mobile (≤768 px) the navigation is hidden behind a hamburger icon and slides in as a side drawer."
+msgstr ""
+
+#: assets/js/block-editor.js:305
+msgid "Show a live text filter above the navigation items (List and Horizontal layouts only)."
+msgstr ""
+
+#: assets/js/block-editor.js:403
+msgid "Granular styling options are available in "
+msgstr ""
+
+#: assets/js/block-editor.js:411
+#: assets/js/block-editor.js:472
+#: assets/js/block-editor.js:506
+msgid "Learn more →"
+msgstr ""
+
+#: assets/js/block-editor.js:421
+msgid "Navigation Source"
+msgstr ""
+
+#: assets/js/block-editor.js:430
+msgid "Use WP menu as source"
+msgstr ""
+
+#: assets/js/block-editor.js:431
+msgid "Replace the page hierarchy with a WordPress nav menu. Hybrid: WooCommerce product-category items gain sub-categories automatically."
+msgstr ""
+
+#: assets/js/block-editor.js:443
+msgid "Replace page content on link click without a full page reload (SPA-style)."
+msgstr ""
+
+#: assets/js/block-editor.js:451
+msgid "CSS selector for the element to replace (e.g. main, #content, .entry-content)."
+msgstr ""
+
+#: assets/js/block-editor.js:464
+msgid "Using a WP navigation menu as the data source requires "
+msgstr ""
+
+#: assets/js/block-editor.js:490
+msgid "WooCommerce product category navigation is active. Configure it on the DrillNav settings page."
+msgstr ""
+
+#: assets/js/block-editor.js:498
+msgid "WooCommerce product category navigation is available in "
+msgstr ""
+
+#: assets/js/block-editor.js:523
+msgid "DrillNav: No pages to show at this level. Add child pages or visit a page that belongs to a hierarchy."
+msgstr ""
+
+#: assets/js/block-editor.js:552
+msgid "DrillNav – Horizontal Navigation"
+msgstr ""
+
+#: assets/js/block-editor.js:553
+msgid "Navigation items arranged in a horizontal row."
+msgstr ""
+
+#: assets/js/block-editor.js:561
+msgid "DrillNav – Compact List"
+msgstr ""
+
+#: assets/js/block-editor.js:562
+msgid "Smaller font and reduced padding for tight sidebar use."
+msgstr ""
+
+#: assets/js/block-editor.js:570
+msgid "DrillNav – Dark Navigation"
+msgstr ""
+
+#: assets/js/block-editor.js:571
+msgid "Dark colour scheme – works on any background."
+msgstr ""
+
+#: assets/js/block-editor.js:579
+msgid "DrillNav – Accordion (Pro)"
+msgstr ""
+
+#: assets/js/block-editor.js:580
+msgid "Full page tree with expandable levels. Requires DrillNav Pro."
 msgstr ""
 
 #: blocks/drillnav/block.json

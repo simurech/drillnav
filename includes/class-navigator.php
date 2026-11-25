@@ -74,11 +74,11 @@ class Navigator {
 
 		$cached = $this->cache->get( $cache_key );
 		if ( false !== $cached ) {
-			return $cached;
+			return $this->attach_tree( (array) $cached, $args );
 		}
 
 		// Pro feature guards – reset flags for non-Pro users.
-		$is_pro = function_exists( 'drillnav_fs' ) && drillnav_fs()->is__premium_only();
+		$is_pro = \DrillNav\Plugin::is_pro();
 		if ( ! empty( $args['search_filter'] ) && ! $is_pro ) {
 			$args['search_filter'] = false;
 		}
@@ -141,12 +141,74 @@ class Navigator {
 		 */
 		$data = (array) apply_filters( 'drillnav_nav_items', $data, $args );
 
-		if ( 'accordion' === $args['layout'] && ! isset( $data['tree'] ) ) {
-			$data['tree'] = $this->get_subtree( 0, $args );
+		// The page-hierarchy accordion tree is identical on every page, so it
+		// is cached once (see get_tree()) instead of inside every per-page
+		// entry. Trees supplied by integrations (e.g. menus) stay in $data.
+		$this->cache->set( $cache_key, $data );
+		return $this->attach_tree( $data, $args );
+	}
+
+	/**
+	 * Adds the shared accordion tree to the navigation data when needed.
+	 *
+	 * @param array<string,mixed> $data
+	 * @param array<string,mixed> $args
+	 * @return array<string,mixed>
+	 */
+	private function attach_tree( array $data, array $args ): array {
+		if ( 'accordion' === ( $args['layout'] ?? '' ) && ! isset( $data['tree'] ) ) {
+			$data['tree'] = $this->get_tree( $args );
+		}
+		return $data;
+	}
+
+	/**
+	 * Returns the full accordion tree for the page hierarchy.
+	 *
+	 * Cached once per post type / depth / lazy mode and language; the
+	 * current page is marked after retrieval so the entry can be shared.
+	 *
+	 * @param array<string,mixed> $args
+	 * @return array<int,array<string,mixed>>
+	 */
+	private function get_tree( array $args ): array {
+		$lang      = (string) apply_filters( 'drillnav_language', '' );
+		$cache_key = 'tree_' . md5(
+			wp_json_encode(
+				array(
+					(string) ( $args['post_type'] ?? 'page' ),
+					(int) ( $args['depth'] ?? 0 ),
+					! empty( $args['accordion_lazy'] ),
+					$lang,
+				)
+			)
+		);
+
+		$tree = $this->cache->get( $cache_key );
+		if ( false === $tree ) {
+			$tree = $this->mark_current_in_tree( $this->get_subtree( 0, $args ), 0 );
+			$this->cache->set( $cache_key, $tree );
 		}
 
-		$this->cache->set( $cache_key, $data );
-		return $data;
+		return $this->mark_current_in_tree( (array) $tree, $this->context->post_id() );
+	}
+
+	/**
+	 * Recursively sets the is_current flag on every tree node.
+	 *
+	 * @param array<int,array<string,mixed>> $items
+	 * @param int                            $current_id 0 = no current item.
+	 * @return array<int,array<string,mixed>>
+	 */
+	private function mark_current_in_tree( array $items, int $current_id ): array {
+		foreach ( $items as &$item ) {
+			$item['is_current'] = $current_id > 0 && isset( $item['id'] ) && (int) $item['id'] === $current_id;
+			if ( ! empty( $item['children'] ) && is_array( $item['children'] ) ) {
+				$item['children'] = $this->mark_current_in_tree( $item['children'], $current_id );
+			}
+		}
+		unset( $item );
+		return $items;
 	}
 
 	/**

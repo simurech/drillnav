@@ -31,7 +31,9 @@ class Shortcode {
 	 */
 	public function register( Loader $loader ): void {
 		$loader->add_action( 'init', array( $this, 'register_shortcode' ) );
-		$loader->add_action( 'wp_enqueue_scripts', array( $this, 'register_assets' ) );
+		// Registered on init (not wp_enqueue_scripts): block themes render
+		// blocks – and enqueue their styles – before wp_head runs.
+		$loader->add_action( 'init', array( $this, 'register_assets' ), 20 );
 	}
 
 	/** Registers the shortcode with WordPress. */
@@ -71,7 +73,7 @@ class Shortcode {
 		);
 
 		// Localised strings for JS (translated, safe for JS).
-		$is_pro      = function_exists( 'drillnav_fs' ) && drillnav_fs()->is__premium_only();
+		$is_pro      = \DrillNav\Plugin::is_pro();
 		$tracking    = null;
 		if ( $is_pro && $this->settings->get( 'tracking_enabled' ) ) {
 			$tracking = array(
@@ -111,7 +113,6 @@ class Shortcode {
 				/* translators: %s: page title */
 				'showSubPages' => __( 'Show sub-pages of %s', 'drillnav-drilldown-navigation' ),
 				'restUrl'      => esc_url_raw( rest_url( 'drillnav/v1/' ) ),
-				'contentUrl'   => esc_url_raw( rest_url( 'drillnav/v1/content' ) ),
 				'expandIcon'   => $expand_icon,
 				'backIcon'     => $back_icon,
 				'tracking'     => $tracking,
@@ -173,14 +174,14 @@ class Shortcode {
 		if ( '' !== $atts['home_label'] ) {
 			$args['home_label'] = sanitize_text_field( $atts['home_label'] );
 		}
-		if ( '' !== $atts['post_type'] && post_type_exists( $atts['post_type'] ) ) {
+		if ( '' !== $atts['post_type'] && in_array( $atts['post_type'], $this->settings->get_hierarchical_post_types(), true ) ) {
 			$args['post_type'] = sanitize_key( $atts['post_type'] );
 		}
 		if ( '' !== $atts['mobile_toggle'] ) {
 			$args['mobile_toggle'] = in_array( strtolower( $atts['mobile_toggle'] ), array( 'yes', '1', 'true' ), true );
 		}
 		if ( '' !== $atts['max_width'] ) {
-			$args['max_width'] = sanitize_text_field( $atts['max_width'] );
+			$args['max_width'] = Settings::css_value( (string) $atts['max_width'] );
 		}
 		if ( '' !== $atts['multiple_back_buttons'] ) {
 			$args['multiple_back_buttons'] = in_array( strtolower( $atts['multiple_back_buttons'] ), array( 'yes', '1', 'true' ), true );
@@ -248,7 +249,7 @@ class Shortcode {
 		if ( $this->settings->get( 'load_a11y_css' ) ) {
 			wp_enqueue_style( 'drillnav-a11y' );
 		}
-		if ( function_exists( 'drillnav_fs' ) && drillnav_fs()->is__premium_only() ) {
+		if ( \DrillNav\Plugin::is_pro() ) {
 			wp_enqueue_style( 'dashicons' ); // Per-item icon support (Pro).
 		}
 		wp_enqueue_script( 'drillnav-frontend' );

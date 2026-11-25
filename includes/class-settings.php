@@ -164,7 +164,7 @@ class Settings {
 		$clean['home_label']         = sanitize_text_field( $raw['home_label'] ?? '' );
 		$clean['depth']              = absint( $raw['depth'] ?? 0 );
 
-		$clean['max_width']             = sanitize_text_field( $raw['max_width'] ?? '' );
+		$clean['max_width']             = self::css_value( (string) ( $raw['max_width'] ?? '' ) );
 		$clean['show_back_button']      = ! empty( $raw['show_back_button'] );
 		$clean['multiple_back_buttons'] = ! empty( $raw['multiple_back_buttons'] );
 		$clean['animation']          = in_array( $raw['animation'] ?? '', array( 'slide', 'fade', 'none' ), true )
@@ -215,7 +215,7 @@ class Settings {
 			'custom_color_hover',
 			'custom_color_arrow',
 		) as $custom_key ) {
-			$clean[ $custom_key ] = sanitize_text_field( $raw[ $custom_key ] ?? '' );
+			$clean[ $custom_key ] = self::css_value( (string) ( $raw[ $custom_key ] ?? '' ) );
 		}
 
 		$clean['search_filter']           = ! empty( $raw['search_filter'] );
@@ -282,6 +282,31 @@ class Settings {
 		$clean['woo_excluded_categories'] = array_values( array_filter( array_map( 'absint', $raw_excluded ) ) );
 
 		return $clean;
+	}
+
+	/**
+	 * Validates a single CSS value (length, colour, time, calc() …) that is
+	 * written into a CSS custom property of the inline style attribute.
+	 *
+	 * Only characters needed for plain values are allowed – no ";", ":",
+	 * braces, quotes or url()/expression() – so a value can never add further
+	 * declarations or load external resources. Invalid values return ''.
+	 *
+	 * @param string $value Raw value.
+	 * @return string Sanitized value or empty string.
+	 */
+	public static function css_value( string $value ): string {
+		$value = trim( sanitize_text_field( $value ) );
+		if ( '' === $value || strlen( $value ) > 100 ) {
+			return '';
+		}
+		if ( ! preg_match( '/^[a-zA-Z0-9#%.,()\s+\-*\/]+$/', $value ) ) {
+			return '';
+		}
+		if ( preg_match( '/(url|expression|image-set|attr)\s*\(/i', $value ) ) {
+			return '';
+		}
+		return $value;
 	}
 
 	/**

@@ -49,7 +49,10 @@ class Cache {
 	 * @return string
 	 */
 	private function prefixed( string $key ): string {
-		return 'drillnav_' . $this->version() . '_' . $key;
+		// The licence state is part of every key: Pro integrations enrich the
+		// cached data, so a licence change must never serve stale entries.
+		$variant = Plugin::is_pro() ? 'p' : 'f';
+		return 'drillnav_' . $this->version() . $variant . '_' . $key;
 	}
 
 	/**
@@ -137,28 +140,62 @@ class Cache {
 	}
 
 	/**
-	 * Invalidates navigation caches when post data changes.
-	 * Hooked to save_post, delete_post, and trashed_post.
+	 * Invalidates navigation caches when a post is published, updated while
+	 * published, or leaves the published state (draft, trash, private …).
+	 * Hooked to transition_post_status, which fires on every save.
 	 *
-	 * Flushes for every public post type: hierarchical types feed the page
-	 * navigation, posts feed the blog integration, and products affect the
-	 * WooCommerce stock-based category visibility.
+	 * Drafts, auto-drafts and attachments never appear in the navigation and
+	 * therefore do not flush the cache.
+	 *
+	 * @param string   $new_status
+	 * @param string   $old_status
+	 * @param \WP_Post $post
+	 */
+	public function invalidate_on_status_transition( string $new_status, string $old_status, $post ): void {
+		if ( 'publish' !== $new_status && 'publish' !== $old_status ) {
+			return;
+		}
+		if ( ! $post instanceof \WP_Post ) {
+			return;
+		}
+		if ( wp_is_post_revision( $post ) || wp_is_post_autosave( $post ) ) {
+			return;
+		}
+		if ( $this->is_public_post_type( $post->post_type ) ) {
+			$this->flush();
+		}
+	}
+
+	/**
+	 * Invalidates navigation caches when a published post is deleted.
+	 * Hooked to delete_post.
 	 *
 	 * @param int $post_id
 	 */
 	public function invalidate_on_post_change( int $post_id ): void {
+		if ( 'publish' !== get_post_status( $post_id ) ) {
+			return;
+		}
 		if ( wp_is_post_revision( $post_id ) || wp_is_post_autosave( $post_id ) ) {
 			return;
 		}
 		$post_type = get_post_type( $post_id );
-		if ( ! $post_type ) {
-			return;
+		if ( $post_type && $this->is_public_post_type( $post_type ) ) {
+			$this->flush();
 		}
+	}
+
+	/**
+	 * Whether the post type is public (hierarchical types feed the page
+	 * navigation, posts the blog integration, products the WooCommerce
+	 * stock-based category visibility).
+	 *
+	 * @param string $post_type
+	 * @return bool
+	 */
+	private function is_public_post_type( string $post_type ): bool {
 		$post_type_obj = get_post_type_object( $post_type );
-		if ( ! $post_type_obj || ! $post_type_obj->public ) {
-			return;
-		}
-		$this->flush();
+		return $post_type_obj && $post_type_obj->public && 'attachment' !== $post_type;
 	}
 
 	/**

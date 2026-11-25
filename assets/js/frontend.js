@@ -20,13 +20,32 @@
 	 * REST helper
 	 * ---------------------------------------------------------------------- */
 
+	/**
+	 * Builds a drillnav REST URL. Works with pretty permalinks
+	 * (/wp-json/drillnav/v1/) and plain permalinks (?rest_route=/drillnav/v1/).
+	 *
+	 * @param {string} endpoint e.g. 'children'.
+	 * @param {Object} params   Query parameters.
+	 * @returns {string}
+	 */
+	function restUrl( endpoint, params ) {
+		const base  = ( window.drillnavL10n && window.drillnavL10n.restUrl ) || '/wp-json/drillnav/v1/';
+		const url   = new URL( base, window.location.href );
+		const route = url.searchParams.get( 'rest_route' );
+		if ( route !== null ) {
+			url.searchParams.set( 'rest_route', route + endpoint );
+		} else {
+			url.pathname += endpoint;
+		}
+		Object.keys( params ).forEach( ( key ) => url.searchParams.set( key, String( params[ key ] ) ) );
+		return url.toString();
+	}
+
 	// Note: the drillnav REST endpoints are public, so no nonce is sent.
 	// A nonce baked into page-cached HTML would expire and make WordPress
 	// reject the request entirely (403).
 	async function fetchChildren( postId, postType ) {
-		const base = ( window.drillnavL10n && window.drillnavL10n.restUrl ) || '/wp-json/drillnav/v1/';
-		const url  = base + 'children?post_id=' + encodeURIComponent( postId ) +
-		             '&post_type=' + encodeURIComponent( postType );
+		const url = restUrl( 'children', { post_id: postId, post_type: postType } );
 
 		const res = await fetch( url, { credentials: 'same-origin' } );
 
@@ -40,6 +59,35 @@
 	/* -------------------------------------------------------------------------
 	 * Shared item helpers (icons, badges, configured arrow symbols)
 	 * ---------------------------------------------------------------------- */
+
+	// Titles from WordPress contain HTML entities (e.g. &#8211; from
+	// wptexturize). A detached <textarea> decodes them without executing
+	// any markup; the result is only ever assigned via textContent.
+	const entityDecoder = document.createElement( 'textarea' );
+
+	/**
+	 * @param {*} value
+	 * @returns {string}
+	 */
+	function decodeEntities( value ) {
+		entityDecoder.innerHTML = String( value ?? '' );
+		return entityDecoder.value;
+	}
+
+	/**
+	 * Returns the plain label of a nav link – without icon and count.
+	 *
+	 * @param {HTMLElement|null} link
+	 * @returns {string}
+	 */
+	function linkLabel( link ) {
+		if ( ! link ) {
+			return '';
+		}
+		const clone = link.cloneNode( true );
+		clone.querySelectorAll( '.drillnav__icon, .drillnav__count' ).forEach( ( el ) => el.remove() );
+		return clone.textContent.replace( /\s+/g, ' ' ).trim();
+	}
 
 	function expandIconChar() {
 		return ( window.drillnavL10n && window.drillnavL10n.expandIcon ) || '›';
@@ -84,7 +132,7 @@
 			const badge  = document.createElement( 'span' );
 			badge.className = 'drillnav__badge drillnav__badge--' + color;
 			badge.setAttribute( 'aria-hidden', 'true' );
-			badge.textContent = String( item.badge );
+			badge.textContent = decodeEntities( item.badge );
 			row.appendChild( badge );
 		}
 	}
@@ -110,7 +158,7 @@
 		const a       = document.createElement( 'a' );
 		a.className   = 'drillnav__link';
 		a.href        = item.url;
-		a.textContent = item.title;
+		a.textContent = decodeEntities( item.title );
 		if ( item.is_current ) {
 			a.setAttribute( 'aria-current', 'page' );
 		}
@@ -124,8 +172,8 @@
 			btn.setAttribute(
 				'aria-label',
 				( window.drillnavL10n
-					? window.drillnavL10n.showSubPages.replace( '%s', item.title )
-					: 'Show sub-pages of ' + item.title )
+					? window.drillnavL10n.showSubPages.replace( '%s', decodeEntities( item.title ) )
+					: 'Show sub-pages of ' + decodeEntities( item.title ) )
 			);
 			btn.dataset.drillnavItemId   = String( item.id );
 			btn.dataset.drillnavItemType = item.post_type || 'page';
@@ -171,6 +219,7 @@
 			this.accordionLazy       = !! ( this.data && this.data.settings && this.data.settings.accordion_lazy );
 			this.ajaxContent         = !! root.dataset.drillnavAjaxContent;
 			this.contentSelector     = root.dataset.drillnavContentSelector || 'main';
+			this.menuChildren        = ( this.data && this.data.menuChildren ) || null;
 
 			this.panel = document.getElementById( this.instanceId + '-panel' );
 			if ( ! this.panel ) {
@@ -260,6 +309,9 @@
 				if ( this.layout === 'accordion' && ! btn.dataset.drillnavLazy ) {
 					return;
 				}
+				if ( btn.dataset.drillnavItemType === 'nav_menu_item' ) {
+					return; // Menu sub-items are already part of the page data.
+				}
 				const key = btn.dataset.drillnavItemId + ':' + ( btn.dataset.drillnavItemType || 'page' );
 				if ( ! this.preloadCache.has( key ) ) {
 					this.preloadCache.set(
@@ -297,40 +349,49 @@
 
 			const postId      = parseInt( btn.dataset.drillnavItemId, 10 );
 			const postType    = btn.dataset.drillnavItemType || 'page';
-			const parentTitle = btn.closest( '.drillnav__row' )
-				?.querySelector( '.drillnav__link' )
-				?.textContent?.trim() ?? '';
+			const parentLink  = btn.closest( '.drillnav__row' )?.querySelector( '.drillnav__link' ) ?? null;
+			const parentTitle = linkLabel( parentLink );
 
-			this.loading = true;
-			btn.disabled = true;
+			// Falls back to a regular page load of the clicked item.
+			const navigateToItem = () => {
+				if ( parentLink && parentLink.href ) {
+					window.location.href = parentLink.href;
+				}
+			};
 
-			const cacheKey = postId + ':' + postType;
 			let children;
-			try {
-				const preloaded = this.preloadCache.get( cacheKey );
-				if ( preloaded !== undefined ) {
-					children = await preloaded;
-					if ( children === null ) {
+			if ( postType === 'nav_menu_item' ) {
+				// Menu source: sub-items are shipped with the page data.
+				children = ( this.menuChildren && this.menuChildren[ postId ] ) || [];
+			} else {
+				this.loading = true;
+				btn.disabled = true;
+
+				const cacheKey = postId + ':' + postType;
+				try {
+					const preloaded = this.preloadCache.get( cacheKey );
+					if ( preloaded !== undefined ) {
+						children = await preloaded;
+						if ( children === null ) {
+							children = await fetchChildren( postId, postType );
+						}
+					} else {
 						children = await fetchChildren( postId, postType );
 					}
-				} else {
-					children = await fetchChildren( postId, postType );
+				} catch ( err ) {
+					// eslint-disable-next-line no-console
+					console.warn( 'DrillNav: failed to load children', err );
+					navigateToItem();
+					return;
+				} finally {
+					this.loading = false;
+					btn.disabled = false;
 				}
-			} catch ( err ) {
-				// eslint-disable-next-line no-console
-				console.warn( 'DrillNav: failed to load children', err );
-				return;
-			} finally {
-				this.loading = false;
-				btn.disabled = false;
 			}
 
 			if ( ! children || ! children.length ) {
 				// No children – navigate to the page directly.
-				const link = btn.previousElementSibling;
-				if ( link && link.href ) {
-					window.location.href = link.href;
-				}
+				navigateToItem();
 				return;
 			}
 
@@ -377,7 +438,7 @@
 			this._pushEvent( 'drilldown', {
 				drillnav_item_id:    postId,
 				drillnav_item_title: parentTitle,
-				drillnav_item_url:   btn.previousElementSibling?.href ?? '',
+				drillnav_item_url:   parentLink?.href ?? '',
 				drillnav_depth:      this.levelStack.length,
 			} );
 		}
@@ -550,8 +611,7 @@
 
 		/** @param {string} url */
 		async _ajaxLoadContent( url, shouldPushState = true ) {
-			const contentUrl = ( window.drillnavL10n && window.drillnavL10n.contentUrl ) || '';
-			if ( ! contentUrl ) { window.location.href = url; return; }
+			if ( ! window.drillnavL10n || ! window.drillnavL10n.restUrl ) { window.location.href = url; return; }
 
 			const target = document.querySelector( this.contentSelector );
 			if ( ! target ) { window.location.href = url; return; }
@@ -559,7 +619,7 @@
 			try {
 				target.setAttribute( 'aria-busy', 'true' );
 				const res = await fetch(
-					contentUrl + '?url=' + encodeURIComponent( url ),
+					restUrl( 'content', { url: url } ),
 					{ credentials: 'same-origin' }
 				);
 				if ( ! res.ok ) { throw new Error( 'HTTP ' + res.status ); }
@@ -567,7 +627,7 @@
 				if ( ! data || ! data.content ) { window.location.href = url; return; }
 
 				target.innerHTML   = data.content;
-				document.title     = data.title || document.title;
+				document.title     = data.title ? decodeEntities( data.title ) : document.title;
 
 				if ( shouldPushState ) {
 					window.history.pushState(
@@ -665,7 +725,7 @@
 				delete btn.dataset.drillnavLazy;
 			}
 
-			const itemTitle = li.querySelector( '.drillnav__link' )?.textContent?.trim() ?? '';
+			const itemTitle = linkLabel( li.querySelector( '.drillnav__link' ) );
 			const itemId    = parseInt( btn.dataset.drillnavItemId, 10 ) || 0;
 
 			if ( isOpen ) {
@@ -722,7 +782,7 @@
 			const a       = document.createElement( 'a' );
 			a.className   = 'drillnav__link';
 			a.href        = item.url;
-			a.textContent = item.title;
+			a.textContent = decodeEntities( item.title );
 			if ( item.is_current ) {
 				a.setAttribute( 'aria-current', 'page' );
 			}
@@ -737,8 +797,8 @@
 				btn.setAttribute(
 					'aria-label',
 					( window.drillnavL10n
-						? window.drillnavL10n.showSubPages.replace( '%s', item.title )
-						: 'Show sub-pages of ' + item.title )
+						? window.drillnavL10n.showSubPages.replace( '%s', decodeEntities( item.title ) )
+						: 'Show sub-pages of ' + decodeEntities( item.title ) )
 				);
 				btn.setAttribute( 'data-drillnav-item-id',   String( item.id ) );
 				btn.setAttribute( 'data-drillnav-item-type', item.post_type || 'page' );
@@ -814,6 +874,40 @@
 					this._closeDrawer();
 				}
 			} );
+
+			// Keep keyboard focus inside the open drawer (modal behaviour).
+			this.drawerWrap.addEventListener( 'keydown', ( e ) => {
+				if ( e.key !== 'Tab' || ! this._isDrawerOpen() ) {
+					return;
+				}
+				const focusable = this._drawerFocusables();
+				if ( ! focusable.length ) {
+					return;
+				}
+				const first = focusable[ 0 ];
+				const last  = focusable[ focusable.length - 1 ];
+				if ( e.shiftKey && document.activeElement === first ) {
+					e.preventDefault();
+					last.focus();
+				} else if ( ! e.shiftKey && document.activeElement === last ) {
+					e.preventDefault();
+					first.focus();
+				}
+			} );
+		}
+
+		/**
+		 * Visible, focusable elements of the open drawer: the toggle button
+		 * (to close it again) plus all links/buttons of the navigation.
+		 *
+		 * @returns {HTMLElement[]}
+		 */
+		_drawerFocusables() {
+			const toggleBtn = this.drawerWrap.querySelector( '[data-drillnav-toggle]' );
+			const items     = Array.from(
+				this.root.querySelectorAll( 'a[href], button:not([disabled]), input:not([disabled])' )
+			).filter( ( el ) => el.offsetParent !== null && ! el.closest( '[hidden], .is-hidden' ) );
+			return toggleBtn && toggleBtn.offsetParent !== null ? [ toggleBtn, ...items ] : items;
 		}
 
 		_openDrawer() {
@@ -823,6 +917,10 @@
 				toggleBtn.setAttribute( 'aria-expanded', 'true' );
 			}
 			document.body.style.overflow = 'hidden';
+
+			// Expose the open drawer as a modal dialog to assistive technology.
+			this.root.setAttribute( 'role', 'dialog' );
+			this.root.setAttribute( 'aria-modal', 'true' );
 
 			// Move focus to the first interactive element inside the nav.
 			requestAnimationFrame( () => {
@@ -841,6 +939,9 @@
 				toggleBtn.focus( { preventScroll: true } );
 			}
 			document.body.style.overflow = '';
+
+			this.root.removeAttribute( 'role' );
+			this.root.removeAttribute( 'aria-modal' );
 		}
 
 		_toggleDrawer() {

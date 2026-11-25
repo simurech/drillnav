@@ -9,6 +9,7 @@ namespace DrillNav\Blocks;
 
 defined( 'ABSPATH' ) || exit;
 
+use DrillNav\Cache;
 use DrillNav\Loader;
 use DrillNav\Navigator;
 use DrillNav\Settings;
@@ -20,7 +21,8 @@ class Block {
 
 	public function __construct(
 		private readonly Navigator $navigator,
-		private readonly Settings  $settings
+		private readonly Settings  $settings,
+		private readonly Cache     $cache
 	) {}
 
 	/**
@@ -39,11 +41,31 @@ class Block {
 			return;
 		}
 
+		$block_args = array(
+			'render_callback' => array( $this, 'render' ),
+		);
+
+		// Block themes render the template before wp_head, so styles attached
+		// to the block type are printed in the <head> (no flash of unstyled
+		// content) – and only on pages that actually contain the block.
+		// Classic themes would load block styles on every page instead, so
+		// they keep the on-demand enqueue in render().
+		if ( function_exists( 'wp_is_block_theme' ) && wp_is_block_theme() ) {
+			$style_handles = array();
+			if ( $this->settings->get( 'load_css' ) ) {
+				$style_handles[] = 'drillnav-frontend';
+			}
+			if ( $this->settings->get( 'load_a11y_css' ) ) {
+				$style_handles[] = 'drillnav-a11y';
+			}
+			if ( $style_handles ) {
+				$block_args['style_handles'] = $style_handles;
+			}
+		}
+
 		register_block_type(
 			DRILLNAV_PLUGIN_DIR . 'blocks/drillnav/block.json',
-			array(
-				'render_callback' => array( $this, 'render' ),
-			)
+			$block_args
 		);
 
 		// Enqueue the editor script separately so it loads in the block editor.
@@ -73,7 +95,7 @@ class Block {
 			DRILLNAV_PLUGIN_DIR . 'languages'
 		);
 
-		$is_pro      = function_exists( 'drillnav_fs' ) && drillnav_fs()->is__premium_only();
+		$is_pro      = \DrillNav\Plugin::is_pro();
 		$upgrade_url = ( ! $is_pro && function_exists( 'drillnav_fs' ) ) ? drillnav_fs()->get_upgrade_url() : '';
 		wp_localize_script(
 			'drillnav-block-editor',
@@ -110,12 +132,13 @@ class Block {
 		if ( $this->settings->get( 'load_a11y_css' ) ) {
 			wp_enqueue_style( 'drillnav-a11y' );
 		}
-		if ( function_exists( 'drillnav_fs' ) && drillnav_fs()->is__premium_only() ) {
+		if ( \DrillNav\Plugin::is_pro() ) {
 			wp_enqueue_style( 'dashicons' ); // Per-item icon support (Pro).
 		}
 		wp_enqueue_script( 'drillnav-frontend' );
 
-		$instance = 'drillnav-block-' . uniqid();
+		$instance          = 'drillnav-block-' . uniqid();
+		$use_block_wrapper = true;
 
 		ob_start();
 		include DRILLNAV_PLUGIN_DIR . 'includes/views/navigation.php';
@@ -128,7 +151,7 @@ class Block {
 	 */
 	public function register_rest_routes(): void {
 		// AJAX content loading is a Pro feature – don't expose the endpoint otherwise.
-		if ( function_exists( 'drillnav_fs' ) && drillnav_fs()->is__premium_only() ) {
+		if ( \DrillNav\Plugin::is_pro() ) {
 			register_rest_route(
 				'drillnav/v1',
 				'/content',
@@ -185,7 +208,8 @@ class Block {
 		}
 
 		$post = get_post( $post_id );
-		if ( ! $post || 'publish' !== $post->post_status ) {
+		if ( ! $post || 'publish' !== $post->post_status || post_password_required( $post ) ) {
+			// Null makes the frontend fall back to a regular page load.
 			return rest_ensure_response( null );
 		}
 
@@ -266,6 +290,13 @@ class Block {
 	 * @return array<int,array<string,mixed>>
 	 */
 	private function term_children( string $taxonomy, int $parent_id ): array {
+		$lang      = (string) apply_filters( 'drillnav_language', '' );
+		$cache_key = 'term_children_' . $taxonomy . '_' . $parent_id . '_' . $lang;
+		$cached    = $this->cache->get( $cache_key );
+		if ( false !== $cached ) {
+			return (array) $cached;
+		}
+
 		$terms = get_terms(
 			array(
 				'taxonomy'   => $taxonomy,
@@ -280,31 +311,41 @@ class Block {
 			return array();
 		}
 
+		// One lightweight query (id => parent map) instead of one query per
+		// term to find out which terms have children.
+		$parents_with_children = array();
+		if ( $terms ) {
+			$all_parents = get_terms(
+				array(
+					'taxonomy'   => $taxonomy,
+					'hide_empty' => false,
+					'fields'     => 'id=>parent',
+				)
+			);
+			if ( ! is_wp_error( $all_parents ) && is_array( $all_parents ) ) {
+				$parents_with_children = array_flip( array_map( 'intval', array_values( $all_parents ) ) );
+			}
+		}
+
 		$items = array();
 		foreach ( $terms as $term ) {
 			if ( ! $term instanceof \WP_Term ) {
 				continue;
 			}
-			$grandchildren = get_terms(
-				array(
-					'taxonomy' => $taxonomy,
-					'parent'   => $term->term_id,
-					'number'   => 1,
-					'fields'   => 'ids',
-				)
-			);
-			$items[]       = array(
+			$url = get_term_link( $term, $taxonomy );
+			$items[] = array(
 				'id'           => $term->term_id,
 				'title'        => $term->name,
-				'url'          => get_term_link( $term, $taxonomy ),
+				'url'          => is_wp_error( $url ) ? '' : $url,
 				'parent_id'    => $parent_id,
 				'post_type'    => $taxonomy,
 				'menu_order'   => 0,
 				'is_current'   => false,
-				'has_children' => ! is_wp_error( $grandchildren ) && ! empty( $grandchildren ),
+				'has_children' => isset( $parents_with_children[ (int) $term->term_id ] ),
 			);
 		}
 
+		$this->cache->set( $cache_key, $items );
 		return $items;
 	}
 
@@ -326,7 +367,7 @@ class Block {
 		if ( isset( $attributes['homeLabel'] ) ) {
 			$args['home_label'] = sanitize_text_field( (string) $attributes['homeLabel'] );
 		}
-		if ( isset( $attributes['postType'] ) && post_type_exists( $attributes['postType'] ) ) {
+		if ( isset( $attributes['postType'] ) && in_array( $attributes['postType'], $this->settings->get_hierarchical_post_types(), true ) ) {
 			$args['post_type'] = sanitize_key( (string) $attributes['postType'] );
 		}
 		if ( isset( $attributes['showBackButton'] ) ) {
@@ -342,7 +383,7 @@ class Block {
 			$args['mobile_toggle'] = (bool) $attributes['mobileToggle'];
 		}
 		if ( isset( $attributes['maxWidth'] ) && '' !== $attributes['maxWidth'] ) {
-			$args['max_width'] = sanitize_text_field( (string) $attributes['maxWidth'] );
+			$args['max_width'] = Settings::css_value( (string) $attributes['maxWidth'] );
 		}
 		if ( isset( $attributes['multipleBackButtons'] ) ) {
 			$args['multiple_back_buttons'] = (bool) $attributes['multipleBackButtons'];
@@ -367,7 +408,7 @@ class Block {
 		);
 		foreach ( $granular_map as $camel => $snake ) {
 			if ( isset( $attributes[ $camel ] ) && '' !== $attributes[ $camel ] ) {
-				$args[ $snake ] = sanitize_text_field( (string) $attributes[ $camel ] );
+				$args[ $snake ] = Settings::css_value( (string) $attributes[ $camel ] );
 			}
 		}
 

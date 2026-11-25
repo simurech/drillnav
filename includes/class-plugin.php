@@ -78,9 +78,8 @@ final class Plugin {
 		// Cache invalidation must work in every context – the block editor
 		// saves via the REST API where is_admin() is false, and WP-CLI or
 		// importers never enter wp-admin at all.
-		$this->loader->add_action( 'save_post',          array( $this->cache, 'invalidate_on_post_change' ) );
+		$this->loader->add_action( 'transition_post_status', array( $this->cache, 'invalidate_on_status_transition' ), 10, 3 );
 		$this->loader->add_action( 'delete_post',        array( $this->cache, 'invalidate_on_post_change' ) );
-		$this->loader->add_action( 'trashed_post',       array( $this->cache, 'invalidate_on_post_change' ) );
 		$this->loader->add_action( 'created_term',       array( $this->cache, 'invalidate_on_term_change' ), 10, 3 );
 		$this->loader->add_action( 'edited_term',        array( $this->cache, 'invalidate_on_term_change' ), 10, 3 );
 		$this->loader->add_action( 'delete_term',        array( $this->cache, 'invalidate_on_term_change' ), 10, 3 );
@@ -97,7 +96,7 @@ final class Plugin {
 		$widget->register( $this->loader );
 
 		// Gutenberg block.
-		$block = new Blocks\Block( $this->navigator, $this->settings );
+		$block = new Blocks\Block( $this->navigator, $this->settings, $this->cache );
 		$block->register( $this->loader );
 
 		// Admin (only in wp-admin context).
@@ -115,7 +114,8 @@ final class Plugin {
 		$multilingual->register( $this->loader );
 
 		// Pro-only features – files excluded from free build via @fs_premium_only.
-		if ( drillnav_fs()->is__premium_only() ) {
+		// Loaded only with an active licence or running trial.
+		if ( drillnav_fs()->can_use_premium_code__premium_only() ) {
 			// Per-page icon & badge meta box.
 			$item_meta = new Admin\ItemMeta();
 			$item_meta->register( $this->loader );
@@ -130,7 +130,7 @@ final class Plugin {
 		}
 
 		// WooCommerce Pro integration – file excluded from free build via @fs_premium_only.
-		if ( drillnav_fs()->is__premium_only() && $this->is_woocommerce_active() ) {
+		if ( drillnav_fs()->can_use_premium_code__premium_only() && $this->is_woocommerce_active() ) {
 			$woo = new Integrations\Woocommerce( $this->navigator, $this->cache, $this->settings );
 			$woo->register( $this->loader );
 		}
@@ -174,7 +174,7 @@ final class Plugin {
 		if ( $this->settings->get( 'load_a11y_css' ) ) {
 			wp_enqueue_style( 'drillnav-a11y' );
 		}
-		if ( drillnav_fs()->is__premium_only() ) {
+		if ( self::is_pro() ) {
 			wp_enqueue_style( 'dashicons' ); // Per-item icon support (Pro).
 		}
 		wp_enqueue_script( 'drillnav-frontend' );
@@ -184,6 +184,21 @@ final class Plugin {
 		ob_start();
 		include DRILLNAV_PLUGIN_DIR . 'includes/views/navigation.php';
 		return ob_get_clean() ?: '';
+	}
+
+	/**
+	 * Whether Pro features may be used: Pro build plus an active licence or
+	 * a running trial. Expired licences and finished trials fall back to the
+	 * free feature set (stored settings are kept).
+	 *
+	 * @return bool
+	 */
+	public static function is_pro(): bool {
+		static $is_pro = null;
+		if ( null === $is_pro ) {
+			$is_pro = function_exists( 'drillnav_fs' ) && drillnav_fs()->can_use_premium_code__premium_only();
+		}
+		return $is_pro;
 	}
 
 	/**

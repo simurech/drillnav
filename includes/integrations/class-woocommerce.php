@@ -597,6 +597,6 @@ class Woocommerce {
 		if ( ! function_exists( 'drillnav_fs' ) ) {
 			return false;
 		}
-		return (bool) drillnav_fs()->is__premium_only();
+		return \DrillNav\Plugin::is_pro();
 	}
 }

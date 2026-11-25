@@ -880,7 +880,7 @@ class Admin {
 	 * @return bool
 	 */
 	private function is_pro_active(): bool {
-		return function_exists( 'drillnav_fs' ) && drillnav_fs()->is__premium_only();
+		return \DrillNav\Plugin::is_pro();
 	}
 
 	/** Renders the settings page. */

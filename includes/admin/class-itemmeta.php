@@ -238,6 +238,14 @@ class ItemMeta {
 			return $item;
 		}
 
+		// Term items (blog, taxonomy, WooCommerce) and menu items carry IDs
+		// that are not page IDs – reading post meta would return the icon or
+		// badge of an unrelated post with the same ID.
+		$type = (string) ( $item['post_type'] ?? '' );
+		if ( '' !== $type && ( 'nav_menu_item' === $type || ! post_type_exists( $type ) ) ) {
+			return $item;
+		}
+
 		$icon       = (string) ( get_post_meta( $id, self::META_ICON, true ) ?: '' );
 		$badge_text = (string) ( get_post_meta( $id, self::META_BADGE_TEXT, true ) ?: '' );
 

@@ -4,7 +4,7 @@ Tags:              navigation, contextual navigation, drilldown, page hierarchy,
 Requires at least: 6.3
 Tested up to:      7.1
 Requires PHP:      8.3
-Stable tag:        1.7.8
+Stable tag:        1.7.9
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -240,6 +240,24 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 
 == Changelog ==
 
+= 1.7.9 =
+* Fix: Block settings for colours, spacing, typography, alignment and additional CSS classes are now applied on the frontend
+* Fix: Accordion layout showed no expand arrow
+* Fix: Page titles with dashes or apostrophes showed HTML entities after drilling down
+* Fix: Drill-down and AJAX content loading now work with plain permalinks
+* Fix: Drill-down with a navigation menu as source (Pro) showed the wrong sub-items; the current menu item is now highlighted in the accordion
+* Fix: Failed requests now fall back to opening the page instead of doing nothing
+* Fix: The back button no longer includes product counts in its label
+* Security: Stricter validation of custom style values (max width, colours, spacing)
+* Security: Only public hierarchical post types can be used as navigation source
+* Security: Password-protected content is no longer returned by AJAX content loading (Pro)
+* Improvement: Accordion tree is cached once for all pages instead of per page
+* Improvement: The navigation cache is no longer cleared when saving drafts or uploading media
+* Improvement: In block themes, the navigation styles load in the page head (no flash of unstyled content)
+* Improvement: Faster sub-item loading for taxonomies
+* Accessibility: The mobile drawer keeps keyboard focus inside while open and is announced as a dialog
+* Pro: Pro features now require an active licence or trial
+
 = 1.7.8 =
 * Update: Minimum PHP version raised to 8.3 (older PHP versions no longer receive security fixes)
 
@@ -384,6 +402,9 @@ Yes. Each DrillNav block, shortcode, or widget instance is fully independent.
 * WordPress Coding Standards compliant
 
 == Upgrade Notice ==
+
+= 1.7.9 =
+Bugfix, security and performance release: block style settings now work on the frontend, accordion arrows are back and special characters in titles display correctly.
 
 = 1.7.8 =
 Requires PHP 8.3 or higher. Sites on older PHP versions keep the current version until PHP is updated.

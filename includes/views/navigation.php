@@ -33,7 +33,7 @@ $nav_label = ! empty( $settings['nav_label'] )
 	/* translators: ARIA label for the contextual page navigation landmark. */
 	: __( 'Page navigation', 'drillnav-drilldown-navigation' );
 
-$is_pro_active = function_exists( 'drillnav_fs' ) && drillnav_fs()->is__premium_only();
+$is_pro_active = \DrillNav\Plugin::is_pro();
 
 // Layout – accordion requires Pro; fall back to list silently.
 $layout      = (string) ( $settings['layout'] ?? 'list' );
@@ -100,22 +100,43 @@ $css_prop_map = array(
 );
 $style_parts = array();
 foreach ( $css_prop_map as $setting_key => $css_var ) {
-	$val = (string) ( $settings[ $setting_key ] ?? '' );
+	// Strict validation at render time also covers values stored by older
+	// versions and page-builder arguments.
+	$val = \DrillNav\Settings::css_value( (string) ( $settings[ $setting_key ] ?? '' ) );
 	if ( '' !== $val ) {
-		$style_parts[] = $css_var . ': ' . esc_attr( $val );
+		$style_parts[] = $css_var . ': ' . $val;
 	}
 }
-$nav_style_attr = $style_parts ? ' style="' . implode( '; ', $style_parts ) . '"' : '';
+
+// Block placement: merge the block-support attributes (colours, spacing,
+// typography, alignment, custom class, anchor) into the <nav> element.
+if ( ! empty( $use_block_wrapper ) && function_exists( 'get_block_wrapper_attributes' ) ) {
+	$nav_wrapper_attrs = get_block_wrapper_attributes(
+		array(
+			'class' => implode( ' ', $nav_classes ),
+			'style' => implode( '; ', $style_parts ),
+		)
+	);
+} else {
+	$nav_wrapper_attrs = 'class="' . esc_attr( implode( ' ', $nav_classes ) ) . '"';
+	if ( $style_parts ) {
+		$nav_wrapper_attrs .= ' style="' . esc_attr( implode( '; ', $style_parts ) ) . '"';
+	}
+}
 
 // Embed the full nav data as JSON for the JS layer.
-$json_data = wp_json_encode(
-	array(
-		'postId'       => $current_post_id,
-		'ancestors'    => $ancestors,
-		'currentLevel' => $current_level,
-		'settings'     => $settings,
-	)
+$json_payload = array(
+	'postId'       => $current_post_id,
+	'ancestors'    => $ancestors,
+	'currentLevel' => $current_level,
+	'settings'     => $settings,
 );
+if ( ! empty( $nav_data['menu_children'] ) ) {
+	// Menu source (Pro): sub-items are resolved client-side, menu item IDs
+	// are not post IDs and cannot be loaded via the REST endpoint.
+	$json_payload['menuChildren'] = $nav_data['menu_children'];
+}
+$json_data = wp_json_encode( $json_payload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT );
 ?>
 <?php if ( $mobile_toggle && 768 !== $mobile_breakpoint ) : ?>
 <style>
@@ -152,8 +173,7 @@ $ajax_content     = ( $is_pro_active && ! empty( $settings['ajax_content'] ) );
 $content_selector = $ajax_content ? (string) ( $settings['content_selector'] ?? 'main' ) : '';
 ?>
 <nav
-	class="<?php echo esc_attr( implode( ' ', $nav_classes ) ); ?>"
-	role="navigation"
+	<?php echo $nav_wrapper_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above / by get_block_wrapper_attributes(). ?>
 	aria-label="<?php echo esc_attr( $nav_label ); ?>"
 	data-drillnav-instance="<?php echo esc_attr( $instance ); ?>"
 	data-drillnav-animation="<?php echo esc_attr( $animation ); ?>"
@@ -162,7 +182,6 @@ $content_selector = $ajax_content ? (string) ( $settings['content_selector'] ?? 
 	data-drillnav-ajax-content="1"
 	data-drillnav-content-selector="<?php echo esc_attr( $content_selector ); ?>"
 	<?php endif; ?>
-	<?php echo $nav_style_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above via esc_attr. ?>
 >
 	<?php // Hidden JSON data payload – read by frontend.js. ?>
 	<script type="application/json" id="<?php echo esc_attr( $instance ); ?>-data">
@@ -220,7 +239,7 @@ $content_selector = $ajax_content ? (string) ( $settings['content_selector'] ?? 
 	$tree         = $nav_data['tree'] ?? array();
 	$render_items = null;
 	$accordion_lazy = ! empty( $settings['accordion_lazy'] );
-	$render_items = function( array $items ) use ( &$render_items, $current_post_id, $layout, $render_extra_attrs, $accordion_lazy, $render_icon, $render_badge, $render_count ): void {
+	$render_items = function( array $items ) use ( &$render_items, $current_post_id, $layout, $render_extra_attrs, $accordion_lazy, $render_icon, $render_badge, $render_count, $expand_icon ): void {
 		foreach ( $items as $item ) {
 			$item_id      = (int) $item['id'];
 			$item_title   = (string) $item['title'];
