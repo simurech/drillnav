@@ -15,6 +15,13 @@ svn/
 | `banner-772x250.png`, `banner-1544x500.png` | 772×250, 1544×500 | Header-Banner (Quelle: `banner.svg`) |
 | `screenshot-1.png` … `screenshot-6.png` | diverse | Screenshots – Beschriftung in `readme.txt` unter `== Screenshots ==` (Nummern müssen übereinstimmen) |
 
+### Nicht hochladen: `alternativ/`
+
+`alternativ/icon-alt-128x128.png` und `icon-alt-256x256.png` sind das ursprüngliche DrillNav-Icon
+(Lime mit Schriftzug, bis 1.8.1 verwendet). Nur als Archiv/Alternative aufbewahrt – **nicht** für
+WordPress.org bestimmt. Der Upload-Befehl unten kopiert bewusst nur die PNGs direkt in diesem Ordner,
+Unterordner bleiben aussen vor. Im Plugin-ZIP ist `assets/wp-org/` komplett ausgeschlossen (`.distignore`).
+
 ## Neu erzeugen
 
 Icon/Banner aus den SVG-Quellen (Markenfarben Lime `#e3f97a` + Anthrazit `#1d2327`):
@@ -34,6 +41,6 @@ headless Chrome (`--window-size=1280,800`, Drawer 390×800), anschliessend mit `
 
 ```bash
 svn co https://plugins.svn.wordpress.org/drillnav-drilldown-navigation svn-drillnav
-cp assets/wp-org/*.png svn-drillnav/assets/
+cp assets/wp-org/*.png svn-drillnav/assets/   # nur oberste Ebene, ohne alternativ/
 cd svn-drillnav && svn add --force assets && svn ci -m "Plugin assets"
 ```
